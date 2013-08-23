@@ -1,0 +1,68 @@
+<h4>{{ feature.name }}</h4>
+		<span ng-repeat="tag in feature.tags" class="label">{{ tag.name }}</span>
+		<p>{{ feature.description }}</p>
+		<code>{{ feature.uri }}</code>
+		<section ng-repeat="scenario in feature.scenarios | filter:searchText">
+			{{scenarioCount = $index;""}} 
+			<h5>{{ scenario.name }}</h5>
+			<span ng-repeat="tag in scenario.tags" class="label">{{ tag.name }}</span>
+			<p>{{ scenario.description }}</p>
+			<p ng-show="scenario.background"><strong>{{ scenario.background.keyword }}</strong> {{ scenario.background.name }}</p>
+			<table class="table table-striped table-hover table-bordered">
+				<thead>
+					<tr>
+						<th class="firstTD">Step</th>
+						<th>Status</th>
+						<th>Duration</th>
+						<th>Attachments</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="step in scenario.steps" ng-class="{passed:'success', failed:'error', unknown:'warning'}[step.result.status]">
+						<td class="firstTD">
+							<strong>{{ step.keyword }}</strong> {{ step.name }}
+						</td>
+						<td>{{ step.result.status }}</td>
+						<td><!-- {{step.result.duration}}: -->{{ step.result.duration ? duration(step.result.duration) : '' }}</td>
+				<td>	
+					<span ng-repeat="n in step.embeddings">
+						<span ng-if="n.mime_type == 'image/png'">
+							<button onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-small">Screenshot</button>		
+						</span>
+						
+						<span ng-if="n.mime_type == 'video/mp4'">
+							<button onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-small">Video</button>	
+						</span>
+
+
+						<div style='display:none'>
+							<div id='lightbox_{{scenarioCount}}_{{$index}}' class="panel panel-primary">
+								<div id='lightbox_{{scenarioCount}}_{{$index}}' class="panel-heading">
+        									<h3 class="panel-title" style="display: inline; width: 500px; margin-right: 450px;">Embedding</h3>
+									<button onclick="$.colorbox.close()" type="button" class="btn btn-primary btn-small">Close</button>
+      								</div>
+								<div style='text-align: right; padding:30px; background:#FFF;'>
+									<span ng-if="n.mime_type == 'image/png'">
+										<img ng-src="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/">
+									</span>
+									<span ng-if="n.mime_type == 'video/mp4'">
+										<div id='inlinevideocontent' >
+											<video width="600" height="400" controls>
+												<source ng-src="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/" type="video/mp4" />
+												Your browser does not support the video tag.
+											</video>
+										</div>
+									</span>
+								</div>
+							</div>
+						</div>
+					</span>
+				</td>
+			</tr>
+			<tr ng-class="{passed:'success', failed:'error', unknown:'warning'}[scenario.status]">
+				<td class="firstTD"><strong>Sum</strong></td><td>{{ scenario.status }}</td><td>{{ duration(scenario.result.duration) }}</td>
+				<td></td>
+			</tr>
+		</tbody>
+	</table>
+</section>
