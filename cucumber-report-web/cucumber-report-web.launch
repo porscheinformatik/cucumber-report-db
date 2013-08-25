@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="net.sourceforge.eclipsejetty.launchConfigurationType">
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.ajp.enabled" value="false"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.context" value="/"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.active.0" value="true"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.path.0" value=""/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.config.type.0" value="DEFAULT"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.embedded" value="false"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.path" value="M:\apache\jetty-distribution-8.1.11.v20130520"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jetty.version" value="JETTY_8"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jmx.enabled" value="false"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jndi.enabled" value="false"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.jsp.enabled" value="true"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.launcher.excludeLibs" value=""/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.launcher.globalLibs" value=""/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.launcher.includeLibs" value=""/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.launcher.info" value="true"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.port" value="8081"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.scope.compile.exclude" value="false"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.scope.provided.exclude" value="true"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.scope.runtime.exclude" value="false"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.scope.system.exclude" value="true"/>
+<booleanAttribute key="net.sourceforge.eclipsejetty.launcher.scope.test.exclude" value="true"/>
+<stringAttribute key="net.sourceforge.eclipsejetty.launcher.webappdir" value="src/main/webapp"/>
+<stringAttribute key="org.eclipse.debug.core.source_locator_id" value="org.eclipse.jdt.launching.sourceLocator.JavaSourceLookupDirector"/>
+<stringAttribute key="org.eclipse.debug.core.source_locator_memento" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot; standalone=&quot;no&quot;?&gt;&#13;&#10;&lt;sourceLookupDirector&gt;&#13;&#10;&lt;sourceContainers duplicates=&quot;false&quot;&gt;&#13;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#13;&amp;#10;&amp;lt;javaProject name=&amp;quot;cucumber-nosql-db&amp;quot;/&amp;gt;&amp;#13;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#13;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#13;&amp;#10;&amp;lt;javaProject name=&amp;quot;cucumber-mongodb-rest&amp;quot;/&amp;gt;&amp;#13;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#13;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#13;&amp;#10;&amp;lt;javaProject name=&amp;quot;cucumber-report-web&amp;quot;/&amp;gt;&amp;#13;&amp;#10;&quot; typeId=&quot;org.eclipse.jdt.launching.sourceContainer.javaProject&quot;/&gt;&#13;&#10;&lt;container memento=&quot;&amp;lt;?xml version=&amp;quot;1.0&amp;quot; encoding=&amp;quot;UTF-8&amp;quot; standalone=&amp;quot;no&amp;quot;?&amp;gt;&amp;#13;&amp;#10;&amp;lt;default/&amp;gt;&amp;#13;&amp;#10;&quot; typeId=&quot;org.eclipse.debug.core.containerType.default&quot;/&gt;&#13;&#10;&lt;/sourceContainers&gt;&#13;&#10;&lt;/sourceLookupDirector&gt;&#13;&#10;"/>
+<booleanAttribute key="org.eclipse.jdt.launching.ATTR_USE_START_ON_FIRST_THREAD" value="true"/>
+<stringAttribute key="org.eclipse.jdt.launching.CLASSPATH_PROVIDER" value="net.sourceforge.eclipsejetty.launcher.JettyLaunchClassPathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="net.sourceforge.eclipsejetty.starter.jetty8.Jetty8LauncherMain"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cucumber-report-web"/>
+</launchConfiguration>
