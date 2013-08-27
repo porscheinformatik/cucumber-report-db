@@ -1,16 +1,14 @@
 (function() {
 	
-	var serverUrl = 'http://atbghx0017:8081/rest/';
-	var queryBaseUrl = serverUrl + 'query/bddReports/';
-	var collectionBaseUrl = serverUrl + 'collection/bddReports/';
-	var fileBaseUrl = serverUrl + 'file/bddReports/';
-	
 	var app = window.angular.module('cucumber', ['ui.bootstrap']);
 	
 	var loader = {
+		loadJsonFromFilesystem : ['$http', function($http) {
+			return function() { return $http.get(reportFileName); };
+		}],
 	
 		restApiCollectionRequest : ['$http', function($http) {
-			return function(url) { return $http.get(url); }
+			return function(url) { return $http.get(url); };
 		}], 
 				
 		restApiQueryRequest : ['$http', function($http) {
@@ -99,7 +97,7 @@
 							else
 							{ 
 								value = (value / 1000000).toFixed()*1;
-								var timeSpan = new TimeSpan(new Date(value) - new Date(0))
+								var timeSpan = new TimeSpan(new Date(value) - new Date(0));
 								return (timeSpan.days>0 ?
 											' (' + timeSpan.toString('d') + ' Day' + 
 												(timeSpan.days>1 ? 's' : '') + 
@@ -110,39 +108,99 @@
 						};
 					});
 				});
-			}
+			};
 		}]
 	};
+	
+	function prepareReport(data, $rootScope, $scope, $routeParams, $filter, $location)
+	{
+		$rootScope.report = data;
+		$rootScope.reportDate = $scope.report.date.$date;
+		
+		$rootScope.convertToUTC = function(dt) {
+			var localDate = new Date(dt);
+			var localTime = localDate.getTime();
+			var localOffset = localDate.getTimezoneOffset() * 60000;
+			return new Date(localTime + localOffset);
+		};
+		
+		$scope.duration = $scope.report.duration;
+
+		$scope.featureDetails = function(feature) {
+			$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.date + '/feature/' + feature.id);
+		};
+
+		$scope.sum = function(features, field) {
+			if(!features) return null;
+			var sum = features.reduce(function (sum, feature) {
+				var value = parseInt(feature.result[field], 10);
+				return isNaN(value) ? sum : sum + value;
+			}, 0);
+			return sum > 0 ? sum : null;
+		};
+
+		$scope.$watch("searchText", function(query){
+			$scope.filteredFeatures = $filter("filter")($scope.report.features, query);
+		});
+		
+		$scope.isCollapsed = true;
+		$rootScope.loading = false;
+	}
+	
+	function prepareFeature(data, $rootScope, $scope, $routeParams, $filter, $location)
+	{
+		$scope.report = data;
+		$scope.duration = $scope.report.duration;
+
+		function getFeature(featureId, features) {
+			for (var i = 0; i < features.length; i++) {
+				if (featureId === features[i].id) {
+					return features[i];
+				}
+			}
+		}
+		
+		//$scope.searchText = $routeParams.searchText;
+
+		$scope.feature = getFeature($routeParams.featureId, $scope.report.features);
+		
+		$scope.$watch("searchText", function(query){
+			$scope.filteredScenarios = $filter("filter")($scope.feature.scenarios, query);
+		});
+		
+		$rootScope.reportDate = $scope.report.date.$date;
+		$rootScope.loading = false;
+	}
 
 	app.config([ '$routeProvider', function($routeProvider) {
 		$routeProvider
 		.when('/help/', {
-			templateUrl : 'help.html',
+			templateUrl : 'pages/help.html',
 			controller : 'HelpCtrl',
 			resolve : loader
 		})
 		.when('/statistics/', {
-			templateUrl : 'statistics.html',
+			templateUrl : 'pages/statistics.html',
 			controller : 'StatisticsCtrl',
 			resolve : loader
 		})
 		.when('/products/', {
-			templateUrl : 'products.html',
+			templateUrl : 'pages/products.html',
 			controller : 'ProductListCtrl',
 			resolve : loader
 		})
 		.when('/reports/:colName', {
-			templateUrl : 'reports.html',
+			templateUrl : 'pages/reports.html',
 			controller : 'ReportListCtrl',
 			resolve : loader
 		})
 		.when('/reports/:colName/features/:date', {
-			templateUrl : 'features.html',
+			templateUrl : 'pages/features.html',
 			controller : 'FeatureListCtrl',
 			resolve : loader
 		})
 		.when('/reports/:colName/features/:date/feature/:featureId', {
-			templateUrl : 'feature.html',
+			templateUrl : 'pages/feature.html',
 			controller : 'FeatureCtrl',
 			resolve : loader
 		})
@@ -164,14 +222,14 @@
 					  $(element).hide();
 			  });
 		}
-	  }
+	  };
 	});
 		
 	app.run(function ($rootScope, $templateCache, $location, $routeParams) {
 		$rootScope.clearCache = function() { 
 			console.log("clear cache");
 		    $templateCache.removeAll();
-		}
+		};
 		
 		$rootScope.range = function (start, end) {
 			var ret = [];
@@ -189,53 +247,54 @@
 		$rootScope.backslashRegEx = new RegExp("\\\\","g");
 	});
 	
-	app.controller('HelpCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest) {
-		$scope.scrollTo = function(id) {
-			$location.hash(id);
-			$anchorScroll();
-		}
-	});
+	/**
+	 * ProductList Controller (see products.html)
+	 */
+	app.controller('ProductListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
 	
-	
-	app.controller('ProductListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest) {
-	
-		$scope.regexCondition = function(input)
-		{			
-			var patt = new RegExp("[A-Z0-9]*\\_[A-Z0-9\\.\\-]*"); 
-			if(patt.test(input) && input.indexOf(".chunks") === -1 && input.indexOf(".files") === -1 && (input.indexOf($routeParams.product) !== -1 || $routeParams.product === undefined))
-				return input;
+		// if a local report.json file was found: load the data from the filesystem
+		loadJsonFromFilesystem().success(function(data) {
+			$location.path('/reports/VDV3_13.08-SNAPSHOT/features/');
+		})
+		// else: load the data from the mongo database 
+		.error(function(data, status, headers, config) {
+			$scope.regexCondition = function(input)
+			{			
+				var patt = new RegExp("[A-Z0-9]*\\_[A-Z0-9\\.\\-]*"); 
+				if(patt.test(input) && input.indexOf(".chunks") === -1 && input.indexOf(".files") === -1 && (input.indexOf($routeParams.product) !== -1 || $routeParams.product === undefined))
+					return input;
+				
+				return false;
+			};
 			
-			return false;
-		};
-		
-		$scope.reportsOverview = function(product) {
-			$location.path('/reports/' + product);
-		}
-		
-
+			$scope.reportsOverview = function(product) {
+				$location.path('/reports/' + product);
+			};
 	
-		restApiQueryRequest(collectionBaseUrl).success(function (data) {
-			$scope.products = data.slice().reverse();
-			$scope.$watch("searchText", function(query){
-				$scope.filteredProducts = $filter("filter")($scope.products, query);
+			restApiQueryRequest(collectionBaseUrl).success(function (data) {
+				$scope.products = data.slice().reverse();
+				$scope.$watch("searchText", function(query){
+					$scope.filteredProducts = $filter("filter")($scope.products, query);
+				});
 			});
 		});
 		
-		
 	});
 	
-
+	/**
+	 * ReportList Controller (see reports.html)
+	 */
 	app.controller('ReportListCtrl', function($rootScope, $routeParams, $http, $scope, $location, $filter, $templateCache, restApiCollectionRequest, restApiQueryRequest) {
 
 		$scope.$routeParams = $routeParams;
 		
 		$rootScope.goBack = function() {
 			$location.path('/products/');
-		}
+		};
 		
 		$scope.featuresOverview = function(date) {
 			$location.path('/reports/' + $routeParams.colName + '/features/' + date);
-		}
+		};
  
 		$rootScope.loading = true;
 		restApiCollectionRequest(collectionBaseUrl + $routeParams.colName + "/")
@@ -258,7 +317,7 @@
 						passed : 0,
 						failed : 0,
 						unknown : 0
-					}
+					};
 					angular.forEach(features, function(feature){
 						statistics.passed += feature.result.passedScenarioCount;
 						statistics.failed += feature.result.failedScenarioCount;
@@ -284,87 +343,61 @@
 		});
 	});
 	
-	app.controller('FeatureListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest) {
+	/**
+	 * FeatureList Controller (see features.html)
+	 */
+	app.controller('FeatureListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
 	
-		$rootScope.goBack = function() {
-			$location.path('/reports/' + $routeParams.colName);
-		};
+		// if a local report.json file was found: load the data from the filesystem
+		loadJsonFromFilesystem().success(function(data) {
+			prepareReport(data, $rootScope, $scope, $routeParams, $filter, $location);
+		})
+		// else: load the data from the mongo database 
+		.error(function(data, status, headers, config) {
+			$rootScope.goBack = function() {
+				$location.path('/reports/' + $routeParams.colName);
+			};
 	
-		$rootScope.loading = true;
-		restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
-		.success(function (data) {
-			$rootScope.report = data[0];
-			$rootScope.reportDate = $scope.report.date.$date;
-			
-			$rootScope.convertToUTC = function(dt) {
-				var localDate = new Date(dt);
-				var localTime = localDate.getTime();
-				var localOffset = localDate.getTimezoneOffset() * 60000;
-				return new Date(localTime + localOffset);
-			};
-			
-			$scope.duration = $scope.report.duration;
-
-			$scope.featureDetails = function(feature) {
-				$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.date + '/feature/' + feature.id);
-			};
-
-			$scope.sum = function(features, field) {
-				if(!features) return null;
-				var sum = features.reduce(function (sum, feature) {
-					var value = parseInt(feature.result[field], 10);
-					return isNaN(value) ? sum : sum + value;
-				}, 0);
-				return sum > 0 ? sum : null;
-			};
-
-			$scope.$watch("searchText", function(query){
-				$scope.filteredFeatures = $filter("filter")($scope.report.features, query);
+			$rootScope.loading = true;
+			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
+			.success(function (data) {
+				prepareReport(data[0], $rootScope, $scope, $routeParams, $filter, $location);
 			});
-			
-			$scope.isCollapsed = true;
-			$scope.collapse = function(){
-				$scope.isCollapsed = !$scope.isCollapsed;
-			}
-			$rootScope.loading = false;
 		});
 	});
 
-	app.controller('FeatureCtrl', function($rootScope, $scope, $location, $filter, $routeParams, $templateCache, restApiQueryRequest) {
+	/**
+	 * Feature Controller (see feature.html)
+	 */
+	app.controller('FeatureCtrl', function($rootScope, $scope, $location, $filter, $routeParams, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
 
 		$rootScope.goBack = function() {
 			$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.date);
 		};
 		
 		$scope.$routeParams = $routeParams;
-		$rootScope.loading = true;
-		restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
-		.success(function (data) {
-			$scope.report = data[0];
-			$scope.duration = $scope.report.duration;
-			$scope.getEmbeddingBaseUrl = function() {
-				return fileBaseUrl;
-			}
-
-			function getFeature(featureId, features) {
-				for (var i = 0; i < features.length; i++) {
-					if (featureId === features[i].id) {
-						return features[i];
-					}
-				}
-			}
-			
-			//$scope.searchText = $routeParams.searchText;
-
-			$scope.feature = getFeature($routeParams.featureId, $scope.report.features);
-			
-			$scope.$watch("searchText", function(query){
-				$scope.filteredScenarios = $filter("filter")($scope.feature.scenarios, query);
-			});
-			
-			$rootScope.reportDate = $scope.report.date.$date;
-			$rootScope.loading = false;
-		});
 		
+		// if a local report.json file was found: load the data from the filesystem
+		loadJsonFromFilesystem().success(function(data) {
+			prepareFeature(data, $rootScope, $scope, $routeParams, $filter, $location);
+
+			// return filesystem screenshot/video path 
+			$scope.getEmbedding = function(embedding) {
+				return embedding.url;
+			};
+		})
+		// else: load the data from the mongo database 
+		.error(function(data, status, headers, config) {
+			$rootScope.loading = true;
+			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
+			.success(function (data) {
+				prepareFeature(data[0], $rootScope, $scope, $routeParams, $filter, $location);
+				
+				// return rest api screenshot/video path
+				$scope.getEmbedding = function(embedding) {
+					return fileBaseUrl + $routeParams.colName + '/' + embedding.url + '/';
+				};
+			});
+		});
 	});
 }());

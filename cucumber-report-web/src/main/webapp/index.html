@@ -1,66 +1,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>BDD Report</title>
-<link href="css/bootstrap-spacelab.css" rel="stylesheet">
-<link href="css/colorbox.css" rel="stylesheet" />
-
-<style type="text/css">
-	.btn:focus {
-		outline: 0;
-	}
-	.affix {
-		width: 200px;
-	}
-	body{
-		padding-top: 70px;
-	}
-	.table td , .table th {text-align: center !important;}
-
-	.table .firstTD{text-align: left !important;}
-	.badge, .label {cursor: default;}
-	.container {width: 95% !important;}
-	.uri{
-		display: table-cell;
-		padding: 0px 6px;
-		margin: 0px;
-		word-wrap: normal;
-		word-break: normal;
-		white-space: normal;
-		color: #d14;
-	}
-	.errorLogContent{
-		margin: 10px;
-	}
+	<meta charset="utf-8">
+	<title>Cucumber BDD Report</title>
 	
-	.errorLogContent .btn{
-		position: absolute;
-	}
-	
-	.errorLogContent dl{
-		word-wrap: break-word;
-	}
-	
-	.errorLogCode{
-		padding-top: 22px;
-		word-break: normal;
-		word-wrap: normal;
-		white-space: pre;
-		overflow: auto;
-		max-height: 250px;
-	}
-</style>
-
+	<link rel="stylesheet" href="css/bootstrap-spacelab.css" >
+	<link rel="stylesheet" href="css/colorbox.css" />
+	<link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body ng-app="cucumber">
 
-	<script type="text/ng-template" id="products.html"></script>
-	<script type="text/ng-template" id="reports.html"></script>
-	<script type="text/ng-template" id="features.html"></script>
-	<script type="text/ng-template" id="feature.html"></script>
-	<script type="text/ng-template" id="statistics.html"></script>
-	<script type="text/ng-template" id="help.html"></script>
+	<script type="text/ng-template" id="pages/products.html"></script>
+	<script type="text/ng-template" id="pages/reports.html"></script>
+	<script type="text/ng-template" id="pages/features.html"></script>
+	<script type="text/ng-template" id="pages/feature.html"></script>
+	<script type="text/ng-template" id="pages/statistics.html"></script>
+	<script type="text/ng-template" id="pages/help.html"></script>
 
 	<loading></loading>
 
@@ -122,19 +78,19 @@
 		</div>
 	</div>
 
-
-
-
 	<div class="container">
 		<ng-view></ng-view>
 	</div>
+	
 	<script src="js/jquery.min.js"></script>
 	<script src="js/jquery.colorbox-min.js"></script>
 	<script src="js/dateAndTime.js"></script>
 	<script src="js/bootstrap.min.js"></script>
 	<script src="js/angular.min.js"></script>
 	<script src="js/ui-bootstrap-tpls-0.5.0.min.js"></script>
+	<script src="js/config.js"></script>
 	<script src="js/app.js"></script>
+	<script src="js/lightbox.js"></script>
 
 </body>
 </html>

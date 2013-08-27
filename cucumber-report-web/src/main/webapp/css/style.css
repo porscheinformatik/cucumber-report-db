@@ -1,0 +1,94 @@
+.btn:focus {
+	outline: 0;
+}
+
+.affix {
+	width: 200px;
+}
+
+body {
+	padding-top: 70px;
+}
+
+.table td,.table th {
+	text-align: center !important;
+}
+
+.table .firstTD {
+	text-align: left !important;
+}
+
+.badge,.label {
+	cursor: default;
+}
+
+.container {
+	width: 95% !important;
+}
+
+.uri {
+	display: table-cell;
+	padding: 0px 6px;
+	margin: 0px;
+	word-wrap: normal;
+	word-break: normal;
+	white-space: normal;
+	color: #d14;
+}
+
+.errorLogContent {
+	margin: 10px;
+}
+
+.errorLogContent .btn {
+	position: absolute;
+}
+
+.errorLogContent dl {
+	word-wrap: break-word;
+}
+
+.errorLogCode {
+	padding-top: 22px;
+	word-break: normal;
+	word-wrap: normal;
+	white-space: pre;
+	overflow: auto;
+	max-height: 250px;
+}
+
+.lightbox{
+	max-width: 100%;
+	max-height: 100%;
+}
+.panelHead{
+	color: #ffffff;
+	background-color: #446e9b;
+	border-color: #446e9b;	
+	padding: 10px 15px;
+	border-bottom: 1px solid transparent;
+	border-top-right-radius: 3px;
+	border-top-left-radius: 3px;
+}
+.panelTitle{
+	display: inline;
+	color: #fff;
+	margin-top: 0;
+	margin-bottom: 0;
+	font-size: 16px;
+}
+/*
+.panelBody{
+	position: absolute;
+	top: 41px;
+	max-width: 100%;
+	max-height: 100%;
+	padding: 15px;
+}
+*/
+.panelBody img{
+	max-width:100%;
+	cursor: pointer;
+	cursor: -webkit-zoom-in;
+	cursor: -moz-zoom-in;
+}
