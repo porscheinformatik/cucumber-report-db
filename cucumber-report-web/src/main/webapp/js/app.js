@@ -246,7 +246,6 @@
 		
 		$rootScope.backslashRegEx = new RegExp("[\\/\\\\\\._A-Z]","g");
 		$rootScope.replaceFunction = function (m) {
-			console.log(m);
 			if(/[A-Z]/g.test(m)){
 				return '\u200b'+m;
 			}else{
