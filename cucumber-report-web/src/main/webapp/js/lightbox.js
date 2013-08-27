@@ -20,27 +20,26 @@ function errorLogLightbox(stepId) {
 					+ comment.value + '</dd>';
 		});
 	}
-	$
-			.colorbox({
-				html : '<div class="errorLogContent">'
-						+ '<h4>Error Log</h4>'
-						+ '<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>'
-						+ '<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">'
-						+ step.result.error_message
-						+ '</pre>'
-						+ '<dl>'
-						+ '<dt>Failed Step:</dt>'
-						+ '<dd>'
-						+ step.keyword
-						+ step.name
-						+ '</dd>'
-						+ (comments !== "" ? '<br /><dt>Comments:</dt>'
-								+ comments : '')
-						+ '<br /><dt>Feature File:</dt>' + '<dd>' + featureUri
-						+ ":" + step.line + '</dd>' + '</dl>' + '</div>',
-				width : "75%",
-				trapFocus : false
-			});
+	$.colorbox({
+		html : '<div class="errorLogContent">'
+				+ '<h4><strong>Error Log</strong></h4>'
+				+ '<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>'
+				+ '<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">'
+				+ step.result.error_message
+				+ '</pre>'
+				+ '<dl>'
+				+ '<dt>Failed Step:</dt>'
+				+ '<dd>'
+				+ step.keyword
+				+ step.name
+				+ '</dd>'
+				+ (comments !== "" ? '<br /><dt>Comments:</dt>'
+						+ comments : '')
+				+ '<br /><dt>Feature File:</dt>' + '<dd>' + featureUri
+				+ ":" + step.line + '</dd>' + '</dl>' + '</div>',
+		width : "75%",
+		trapFocus : false
+	});
 }
 
 function selectText(containerid) {

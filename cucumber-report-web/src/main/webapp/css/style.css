@@ -1,54 +1,50 @@
 .btn:focus {
 	outline: 0;
 }
-
 .affix {
 	width: 200px;
 }
-
-body {
+body{
 	padding-top: 70px;
 }
-
-.table td,.table th {
+.table td , .table th {
 	text-align: center !important;
 }
 
-.table .firstTD {
+.table .firstTD{
 	text-align: left !important;
 }
-
-.badge,.label {
+.table .noWrap{
+	white-space: nowrap;
+}
+.badge, .label {
 	cursor: default;
 }
-
 .container {
 	width: 95% !important;
 }
-
-.uri {
+.uri{
 	display: table-cell;
 	padding: 0px 6px;
 	margin: 0px;
-	word-wrap: normal;
+	/*word-wrap: normal;*/
 	word-break: normal;
 	white-space: normal;
 	color: #d14;
 }
-
-.errorLogContent {
+.errorLogContent{
 	margin: 10px;
 }
 
-.errorLogContent .btn {
+.errorLogContent .btn{
 	position: absolute;
 }
 
-.errorLogContent dl {
+.errorLogContent dl{
 	word-wrap: break-word;
 }
 
-.errorLogCode {
+.errorLogCode{
 	padding-top: 22px;
 	word-break: normal;
 	word-wrap: normal;

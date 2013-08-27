@@ -14,7 +14,7 @@
 			</td>
 			<td  class="firstTD">
 				<span ng-repeat="feature in report.features">
-					{{feature.name}}, 
+					{{feature.name}}{{report.features.length-1==$index?"":","}}
 				</span>
 			</td>
 			<td style="width: 25%">
@@ -25,7 +25,7 @@
 					<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
 				</div>
 			</td>
-			<td>{{ report.date.$date | date:'yyyy-MM-dd HH:mm:ss' }}</td>
+			<td class="noWrap">{{ report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
 		</tr>
 	</tbody>
 </table>

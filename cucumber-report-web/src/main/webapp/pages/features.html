@@ -33,7 +33,7 @@
 				<div collapse="isCollapsed">
 					<p>{{ feature.description }}</p>
 					<div ng-repeat="comment in feature.comments">{{ comment.value }}</div>
-					<pre class="uri">{{ feature.uri.replace(backslashRegEx,"\\&#8203;") }}</pre>
+					<pre class="uri">{{ feature.uri.replace(backslashRegEx, replaceFunction) }}</pre>
 				</div>
 			</td>
 			<td><span ng-repeat="tag in feature.tags" class="label label-default">{{ tag.name }}</span></td>
