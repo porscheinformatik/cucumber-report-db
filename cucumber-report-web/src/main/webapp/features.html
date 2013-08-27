@@ -1,56 +1,54 @@
 <table class="table table-striped table-hover table-bordered">
-			<thead> 
-				<tr>
-					<th rowspan="2"></th>
-					<th rowspan="2" class="firstTD">Feature</th>
-					<th rowspan="2">Tags</th>
-					<th rowspan="2">Status</th>
-					<th rowspan="2">Duration</th>
-					<th colspan="4">Scenarios</th>
-					<th colspan="5">Steps</th>
-				</tr>
-				<tr>
-					<th>Passed</th>
-					<th>Unknown</th>
-					<th>Failed</th>
-					<th>Total</th>
-					<th>Passed</th>
-					<th>Unknown</th>
-					<th>Failed</th>
-					<th>Skipped</th>
-					<th>Total</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="feature in filteredFeatures ">
-					<td>
-						<div >
-							<div >
-								<button class="btn" ng-click="isCollapsed = !isCollapsed" style="cursor:pointer"><strong>{{ isCollapsed ? '+' : '-' }}</strong></button>
-					</div>
+	<thead> 
+		<tr>
+			<th rowspan="2"></th>
+			<th rowspan="2" class="firstTD">Feature</th>
+			<th rowspan="2">Tags</th>
+			<th rowspan="2">Status</th>
+			<th rowspan="2">Duration</th>
+			<th colspan="4">Scenarios</th>
+			<th colspan="5">Steps</th>
+		</tr>
+		<tr>
+			<th>Passed</th>
+			<th>Unknown</th>
+			<th>Failed</th>
+			<th>Total</th>
+			<th>Passed</th>
+			<th>Unknown</th>
+			<th>Failed</th>
+			<th>Skipped</th>
+			<th>Total</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="feature in filteredFeatures ">
+			<td>
 				<div>
+					<span ng-click="isCollapsed = !isCollapsed" style="cursor:pointer" class="glyphicon glyphicon-chevron-{{ isCollapsed ? 'right' : 'down' }}"></span>
+				</div>
 			</td>
 			<td class="firstTD">
-					<strong ng-click="featureDetails(feature)" style="cursor:pointer">{{ feature.name }}</strong>
-					<div  collapse="isCollapsed">
-						<p>{{ feature.description }}</p>
-						<div ng-repeat="comment in feature.comments">{{ comment.value }}</div>
-						<code>{{ feature.uri }}</code>
-					</div>
+				<strong ng-click="featureDetails(feature)" style="cursor:pointer">{{ feature.name }}</strong>
+				<div collapse="isCollapsed">
+					<p>{{ feature.description }}</p>
+					<div ng-repeat="comment in feature.comments">{{ comment.value }}</div>
+					<pre class="uri">{{ feature.uri.replace(backslashRegEx,"\\&#8203;") }}</pre>
+				</div>
 			</td>
-			<td><span ng-repeat="tag in feature.tags" class="label">{{ tag.name }}</span></td>
+			<td><span ng-repeat="tag in feature.tags" class="label label-default">{{ tag.name }}</span></td>
 			<td>
-				<span class="badge badge-important" ng-show="feature.result.failedScenarioCount">FAILED</span>
+				<span class="badge badge-danger" ng-show="feature.result.failedScenarioCount">FAILED</span>
 				<span class="badge badge-success" ng-hide="feature.result.failedScenarioCount">OK</span>
 			</td>
-			<td>{{ duration(feature) }}</td>
+			<td><strong>{{ duration(feature) }}</strong></td>
 			<td><span class="badge badge-success">{{ feature.result.passedScenarioCount }}</span></td>
 			<td><span class="badge badge-warning">{{ feature.result.unknownScenarioCount }}</span></td>
-			<td><span class="badge badge-important">{{ feature.result.failedScenarioCount }}</span></td>
+			<td><span class="badge badge-danger">{{ feature.result.failedScenarioCount }}</span></td>
 			<td><span class="badge">{{ feature.result.scenarioCount }}</span></td>
 			<td><span class="badge badge-success">{{ feature.result.passedStepCount }}</span></td>
 			<td><span class="badge badge-warning">{{ feature.result.unknownStepCount }}</span></td>
-			<td><span class="badge badge-important">{{ feature.result.failedStepCount }}</span></td>
+			<td><span class="badge badge-danger">{{ feature.result.failedStepCount }}</span></td>
 			<td><span class="badge badge-warning">{{ feature.result.skippedStepCount }}</span></td>
 			<td><span class="badge">{{ feature.result.stepCount }}</span></td>
 		</tr>
@@ -59,14 +57,14 @@
 			<td class="firstTD"><strong>{{ filteredFeatures.length ? 'Sum' : 'No entries found!'}}</strong></td>
 			<td></td>
 			<td></td>
-			<td>{{ duration(sum( filteredFeatures, 'duration')) }}</td>
+			<td><strong>{{ filteredFeatures.length ? duration(sum( filteredFeatures, 'duration')) : '' }}</td>
 			<td><span class="badge badge-success">{{ sum( filteredFeatures, 'passedScenarioCount') }}</span></td>
 			<td><span class="badge badge-warning">{{ sum( filteredFeatures, 'unknownScenarioCount') }}</span></td>
-			<td><span class="badge badge-important">{{ sum( filteredFeatures, 'failedScenarioCount') }}</span></td>
+			<td><span class="badge badge-danger">{{ sum( filteredFeatures, 'failedScenarioCount') }}</span></td>
 			<td><span class="badge">{{ sum( filteredFeatures, 'scenarioCount') }}</span></td>
 			<td><span class="badge badge-success">{{ sum( filteredFeatures, 'passedStepCount') }}</span></td>
 			<td><span class="badge badge-warning">{{ sum( filteredFeatures, 'unknownStepCount') }}</span></td>
-			<td><span class="badge badge-important">{{ sum( filteredFeatures, 'failedStepCount') }}</span></td>
+			<td><span class="badge badge-danger">{{ sum( filteredFeatures, 'failedStepCount') }}</span></td>
 			<td><span class="badge badge-warning">{{ sum( filteredFeatures, 'skippedStepCount') }}</span></td>
 			<td><span class="badge">{{ sum( filteredFeatures, 'stepCount') }}</span></td>
 		</tr>

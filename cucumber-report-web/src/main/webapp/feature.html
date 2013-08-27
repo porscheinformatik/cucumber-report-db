@@ -1,68 +1,166 @@
 <h4>{{ feature.name }}</h4>
-		<span ng-repeat="tag in feature.tags" class="label">{{ tag.name }}</span>
-		<p>{{ feature.description }}</p>
-		<code>{{ feature.uri }}</code>
-		<section ng-repeat="scenario in feature.scenarios | filter:searchText">
-			{{scenarioCount = $index;""}} 
-			<h5>{{ scenario.name }}</h5>
-			<span ng-repeat="tag in scenario.tags" class="label">{{ tag.name }}</span>
-			<p>{{ scenario.description }}</p>
-			<p ng-show="scenario.background"><strong>{{ scenario.background.keyword }}</strong> {{ scenario.background.name }}</p>
-			<table class="table table-striped table-hover table-bordered">
-				<thead>
-					<tr>
-						<th class="firstTD">Step</th>
-						<th>Status</th>
-						<th>Duration</th>
-						<th>Attachments</th>
-					</tr>
-				</thead>
-				<tbody>
-					<tr ng-repeat="step in scenario.steps" ng-class="{passed:'success', failed:'error', unknown:'warning'}[step.result.status]">
-						<td class="firstTD">
-							<strong>{{ step.keyword }}</strong> {{ step.name }}
-						</td>
-						<td>{{ step.result.status }}</td>
-						<td><!-- {{step.result.duration}}: -->{{ step.result.duration ? duration(step.result.duration) : '' }}</td>
+<span ng-repeat="tag in feature.tags" class="label">{{ tag.name }}</span>
+<p>{{ feature.description }}</p>
+<pre class="uri">{{ feature.uri.replace(backslashRegEx,"\\&#8203;") }}</pre>
+<section ng-repeat="scenario in filteredScenarios | filter:searchText">
+	{{scenarioCount = $index;""}} 
+	<h5>{{ scenario.name }}</h5>
+	<span ng-repeat="tag in scenario.tags" class="label">{{ tag.name }}</span>
+	<p>{{ scenario.description }}</p>
+	<p ng-show="scenario.background"><strong>{{ scenario.background.keyword }}</strong> {{ scenario.background.name }}</p>
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th class="firstTD">Step</th>
+				<th>Status</th>
+				<th>Duration</th>
+				<th>Attachments</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="step in scenario.steps" id="step_{{scenarioIdx}}_{{$index}}" ng-class="{passed:'success', failed:'danger', unknown:'warning'}[step.result.status]">
+				<td class="firstTD">
+					<strong>{{ step.keyword }}</strong> {{ step.name }}
+				</td>
+				<td>
+					<span ng-show="!step.result.error_message">{{ step.result.status }}</span>
+					<button ng-show="step.result.error_message" onclick="errorLogLightbox('step_{{scenarioIdx}}_{{$index}}');" tooltip-placement="left" tooltip="Error Log" type="button" class="btn btn-danger btn-sm">{{ step.result.status }}</button>	
+				</td>
+				<td>{{ step.result.duration ? duration(step.result.duration) : '' }}</td>
 				<td>	
 					<span ng-repeat="n in step.embeddings">
 						<span ng-if="n.mime_type == 'image/png'">
-							<button onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-small">Screenshot</button>		
+							<button onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-sm">Screenshot</button>
 						</span>
 						
 						<span ng-if="n.mime_type == 'video/mp4'">
-							<button onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-small">Video</button>	
+							<button onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-sm">Video</button>
 						</span>
 
 
 						<div style='display:none'>
-							<div id='lightbox_{{scenarioCount}}_{{$index}}' class="panel panel-primary">
-								<div id='lightbox_{{scenarioCount}}_{{$index}}' class="panel-heading">
-        									<h3 class="panel-title" style="display: inline; width: 500px; margin-right: 450px;">Embedding</h3>
-									<button onclick="$.colorbox.close()" type="button" class="btn btn-primary btn-small">Close</button>
-      								</div>
-								<div style='text-align: right; padding:30px; background:#FFF;'>
-									<span ng-if="n.mime_type == 'image/png'">
-										<img ng-src="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/">
-									</span>
-									<span ng-if="n.mime_type == 'video/mp4'">
-										<div id='inlinevideocontent' >
-											<video width="600" height="400" controls>
-												<source ng-src="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/" type="video/mp4" />
-												Your browser does not support the video tag.
-											</video>
-										</div>
-									</span>
+							<div style='background:#FFF;' id='lightbox_{{scenarioCount}}_{{$index}}' class="lightbox">
+								<div class="panelHead">
+									<h3 class="panelTitle">Embedding</h3>
+									<!--<button onclick="$.colorbox.close()" type="button" class="btn btn-primary btn-sm">Close</button>-->
+								</div>
+								<div class="panelBody">
+									<a href="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/">
+										<img ng-if="n.mime_type == 'image/png'" style="cursor: '\e015', -moz-zoom-in;" ng-src="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/">
+									</a>
+									<div ng-if="n.mime_type == 'video/mp4'" id='inlinevideocontent' >
+										<video style="width: 600px; height:400px; margin: 0px auto; display: block;" controls>
+											<source ng-src="{{getEmbeddingBaseUrl()}}{{$routeParams.colName}}/{{n.url}}/" type="video/mp4" />
+											Your browser does not support the video tag.
+										</video>
+									</div>
 								</div>
 							</div>
 						</div>
 					</span>
 				</td>
 			</tr>
-			<tr ng-class="{passed:'success', failed:'error', unknown:'warning'}[scenario.status]">
-				<td class="firstTD"><strong>Sum</strong></td><td>{{ scenario.status }}</td><td>{{ duration(scenario.result.duration) }}</td>
+			<tr ng-class="{passed:'success', failed:'danger', unknown:'warning'}[scenario.status]">
+				<td class="firstTD"><strong>Sum</strong></td><td>{{ scenario.status }}</td><td>{{ scenario.result.duration ? duration(scenario.result.duration) : '' }}</td>
 				<td></td>
 			</tr>
 		</tbody>
 	</table>
 </section>
+
+	<script>
+		function openLightbox(id) {
+			$.colorbox({
+				inline : true,
+				width : "75%",
+				href : id,
+				closeButton : true,
+				trapFocus : false
+			})
+		}
+		function errorLogLightbox(stepId) {
+			var stepScope = angular.element(document.getElementById(stepId)).scope();
+			var step = stepScope.step;
+			var featureUri = stepScope.feature.uri;
+			var comments = "";
+			
+			if(step.comments){
+				$.each(step.comments, function(index, comment) {
+					comments+=(comments===""?"":"<br />")+'<dd>'+comment.value+'</dd>';
+				});
+			}
+			$.colorbox({
+				html:
+				'<div class="errorLogContent">'+
+					'<h4>Error Log</h4>'+
+					'<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>'+
+					'<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">'+step.result.error_message+'</pre>'+
+					'<dl>'+
+						'<dt>Failed Step:</dt>'+
+						'<dd>'+step.keyword+step.name+'</dd>'+
+						(comments!==""?
+						'<br /><dt>Comments:</dt>'+
+						comments:'')+
+						'<br /><dt>Feature File:</dt>'+
+						'<dd>'+featureUri+":"+step.line+'</dd>'+
+					'</dl>'+
+				'</div>',
+				width : "75%",
+				trapFocus : false
+			});
+		}
+		
+		function selectText(containerid) {
+			var el = document.getElementById(containerid);
+			if (document.selection) {
+				document.selection.empty();
+				var range = document.body.createTextRange();
+				el.focus();
+				range.moveToElementText(el);
+				range.select();
+			} else if (window.getSelection) {
+				window.getSelection().removeAllRanges();
+				var range = document.createRange();
+				range.selectNode(el);
+				window.getSelection().addRange(range);
+			}
+		}
+	</script>
+	<style>
+	.lightbox{
+		max-width: 100%;
+		max-height: 100%;
+	}
+	.panelHead{
+		color: #ffffff;
+		background-color: #446e9b;
+		border-color: #446e9b;	
+		padding: 10px 15px;
+		border-bottom: 1px solid transparent;
+		border-top-right-radius: 3px;
+		border-top-left-radius: 3px;
+	}
+	.panelTitle{
+		display: inline;
+		color: #fff;
+		margin-top: 0;
+		margin-bottom: 0;
+		font-size: 16px;
+	}
+	/*
+	.panelBody{
+		position: absolute;
+		top: 41px;
+		max-width: 100%;
+		max-height: 100%;
+		padding: 15px;
+	}
+	*/
+	.panelBody img{
+		max-width:100%;
+		cursor: pointer;
+		cursor: -webkit-zoom-in;
+		cursor: -moz-zoom-in;
+	}
+
+	</style>

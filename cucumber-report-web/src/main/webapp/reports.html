@@ -1,18 +1,18 @@
 <table class="table table-striped table-hover table-bordered">
-			<thead> 
-				<tr>
-					<th>Options</th>
-					<th>Features</th>
-					<th>Statistics</th>
-					<th>Datum</th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr ng-repeat="report in reports | filter: only | filter:searchText">
-					<td>
-						<button ng-click="featuresOverview('{{report.date.$date}}')" class="btn btn-primary btn-small">Open</button>
-					</td>
-					<td style="width: 50%">
+	<thead> 
+		<tr>
+			<th>Options</th>
+			<th class="firstTD">Features</th>
+			<th>Statistics</th>
+			<th>Datum</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="report in filteredReports | filter: only | filter:searchText">
+			<td>
+				<button ng-click="featuresOverview('{{report.date.$date}}')" class="btn btn-primary btn-sm">Open</button>
+			</td>
+			<td  class="firstTD">
 				<span ng-repeat="feature in report.features">
 					{{feature.name}}, 
 				</span>
@@ -21,11 +21,11 @@
 				<div class="progress progress-striped active" style="margin-bottom: 0px;">
 					{{statistics=getStatistics(report.features);""}}
 					<div class="progress-bar progress-bar-success" style="width: {{statistics.passedPercent}}%">{{statistics.passed}}</div>
-							<div class="progress-bar progress-bar-warning" style="width: {{statistics.unknownPercent}}%">{{statistics.unknown}}</div>
-							<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
+					<div class="progress-bar progress-bar-warning" style="width: {{statistics.unknownPercent}}%">{{statistics.unknown}}</div>
+					<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
 				</div>
 			</td>
-			<td>{{report.date.$date}}</td>
+			<td>{{ report.date.$date | date:'yyyy-MM-dd HH:mm:ss' }}</td>
 		</tr>
 	</tbody>
 </table>
