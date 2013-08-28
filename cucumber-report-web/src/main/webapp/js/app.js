@@ -3,7 +3,6 @@
 	var app = window.angular.module('cucumber', ['ui.bootstrap']);
 	
 	var prepareReportData = function(reports) {
-		console.log("preparedata");
 		
 		angular.forEach(reports, function(data){
 
@@ -192,6 +191,7 @@
 				return {'\\': "\\\u200b",'.': '.\u200b','_': '_\u200b', '/':'\/\u200b'}[m];
 			}
 		};
+		
 	});
 	
 	function addSearchAndSortHandlers($scope, $filter, dataArray){
@@ -285,14 +285,16 @@
 		
 		// if a local report.json file was found: load the data from the filesystem
 		loadJsonFromFilesystem().success(function(data) {
-			$rootScope.databaseMode=false;
+			$rootScope.databaseMode = false;
+			$rootScope.showJSONFileError = false;
 			$location.path('/reports/VDV3_13.08-SNAPSHOT/features/');
 		})
 		// else: load the data from the mongo database 
 		.error(function(data, status, headers, config) {
-			$rootScope.databaseMode=true;
+			$rootScope.showJSONFileError = true;
+			$rootScope.databaseMode = true;
 			$scope.regexCondition = function(input)
-			{			
+			{
 				var patt = new RegExp("[A-Z0-9]*\\_[A-Z0-9\\.\\-]*"); 
 				if(patt.test(input) && input.indexOf(".chunks") === -1 && input.indexOf(".files") === -1 && (input.indexOf($routeParams.product) !== -1 || $routeParams.product === undefined)){
 					return input;
@@ -305,10 +307,15 @@
 			};
 	
 			restApiQueryRequest(collectionBaseUrl).success(function (data) {
+				$rootScope.showDBError = false;
+				$rootScope.showJSONFileError = false;
 				$scope.products = data.slice().reverse();
 				
 				$scope[$scope.searchArrayName] = $scope.products;
 				addSearchAndSortHandlers($scope, $filter, $scope.products);
+			})
+			.error(function(data, status, headers, config) {
+				$rootScope.showDBError = true;
 			});
 		});
 		
@@ -375,7 +382,12 @@
 				};
 				
 				$rootScope.loading = false;
+			})
+			.error(function(data, status, headers, config) {
+				$rootScope.loading = false;
+				$location.path('/products/');
 			});
+
 		});
 	});
 	
@@ -403,6 +415,10 @@
 			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
 			.success(function (data) {
 				prepareReport(data[0], $rootScope, $scope, $routeParams, $filter, $location);
+			})
+			.error(function(data, status, headers, config) {
+				$rootScope.loading = false;
+				$location.path('/products/');
 			});
 		});
 	});
@@ -441,7 +457,41 @@
 				$scope.getEmbedding = function(embedding) {
 					return fileBaseUrl + $routeParams.colName + '/' + embedding.url + '/';
 				};
+			})
+			.error(function(data, status, headers, config) {
+				$rootScope.loading = false;
+				$location.path('/products/');
 			});
+
 		});
 	});
+	
+	/**
+	 * Statistics Controller (see statistics.html)
+	 */
+	app.controller('StatisticsCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
+		
+		$rootScope.goBack = function() {
+			$location.path('/products/');
+		};
+		$rootScope.backBtnEnabled = true;
+		
+	});
+	
+	/**
+	 * Help Controller (see help.html)
+	 */
+	app.controller('HelpCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
+		
+		$rootScope.goBack = function() {
+			$location.path('/products/');
+		};
+		$rootScope.backBtnEnabled = true;
+		
+	});
+	
+	$('#ReportFileName').text(reportFileName);
+	$('#ReportFileNameLink').attr('href',reportFileName);
+	$('#ServerURL').text(serverUrl);
+	$('#ServerURLLink').attr('href',collectionBaseUrl);
 }());
