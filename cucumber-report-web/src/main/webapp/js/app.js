@@ -4,7 +4,7 @@
 	
 	var prepareReportData = function(reports) {
 		console.log("preparedata");
-		reports[0]=reports;
+		
 		angular.forEach(reports, function(data){
 
 			function getFailedScenarioCount(feature) {
@@ -42,7 +42,6 @@
 				angular.forEach(feature.scenarios, function(scenario){
 					
 					angular.forEach(scenario.steps, function(step){
-						console.log("stepstatus: "+step.result.status);
 						if(!step.result){
 							step.result={status:"skipped"};
 						}
@@ -99,7 +98,7 @@
 	};
 	var loader = {
 		loadJsonFromFilesystem : ['$http', function($http) {
-			return function() { return $http.get(reportFileName).success(prepareReportData); };
+			return function() { return $http.get(reportFileName).success(function(data){data[0] = data; prepareReportData(data);}); };
 		}],
 		
 		restApiCollectionRequest : ['$http', function($http) {
@@ -108,7 +107,7 @@
 				
 		restApiQueryRequest : ['$http', function($http) {
 			return function(url) {
-				return $http.get(url).success(prepareReportData);
+				return $http.get(url).success(function(data) {prepareReportData(data);});
 			};
 		}]
 	};
