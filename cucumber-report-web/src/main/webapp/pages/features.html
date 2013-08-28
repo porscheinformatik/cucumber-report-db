@@ -1,24 +1,24 @@
 <table class="table table-striped table-hover table-bordered">
 	<thead> 
-		<tr>
+		<tr class="sortToggle">
 			<th rowspan="2"></th>
 			<th rowspan="2" class="firstTD">Feature</th>
-			<th rowspan="2">Tags</th>
-			<th rowspan="2">Status</th>
-			<th rowspan="2">Duration</th>
+			<th rowspan="2"><span ng-click="orderPredicate = 'tags'; orderReverse=!orderReverse;">Tags</span></th>
+			<th rowspan="2"><span ng-click="orderPredicate = 'status'; orderReverse=!orderReverse;">Status</span></th>
+			<th rowspan="2"><span ng-click="orderPredicate = 'result[\'duration\']'; orderReverse=!orderReverse;">Duration</span></th>
 			<th colspan="4">Scenarios</th>
 			<th colspan="5">Steps</th>
 		</tr>
-		<tr>
-			<th>Passed</th>
-			<th>Unknown</th>
-			<th>Failed</th>
-			<th>Total</th>
-			<th>Passed</th>
-			<th>Unknown</th>
-			<th>Failed</th>
-			<th>Skipped</th>
-			<th>Total</th>
+		<tr class="sortToggle">
+			<th><span ng-click="orderPredicate = 'result[\'passedScenarioCount\']'; orderReverse=!orderReverse;">Passed</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'unknownScenarioCount\']'; orderReverse=!orderReverse;">Unknown</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'failedScenarioCount\']'; orderReverse=!orderReverse;">Failed</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'scenarioCount\']'; orderReverse=!orderReverse;">Total</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'passedStepCount\']'; orderReverse=!orderReverse;">Passed</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'unknownStepCount\']'; orderReverse=!orderReverse;">Unknown</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'failedStepCount\']'; orderReverse=!orderReverse;">Failed</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'skippedStepCount\']'; orderReverse=!orderReverse;">Skipped</span></th>
+			<th><span ng-click="orderPredicate = 'result[\'stepCount\']'; orderReverse=!orderReverse;">Total</span></th>
 		</tr>
 	</thead>
 	<tbody>
@@ -33,7 +33,7 @@
 				<div collapse="isCollapsed">
 					<p>{{ feature.description }}</p>
 					<div ng-repeat="comment in feature.comments">{{ comment.value }}</div>
-					<pre class="uri">{{ feature.uri.replace(backslashRegEx, replaceFunction) }}</pre>
+					<pre class="uri">{{ feature.uri.replace(uriWrapRegEx, uriWrapReplaceFunc) }}</pre>
 				</div>
 			</td>
 			<td><span ng-repeat="tag in feature.tags" class="label label-default">{{ tag.name }}</span></td>
@@ -42,15 +42,15 @@
 				<span class="badge badge-success" ng-hide="feature.result.failedScenarioCount">OK</span>
 			</td>
 			<td><strong>{{ duration(feature) }}</strong></td>
-			<td><span class="badge badge-success">{{ feature.result.passedScenarioCount }}</span></td>
-			<td><span class="badge badge-warning">{{ feature.result.unknownScenarioCount }}</span></td>
-			<td><span class="badge badge-danger">{{ feature.result.failedScenarioCount }}</span></td>
-			<td><span class="badge">{{ feature.result.scenarioCount }}</span></td>
-			<td><span class="badge badge-success">{{ feature.result.passedStepCount }}</span></td>
-			<td><span class="badge badge-warning">{{ feature.result.unknownStepCount }}</span></td>
-			<td><span class="badge badge-danger">{{ feature.result.failedStepCount }}</span></td>
-			<td><span class="badge badge-warning">{{ feature.result.skippedStepCount }}</span></td>
-			<td><span class="badge">{{ feature.result.stepCount }}</span></td>
+			<td><span class="badge badge-success">{{ feature.result.passedScenarioCount || "" }}</span></td>
+			<td><span class="badge badge-warning">{{ feature.result.unknownScenarioCount || ""  }}</span></td>
+			<td><span class="badge badge-danger">{{ feature.result.failedScenarioCount || "" }}</span></td>
+			<td><span class="badge">{{ feature.result.scenarioCount || "" }}</span></td>
+			<td><span class="badge badge-success">{{ feature.result.passedStepCount || "" }}</span></td>
+			<td><span class="badge badge-warning">{{ feature.result.unknownStepCount || "" }}</span></td>
+			<td><span class="badge badge-danger">{{ feature.result.failedStepCount || "" }}</span></td>
+			<td><span class="badge badge-warning">{{ feature.result.skippedStepCount || "" }}</span></td>
+			<td><span class="badge">{{ feature.result.stepCount || "" }}</span></td>
 		</tr>
 		<tr>
 			<td></td>

@@ -1,7 +1,7 @@
 <h4>{{ feature.name }}</h4>
 <span ng-repeat="tag in feature.tags" class="label">{{ tag.name }}</span>
 <p>{{ feature.description }}</p>
-<pre class="uri">{{ feature.uri.replace(backslashRegEx,replaceFunction) }}</pre>
+<pre class="uri">{{ feature.uri.replace(uriWrapRegEx, uriWrapReplaceFunc) }}</pre>
 <section ng-repeat="scenario in filteredScenarios | filter:searchText">
 	{{scenarioCount = $index;""}} 
 	<h5>{{ scenario.name }}</h5>
@@ -45,7 +45,7 @@
 									<!--<button onclick="$.colorbox.close()" type="button" class="btn btn-primary btn-sm">Close</button>-->
 								</div>
 								<div class="panelBody">
-									<a href="{{getEmbedding(n)}}">
+									<a ng-href="{{getEmbedding(n)}}">
 										<img ng-if="n.mime_type === 'image/png'" style="cursor: '\e015', -moz-zoom-in;" ng-src="{{getEmbedding(n)}}">
 									</a>
 									<div ng-if="n.mime_type === 'video/mp4'" id='inlinevideocontent' >

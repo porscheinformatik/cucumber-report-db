@@ -88,3 +88,7 @@ body{
 	cursor: -webkit-zoom-in;
 	cursor: -moz-zoom-in;
 }
+
+.sortToggle span{
+	cursor: pointer;
+}
