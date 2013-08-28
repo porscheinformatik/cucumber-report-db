@@ -20,6 +20,11 @@
 		</dependency>
 		
 		<dependency>
+			<groupId>at.porscheinformatik.cucumber</groupId>
+			<artifactId>cucumber-report-web</artifactId>
+		</dependency>
+		
+		<dependency>
 			<groupId>info.cukes</groupId>
 			<artifactId>cucumber-core</artifactId>
 		</dependency>

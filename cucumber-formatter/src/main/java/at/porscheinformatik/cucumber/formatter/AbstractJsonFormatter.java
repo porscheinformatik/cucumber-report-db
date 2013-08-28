@@ -95,13 +95,11 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     @Override
     public void scenarioOutline(ScenarioOutline scenarioOutline)
     {
-        throw new IllegalArgumentException("There should be no outline");
     }
 
     @Override
     public void examples(Examples paramExamples)
     {
-        throw new UnsupportedOperationException();
     }
 
     @Override
