@@ -22,6 +22,8 @@
 		<dependency>
 			<groupId>at.porscheinformatik.cucumber</groupId>
 			<artifactId>cucumber-report-web</artifactId>
+			<version>1.0-SNAPSHOT</version>
+			<classifier>classes</classifier>
 		</dependency>
 		
 		<dependency>
