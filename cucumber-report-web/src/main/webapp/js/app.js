@@ -265,7 +265,10 @@
 			}
 		}
 		
-		//$scope.searchText = $routeParams.searchText;
+		if($routeParams.searchText !== undefined)
+		{
+			$scope.searchText = $routeParams.searchText;
+		}
 
 		$scope.feature = getFeature($routeParams.featureId, $scope.report.features);
 		$scope[$scope.searchArrayName] = $scope.feature.scenarios;
