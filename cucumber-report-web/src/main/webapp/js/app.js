@@ -56,13 +56,9 @@
 				});
 				
 				feature.result.passedStepCount = feature.result.passedStepCount || 0;
-				
 				feature.result.failedStepCount = feature.result.failedStepCount || 0;
-				
 				feature.result.unknownStepCount = feature.result.unknownStepCount || 0;
-				console.log(feature.result.skippedStepCount);
 				feature.result.skippedStepCount = feature.result.skippedStepCount || 0;
-				console.log(feature.result.skippedStepCount);
 			});
 			
 			data.duration = function(feature){
