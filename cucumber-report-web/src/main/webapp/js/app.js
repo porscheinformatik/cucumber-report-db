@@ -44,6 +44,7 @@
 					angular.forEach(scenario.steps, function(step){
 						if(!step.result){
 							step.result={status:"skipped"};
+							feature.result.skippedStepCount=(feature.result.skippedStepCount||0)+1;
 						}
 						if (step.result.status === "undefined"){
 							step.result.status = "unknown";
@@ -56,9 +57,13 @@
 				});
 				
 				feature.result.passedStepCount = feature.result.passedStepCount || 0;
+				
 				feature.result.failedStepCount = feature.result.failedStepCount || 0;
+				
 				feature.result.unknownStepCount = feature.result.unknownStepCount || 0;
+				console.log(feature.result.skippedStepCount);
 				feature.result.skippedStepCount = feature.result.skippedStepCount || 0;
+				console.log(feature.result.skippedStepCount);
 			});
 			
 			data.duration = function(feature){
@@ -197,6 +202,7 @@
 	function addSearchAndSortHandlers($scope, $filter, dataArray){
 		$scope.$watch("searchText", function(query){
 			$scope[$scope.searchArrayName] = $filter("filter")(dataArray, query);
+			$scope[$scope.searchArrayName] = $filter('orderBy')($scope[$scope.searchArrayName], $scope.orderPredicate, $scope.orderReverse);
 		});
 		$scope.$watch("orderPredicate", function(query){
 			if($scope.lastOrderPredicate !== query){
@@ -281,6 +287,7 @@
 		$scope.searchArrayName = 'filteredProducts';
 		$scope.orderPredicate = "";
 		$scope.orderReverse = true;
+		$rootScope.searchText = "";
 		$rootScope.backBtnEnabled = false;
 		
 		// if a local report.json file was found: load the data from the filesystem
