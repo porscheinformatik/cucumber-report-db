@@ -55,13 +55,13 @@
 						</a>
 					</li>
 				</ul>
-				<form class="navbar-form  form-inline form-search pull-left" action="" role="search">
+				<form class="navbar-form  form-inline form-search pull-left" name="searchForm" action="" role="search">
 					<div class="input-group" style="width: 200px;">
-					<input class="form-control col-lg-8" type="text"
-						ng-model="searchText" placeholder="Search">
-					<span class="input-group-btn">
-						<button ng-click="searchText = ''" class="btn btn-primary" ><span class="glyphicon glyphicon-remove"></span></button>
-					</span>
+						<input class="form-control col-lg-8" type="text"
+							ng-model="searchText" placeholder="Search" required>
+						<span class="input-group-btn">
+							<button ng-click="searchText = ''" class="btn btn-primary" ng-disabled="searchForm.$error.required"><span class="glyphicon glyphicon-remove"></span></button>
+						</span>
 					</div>
 				</form>
 				<ul class="nav navbar-nav pull-right">
@@ -79,6 +79,14 @@
 	</div>
 
 	<div class="container">
+		<div ng-if="showJSONFileError" class="alert alert-danger">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<strong>Oh snap!</strong> Unable to load local JSON file. (configured report file name: <a href="" id="ReportFileNameLink"><strong><span id="ReportFileName"></span></strong></a>)
+		</div>
+		<div ng-if="showDBError" class="alert alert-danger">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<strong>Oh snap!</strong> Unable to load DB data using the REST API. (configured server URL: <a href="" id="ServerURLLink"><strong><span id="ServerURL"></span></strong></a>)
+		</div>
 		<ng-view></ng-view>
 	</div>
 	
