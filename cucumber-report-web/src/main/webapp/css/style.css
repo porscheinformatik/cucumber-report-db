@@ -17,6 +17,10 @@ body{
 .table .noWrap{
 	white-space: nowrap;
 }
+
+.table thead > tr > th, .table tbody > tr > th, .table tfoot > tr > th, .table thead > tr > td, .table tbody > tr > td, .table tfoot > tr > td {
+	padding: 6px;
+}
 .badge, .label {
 	cursor: default;
 }
@@ -24,7 +28,7 @@ body{
 	width: 95% !important;
 }
 .uri{
-	display: table-cell;
+	display: inline-block;
 	padding: 0px 6px;
 	margin: 0px;
 	/*word-wrap: normal;*/
@@ -91,4 +95,20 @@ body{
 
 .sortToggle span{
 	cursor: pointer;
+}
+
+.tdCollapse {
+	max-height: 20px;
+	overflow: hidden;
+	cursor: pointer;
+/*
+	-webkit-transition: max-height 1s;
+	-moz-transition: max-height 1s;
+	-o-transition: max-height 1s;
+	transition: max-height 1s;
+*/
+}
+
+.tdUncollapse {
+	max-height: none; /*2000px;*/
 }
