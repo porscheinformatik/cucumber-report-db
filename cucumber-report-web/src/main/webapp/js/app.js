@@ -304,7 +304,7 @@
 			$rootScope.databaseMode = false;
 			$rootScope.showDBError = false;
 			$rootScope.showJSONFileError = false;
-			$location.path('/reports/VDV3_13.08-SNAPSHOT/features/');
+			$location.path('/reports//features/');
 		})
 		// else: load the data from the mongo database 
 		.error(function(data, status, headers, config) {

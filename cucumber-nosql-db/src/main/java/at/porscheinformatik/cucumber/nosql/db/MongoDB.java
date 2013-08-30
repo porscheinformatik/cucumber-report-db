@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import at.porscheinformatik.cucumber.nosql.exception.DatabaseException;
@@ -28,8 +30,10 @@ import com.mongodb.util.JSON;
 @Service
 public class MongoDB implements Database
 {
+    private static final Logger LOG = LoggerFactory.getLogger(MongoDB.class);
+
     private static final String DEFAULT_MONGO_DB_HOST = "localhost";
-    private static final int DEFAULT_MONGO_DB_PORT = 27017;
+    private static final String DEFAULT_MONGO_DB_PORT = "27017";
 
     private String dbName;
     private String dbCollection;
@@ -42,8 +46,8 @@ public class MongoDB implements Database
 
     public MongoDB()
     {
-        this.dbHost = DEFAULT_MONGO_DB_HOST;
-        this.dbPort = DEFAULT_MONGO_DB_PORT;
+        this.dbHost = System.getProperty("mongodb.host", DEFAULT_MONGO_DB_HOST);
+        this.dbPort = Integer.parseInt(System.getProperty("mongodb.port", DEFAULT_MONGO_DB_PORT));
     }
 
     public MongoDB(String dbHost, int dbPort, String dbName, String dbCollection)
@@ -57,9 +61,7 @@ public class MongoDB implements Database
     @Override
     public void connect() throws UnknownHostException
     {
-        connection = new MongoClient(dbHost, dbPort);
-        this.database = connection.getDB(dbName);
-        this.collection = database.getCollection(dbCollection);
+        connect(dbHost, dbPort, dbName, dbCollection);
     }
 
     public void connect(String dbName, String dbCollection) throws UnknownHostException
@@ -72,6 +74,10 @@ public class MongoDB implements Database
         connection = new MongoClient(dbHost, dbPort);
         this.database = connection.getDB(dbName);
         this.collection = database.getCollection(dbCollection);
+        
+        LOG.info("Connected with MongoDB:");
+        LOG.info("   MongoDB Host: ()", this.dbHost);
+        LOG.info("   MongoDB Port: ()", this.dbPort);
     }
 
     @Override
