@@ -79,13 +79,13 @@
 	</div>
 
 	<div class="container">
-		<div ng-if="showJSONFileError" class="alert alert-danger">
+		<div ng-show="showJSONFileError" class="alert alert-danger">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			<strong>Oh snap!</strong> Unable to load local JSON file. (configured report file name: <a href="" id="ReportFileNameLink"><strong><span id="ReportFileName"></span></strong></a>)
+			<strong>Oh snap!</strong> Unable to load local JSON file. (configured report file name: <a href="" id="ReportFileNameLink"><strong><span id="ReportFileName"></span></strong></a>) <br/>You can set the report file name in the configuration file (<a href="./js/config.js">/js/config.js</a>)
 		</div>
-		<div ng-if="showDBError" class="alert alert-danger">
+		<div ng-show="showDBError" class="alert alert-danger">
 			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-			<strong>Oh snap!</strong> Unable to load DB data using the REST API. (configured server URL: <a href="" id="ServerURLLink"><strong><span id="ServerURL"></span></strong></a>)
+			<strong>Oh snap!</strong> Unable to load DB data using the REST API. (configured server URL: <a href="" id="ServerURLLink"><strong><span id="ServerURL"></span></strong></a>) <br/>You can set the server URL in the configuration file (<a href="./js/config.js">/js/config.js</a>)
 		</div>
 		<ng-view></ng-view>
 	</div>
