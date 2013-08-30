@@ -527,7 +527,7 @@
 	/**
 	 * Statistics Controller (see statistics.html)
 	 */
-	app.controller("StatisticsCtrl",function($rootScope, $scope, $http, $rootScope, $location, $routeParams){    
+	app.controller("StatisticsCtrl",function($rootScope, $scope, $http, $location, $routeParams){    
 		$rootScope.loading = true;
 
 		$http.get('http://atbghx0017:8081/rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
