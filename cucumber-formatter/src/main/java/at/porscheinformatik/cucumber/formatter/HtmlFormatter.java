@@ -44,8 +44,10 @@ public class HtmlFormatter extends AbstractJsonFormatter
         "css/style.css",
         
         "js/angular.min.js",
+		"js/angular.localStorageModule.js",
         "js/app.js",
-        "js/bootstrap.min.js",
+ 		"js/charts.js",
+       "js/bootstrap.min.js",
         "js/config.js",
         "js/dateAndTime.js",
         "js/jquery.colorbox-min.js",

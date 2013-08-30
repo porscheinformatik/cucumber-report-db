@@ -1,6 +1,6 @@
 (function () {
 	"use strict";
-	var app = window.angular.module('cucumber', ['ui.bootstrap']);
+	var app = window.angular.module('cucumber', ['LocalStorageModule', 'ui.bootstrap']);
 	
 	var prepareReportData = function(reports) {
 		
@@ -62,7 +62,7 @@
 				feature.result.unknownStepCount = feature.result.unknownStepCount || 0;
 				feature.result.skippedStepCount = feature.result.skippedStepCount || 0;
 				
-				data.featureNames += feature.name + (index == data.features.length-1 ? '' : ', ');
+				data.featureNames += feature.name + (index === data.features.length-1 ? '' : ', ');
 			});
 			
 			
@@ -170,7 +170,7 @@
 		};
 	});
 	
-	app.run(function ($rootScope, $templateCache, $location, $routeParams) {
+	app.run(function ($rootScope, $templateCache, $location, $routeParams, localStorageService) {
 		$rootScope.clearCache = function() { 
 			console.log("clear cache");
 			$templateCache.removeAll();
@@ -199,11 +199,38 @@
 		};
 		
 		$rootScope.openChart = function(product, type, limit) {
+			if(typeof type === 'undefined'){
+				type = localStorageService.get("chartsType");
+				if(type === null){
+					type = "ColumnChart";
+				}
+			}
+			if(typeof limit === 'undefined'){
+				limit = localStorageService.get("chartsLimit");
+				if(limit === null){
+					limit = 10;
+				}
+			}
+			localStorageService.add("chartsType", type);
+			localStorageService.add("chartsLimit", limit);
 			$location.path('/statistics/' + product + '/type/' + type + '/limit/' + limit);
 		};
-		$rootScope.databaseMode = false;
-		$rootScope.showDBError = false;
 		
+		$rootScope.storageType = 'Local storage';
+		if (!localStorageService.isSupported()) {
+			$rootScope.storageType = 'Cookie';
+		}
+		
+		$rootScope.$watch('databaseMode', function(value){
+			localStorageService.add('databaseMode',value);
+		});
+
+		$rootScope.showJSONFileError = false;
+		$rootScope.showDBError = false;
+		$rootScope.databaseMode = localStorageService.get("databaseMode") || false;
+		$rootScope.$watch("databaseMode", function(query){
+			console.log("dbmode changed to:" + query);
+		});
 		
 	});
 	
@@ -432,7 +459,6 @@
 		loadJsonFromFilesystem().success(function(data) {
 			$rootScope.databaseMode = false;
 			$rootScope.backBtnEnabled = false;
-			console.log("file");
 			prepareReport(data, $rootScope, $scope, $routeParams, $filter, $location);
 		})
 		// else: load the data from the mongo database 
@@ -531,17 +557,17 @@
 		$rootScope.loading = true;
 
 		$http.get('http://atbghx0017:8081/rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
-		    var options = {
-		        vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}}, 
-		        hAxis: {title: 'Date',  titleTextStyle: {color: 'black'}}, 
-		        isStacked:true,
-			    colors:['#5cb85c','#f0ad4e','#d9534f']
-	    	};
-		    
-            var googleChart = new google.visualization[$routeParams.type](document.getElementById('chart'));
-            googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)),options);
-            
-            $rootScope.loading = false;
+			var options = {
+				vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}}, 
+				hAxis: {title: 'Date',  titleTextStyle: {color: 'black'}}, 
+				isStacked:true,
+				colors:['#5cb85c','#f0ad4e','#d9534f']
+			};
+			
+			var googleChart = new google.visualization[$routeParams.type](document.getElementById('chart'));
+			googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)),options);
+			
+			$rootScope.loading = false;
 		});
 		
 		$rootScope.goBack = function() {
