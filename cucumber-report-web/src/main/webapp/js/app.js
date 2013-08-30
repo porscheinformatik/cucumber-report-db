@@ -1,5 +1,4 @@
 (function () {
-	"use strict";
 	var app = window.angular.module('cucumber', ['ui.bootstrap']);
 	
 	var prepareReportData = function(reports) {
@@ -118,7 +117,7 @@
 			controller : 'HelpCtrl',
 			resolve : loader
 		})
-		.when('/statistics/', {
+		.when('/statistics/:product/type/:type/limit/:limit', {
 			templateUrl : 'pages/statistics.html',
 			controller : 'StatisticsCtrl',
 			resolve : loader
@@ -191,6 +190,10 @@
 			}else{
 				return {'\\': "\\\u200b",'.': '.\u200b','_': '_\u200b', '/':'\/\u200b'}[m];
 			}
+		};
+		
+		$rootScope.openChart = function(product, type, limit) {
+			$location.path('/statistics/' + product + '/type/' + type + '/limit/' + limit);
 		};
 		
 	});
@@ -311,7 +314,7 @@
 			$scope.reportsOverview = function(product) {
 				$location.path('/reports/' + product);
 			};
-	
+			
 			restApiQueryRequest(collectionBaseUrl).success(function (data) {
 				$rootScope.showDBError = false;
 				$rootScope.showJSONFileError = false;
@@ -473,18 +476,6 @@
 	});
 	
 	/**
-	 * Statistics Controller (see statistics.html)
-	 */
-	app.controller('StatisticsCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
-		
-		$rootScope.goBack = function() {
-			$location.path('/products/');
-		};
-		$rootScope.backBtnEnabled = true;
-		
-	});
-	
-	/**
 	 * Help Controller (see help.html)
 	 */
 	app.controller('HelpCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
@@ -496,6 +487,34 @@
 		
 	});
 	
+	/**
+	 * Statistics Controller (see statistics.html)
+	 */
+	app.controller("StatisticsCtrl",function($rootScope, $scope, $http, $rootScope, $location, $routeParams){    
+		$rootScope.loading = true;
+
+		$http.get('http://atbghx0017:8081/rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
+		    var options = {
+		        vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}}, 
+		        hAxis: {title: 'Date',  titleTextStyle: {color: 'black'}}, 
+		        isStacked:true,
+			    colors:['#5cb85c','#f0ad4e','#d9534f']
+	    	};
+		    
+            var googleChart = new google.visualization[$routeParams.type](document.getElementById('chart'));
+            googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)),options);
+            
+            $rootScope.loading = false;
+		});
+		
+		$rootScope.goBack = function() {
+			$location.path('/products/');
+		};
+		$rootScope.backBtnEnabled = true;
+	});
+	
+	google.setOnLoadCallback(function () {angular.bootstrap(document.body, ['cucumber']);});
+	google.load('visualization', '1', {packages: ['corechart']});
 	$('#ReportFileName').text(reportFileName);
 	$('#ReportFileNameLink').attr('href',reportFileName);
 	$('#ServerURL').text(serverUrl);

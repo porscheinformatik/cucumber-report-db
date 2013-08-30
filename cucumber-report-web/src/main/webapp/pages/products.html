@@ -2,11 +2,13 @@
 	<thead> 
 		<tr>
 			<th class="firstTD">Product / Version</th>
+			<th>Statistics</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="product in filteredProducts | filter: regexCondition | filter:searchText | orderBy:'':true">
 			<td class="firstTD"><button ng-click="reportsOverview('{{product}}')" class="btn btn-primary btn-sm">{{product}}</button></td>
+			<td><button ng-click="openChart('{{product}}', 'ColumnChart', 10)" class="btn btn-primary btn-sm">Charts</button></td>
 		</tr>
 	</tbody>
 </table>
