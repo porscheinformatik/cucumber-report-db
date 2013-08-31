@@ -1,102 +1,100 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="utf-8">
-<title>BDD Report</title>
-
-<script src="js/jquery.min.js"></script>
-<script src="js/angular.min.js"></script>
-<script src="js/ui-bootstrap-tpls-0.4.0.min.js"></script>
-<script src="js/app.js"></script>
-<script src="js/colorbox/jquery.colorbox.js"></script>
-
-<link href="css/style.css" rel="stylesheet">
-<style type="text/css">
-	.affix {
-		width: 200px;
-	}
-</style>
-
-<script>
-	function openLightbox(id) {
-		$.colorbox({
-			inline : true,
-			width : "50%",
-			href : id,
-			closeButton : false,
-			trapFocus : false
-		})
-	}
-</script>
-
+	<meta charset="utf-8">
+	<title>Cucumber BDD Report</title>
+	
+	<link rel="stylesheet" href="css/bootstrap-spacelab.css" >
+	<link rel="stylesheet" href="css/colorbox.css" />
+	<link rel="stylesheet" href="css/style.css" />
 </head>
+
 <body ng-app="cucumber">
 
-	<script type="text/ng-template" id="products.html"></script>
-	<script type="text/ng-template" id="reports.html"></script>
-	<script type="text/ng-template" id="features.html"></script>
-	<script type="text/ng-template" id="feature.html"></script>
-	<script type="text/ng-template" id="help.html"></script>
+	<script type="text/ng-template" id="pages/products.html"></script>
+	<script type="text/ng-template" id="pages/reports.html"></script>
+	<script type="text/ng-template" id="pages/features.html"></script>
+	<script type="text/ng-template" id="pages/feature.html"></script>
+	<script type="text/ng-template" id="pages/statistics.html"></script>
+	<script type="text/ng-template" id="pages/help.html"></script>
 
 	<loading></loading>
-	<div class="navbar">
+
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
-			<button type="button" class="navbar-toggle" data-toggle="collapse"
-				data-target=".navbar-responsive-collapse">
-				<span class="icon-bar"></span> <span class="icon-bar"></span> <span
-					class="icon-bar"></span>
-			</button>
-
-			<button ng-click="goBack()" type="button"
-				class="btn btn-default navbar-btn"
-				style="float: left; margin-right: 20px;">Go Back</button>
-
-			<a class="navbar-brand" href="#">BDD-Report</a>
-
-			<div class="nav-collapse collapse navbar-responsive-collapse">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
+				</button>
+					<button ng-click="goBack()" type="button"
+						class="btn btn-default navbar-btn" ng-class="controller" ng-disabled="!backBtnEnabled"
+						style="float: left; margin-right: 20px;">Go Back</button>
+				<a class="navbar-brand" href="#">BDD-Report</a>
+			</div>
+			<div class="navbar-collapse collapse">
 
 				<ul class="nav navbar-nav">
-					<li><a href="#/products/">Home</a></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown">Products <b class="caret"></b></a>
+					<li><a href="#">Home</a></li>
+					<li ng-show="databaseMode" class="dropdown">
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
 						<ul class="dropdown-menu">
 							<li><a href="#/products/?product=VDV3">Yuca|tan</a></li>
 							<li><a href="#/products/?product=VGSG">VGSG</a></li>
 							<li><a href="#/products/?product=TTRU">TTRU</a></li>
 							<li class="divider"></li>
 							<li><a href="#/products/">View all</a></li>
-						</ul></li>
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown">Statistics <b class="caret"></b></a>
-						<ul class="dropdown-menu">
-							<li><a href="#">Yuca|tan</a></li>
-						</ul> </a></li>
+						</ul>
+					</li>
 				</ul>
-
-				<form class="navbar-form pull-left" action="">
-					<input class="form-control col-lg-8" type="text"
-						ng-model="searchText" placeholder="Search">
+				<form class="navbar-form  form-inline form-search pull-left" name="searchForm" action="" role="search">
+					<div class="input-group" style="width: 200px;">
+						<input class="form-control col-lg-8" type="text"
+							ng-model="searchText" placeholder="Search" required>
+						<span class="input-group-btn">
+							<button ng-click="searchText = ''" class="btn btn-primary" ng-disabled="searchForm.$error.required"><span class="glyphicon glyphicon-remove"></span></button>
+						</span>
+					</div>
 				</form>
 				<ul class="nav navbar-nav pull-right">
-					<li class="dropdown"><a href="#" class="dropdown-toggle"
-						data-toggle="dropdown">Options <b class="caret"></b></a>
+					<li class="dropdown">
+						<a ng-show="databaseMode" href="#" class="dropdown-toggle" data-toggle="dropdown">Options <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="" ng-click="clearCache()">Clear cache</a></li>
+							<li><a href="#" ng-click="clearCache()">Clear cache</a></li>
 							<li class="divider"></li>
 							<li><a href="#/help/">Help</a></li>
-						</ul></li>
+						</ul>
+					</li>
 				</ul>
 			</div>
 		</div>
 	</div>
 
-
-
-
-	<div class="container" style="margin-top: 20px;">
+	<div class="container">
+		<div ng-show="showJSONFileError" class="alert alert-danger" style="display: none;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<strong>Oh snap!</strong> Unable to load local JSON file. (configured report file name: <a href="" id="ReportFileNameLink"><strong><span id="ReportFileName"></span></strong></a>) <br/>You can set the report file name in the configuration file (<a href="./js/config.js">/js/config.js</a>)
+		</div>
+		<div ng-show="showDBError" class="alert alert-danger" style="display: none;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<strong>Oh snap!</strong> Unable to load DB data using the REST API. (configured server URL: <a href="" id="ServerURLLink"><strong><span id="ServerURL"></span></strong></a>) <br/>You can set the server URL in the configuration file (<a href="./js/config.js">/js/config.js</a>)
+		</div>
 		<ng-view></ng-view>
 	</div>
-
+	
+	<script src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.colorbox-min.js"></script>
+	<script type="text/javascript" src="js/dateAndTime.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/angular.localStorageModule.js"></script>
+	<script type="text/javascript" src="js/ui-bootstrap-tpls-0.5.0.min.js"></script>
+	<script type="text/javascript" src="js/config.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/charts.js"></script>
+	<script type="text/javascript" src="js/lightbox.js"></script>
 
 </body>
 </html>

@@ -1,0 +1,79 @@
+<ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li class="active">Help</li>
+</ol>
+
+<h2>Help</h2>
+
+<div class="well" style="max-width: 340px; padding: 8px 0;">
+	<ol class="nav nav-list">
+	  <li class="nav-header">Table of content</li>
+	  <li><a href="">Common</a></li>
+	  <li><a href="">MongoDB Spring Rest API</a></li>
+	  <li><a href="">BDD-Silk Plugin</a></li>
+	</ol>
+</div>
+
+<h3>Common</h3>
+<div class="help-content">
+	<code>&lt;TODO&gt;</code>
+</div>
+
+<h3>MongoDB Spring Rest API</h3>
+<div class="help-content">
+	<code>&lt;TODO&gt;</code>
+</div>
+
+
+<h3>BDD-Silk Plugin</h3>
+<div class="help-content">
+	<h4>1. Kopieren des Silk-Plugins auf den Execution Server</h4>
+	<p>Hierbei muss das ausführbare Silk-Java-Plugin an eine beliebige Stelle am "Exceution Server" kopiert werden. Z.B.:</p>
+	<pre>C:\&lt;PFAD ZUM SILK PLUGIN&gt;\silk-bdd-plugin-1.0.jar</pre>
+	<p>Durch doppelklick auf das ".jar" File öffnet sich eine Konfigurations-GUI wo man unter anderem die Verbindungsdaten zum Server konfiguriert kann.</p>
+
+	<h4>2. Anlegen der benötigten Test Cases in Silk Central als Junit Tests</h4>
+	<p><code>WICHTIG:</code> Hier muss darauf geachtet werden, dass bei jedem Test Case die "JUnit Test Properties" korrekt gesetzt werden:</p>
+	<pre>Vorlage: 
+
+Test class = com.poi.egh.turntable.silkplugin.SilkSynchronizer.class 
+Test method = run Java home directory = C:\Programme\Java\jre6\ 
+Classpath = C:\<PFAD ZUM SILK PLUGIN>\silk-bdd-plugin-1.0.jar 
+Record external AUT Coverage = false</pre>
+	<p><code>HINWEIS:</code> Der Name für einen "Test Case" kann beliebig gewählt werden, und folgt keiner bestimmten Namenskonvention.</p>
+
+	<h4>3. Anlegen der benötigten Execution Plans in Silk Central</h4>
+	<p><code>WICHTIG:</code> Es muss unbedingt auf die richtige Benennung der "Execution Plans" geachtet werden. Dabei wird folgende Namenskonvention verwendet (diese kann in der Silk Plugin Konfigurations-GUI geändert werden):</p>
+	<pre>Vorlage für einen einzelnen "Execution Plan": 
+
+VDV3_&lt;BELIEBIGER TEXT&gt; (z.B. VDV3_ 01 - 1 - Login OK)</pre>
+	<p>In diesem Fall ist das Prefix "VDV3". Somit weiß das Plugin dass es sich um einen Test von VDV3 handelt.</p>
+	<pre>Vorlage für gleiche "Execution Plans" für mehrere Produkte: 
+	
+Dies kann mithilfe von sogenannten "Configuration Suites" festgelegt werden. Möchte man z.B. einen Testfall für mehrere Produkte mappen, so werden in einer "Configuration Suite" die entsprechenden Produkt (z.B. VDV3, VGSG) hinzugefügt: 
+
+&lt;BELIEBIGER NAME FÜR SUITE&gt; 
+	VDV3 
+	VGSG</pre>
+	<p><code>WICHTIG:</code> Damit die jeweiligen "Executions" ausgeführt werden können, muss unter "Deployment" der Server auf dem sich das Silk-Plugin befindet, angegeben werden.</p>
+
+	<h4>Konfigurieren der BDD-Szenarien</h4>
+	<p>Damit das Silk-Plugin einen Silk-Test einem BDD-Test zuordnen kann, müssen die Szenarien in den BDD-Features um ein neues Cucumber-Tag (Default: @SILK_ID_XXXX) erweitert werden.
+Nachdem man das zu erweiternde BDD-Scenario gefunden hat, muss dieses wie im folgenden Abschnitt beschrieben um eine Annotation erweitert werden:</p>
+	<pre>Beispiel: 
+
+Möchte man etwa die Execution "VDV3_01-1 - Login OK" auf das BDD-Scenario "Login is ok" mappen, so geht man folgendermaßen vor:
+	a. Suchen der ensprechenden "Execution Plan ID" in Silk Central (z.B. 27172)
+	b. Suchen des BDD-Feature welches unser Ziel-Scenario enthält (z.B. test.feature)
+	c. Heraussuchen des Scenarios (z.B. Scenario: Login is ok)#
+	d. Dieses Scenario wird nun um eine neue Annotation erweitert. 
+	
+	Z.B.: @SILK_ID_&lt;EXECUTION PLAN ID&gt; (z.B. @SILK_ID_27172) 
+	Scenario: Login is ok 
+	When the user uses correct credentials to log in 
+	Then the user should be logged in</pre>
+	
+	<h4>Fertig ;-)</h4>
+	<p>Jenkins ist so konfiguriert, dass alle Ergebnisse der BDD-Tests die dort ausgeführt werden, in eine NoSQL Datenbank nach Produkt und Version gespeichert werden.
+Sind zu einem Silk-Test keine Daten am Server vorhanden, oder tritt ein Problem beim Auslesen der Daten auf, so wird in Silk eine entsprechende Fehlermeldung im LOG angezeigt.</p>
+</div>

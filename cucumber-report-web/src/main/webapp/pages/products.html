@@ -1,0 +1,19 @@
+<ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li class="active">Products</li>
+</ol>
+
+<table class="table table-striped table-hover table-bordered">
+	<thead> 
+		<tr>
+			<th class="firstTD">Product / Version</th>
+			<th>Statistics</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="product in filteredProducts | filter: regexCondition | filter:searchText | orderBy:'':true">
+			<td class="firstTD"><button ng-click="reportsOverview('{{product}}')" class="btn btn-primary btn-sm">{{product}}</button></td>
+			<td><button ng-click="openChart('{{product}}')" class="btn btn-primary btn-sm">Charts</button></td>
+		</tr>
+	</tbody>
+</table>

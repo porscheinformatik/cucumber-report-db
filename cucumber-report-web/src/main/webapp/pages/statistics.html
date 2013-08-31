@@ -1,0 +1,31 @@
+<div class="btn-group pull-right"  style="margin: 3px 3px 0px 0px;">
+	<button type="button" class="btn btn-primary btn-sm">Filter</button>
+	<button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown">
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li ng-class="{active:$routeParams.limit==10}"><a href="" ng-click="openChart($routeParams.product, $routeParams.type, 10)">10</a></li>
+		<li ng-class="{'active':$routeParams.limit==30}"><a href="" ng-click="openChart($routeParams.product, $routeParams.type, 30)">30</a></li>
+		<li ng-class="{'active':$routeParams.limit==50}"><a href="" ng-click="openChart($routeParams.product, $routeParams.type, 50)">50</a></li>
+		<li class="divider"></li>
+		<li ng-class="{'active':$routeParams.limit==0}"><a href="" ng-click="openChart($routeParams.product, $routeParams.type, 0)">All</a></li>
+	</ul>
+</div>
+<div class="btn-group pull-right"  style="margin: 3px 10px 0px 0px;">
+	<button type="button" class="btn btn-primary btn-sm">Chart Type</button>
+	<button type="button" class="btn btn-primary dropdown-toggle btn-sm" data-toggle="dropdown">
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li ng-class="{active:$routeParams.type=='ColumnChart'}"><a href="" ng-click="openChart($routeParams.product,'ColumnChart' ,$routeParams.limit)">Column Chart</a></li>
+		<li ng-class="{active:$routeParams.type=='AreaChart'}"><a href="" ng-click="openChart($routeParams.product,'AreaChart' ,$routeParams.limit)">Area Chart</a></li>
+	</ul>
+</div>
+
+<ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li><a href="#/products/">Products</a></li>
+  <li class="active">Statistics</li>
+</ol>
+
+<div id="chart" style="height: 600px; margin-top: 40px;"></div>
