@@ -231,7 +231,7 @@
 		
 		$rootScope.trustSrc = function(src) {
 			return $sce.trustAsResourceUrl(src);
-		}
+		};
 	});
 	
 	
@@ -547,27 +547,27 @@
 
 			if (step.comments) {
 				$.each(step.comments, function(index, comment) {
-					comments += (comments === "" ? "" : "<br />") + '<dd>'
-							+ comment.value + '</dd>';
+					comments += (comments === "" ? "" : "<br />") + '<dd>' +
+							comment.value + '</dd>';
 				});
 			}
 			$.colorbox({
-				html : '<div class="errorLogContent">'
-						+ '<h4><strong>Error Log</strong></h4>'
-						+ '<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>'
-						+ '<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">'
-						+ step.result.error_message
-						+ '</pre>'
-						+ '<dl>'
-						+ '<dt>Failed Step:</dt>'
-						+ '<dd>'
-						+ step.keyword
-						+ step.name
-						+ '</dd>'
-						+ (comments !== "" ? '<br /><dt>Comments:</dt>'
-								+ comments : '')
-						+ '<br /><dt>Feature File:</dt>' + '<dd>' + featureUri
-						+ ":" + step.line + '</dd>' + '</dl>' + '</div>',
+				html : '<div class="errorLogContent">' +
+						'<h4><strong>Error Log</strong></h4>' +
+						'<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>' +
+						'<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">' +
+						step.result.error_message +
+						'</pre>' +
+						'<dl>' +
+						'<dt>Failed Step:</dt>' +
+						'<dd>' +
+						step.keyword +
+						step.name +
+						'</dd>' +
+						(comments !== "" ? '<br /><dt>Comments:</dt>' +
+								comments : '') +
+						'<br /><dt>Feature File:</dt>' + '<dd>' + featureUri +
+						":" + step.line + '</dd>' + '</dl>' + '</div>',
 				width : "75%",
 				trapFocus : false
 			});
@@ -580,7 +580,7 @@
 				href : '#lightbox_'+scenarioIdx+'_'+stepIdx,
 				closeButton : true,
 				trapFocus : false
-			})
+			});
 		};
 	});
 	
