@@ -1,6 +1,6 @@
 (function () {
 	"use strict";
-	var app = window.angular.module('cucumber', ['LocalStorageModule', 'ui.bootstrap']);
+	var app = window.angular.module('cucumber', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
 	
 	var prepareReportData = function(reports) {
 		
@@ -170,7 +170,7 @@
 		};
 	});
 	
-	app.run(function ($rootScope, $templateCache, $location, $routeParams, localStorageService) {
+	app.run(function ($rootScope, $templateCache, $location, $routeParams, $sce, localStorageService) {
 		$rootScope.clearCache = function() { 
 			console.log("clear cache");
 			$templateCache.removeAll();
@@ -224,14 +224,14 @@
 		$rootScope.$watch('databaseMode', function(value){
 			localStorageService.add('databaseMode',value);
 		});
-
+		
 		$rootScope.showJSONFileError = false;
 		$rootScope.showDBError = false;
 		$rootScope.databaseMode = localStorageService.get("databaseMode") || false;
-		$rootScope.$watch("databaseMode", function(query){
-			console.log("dbmode changed to:" + query);
-		});
 		
+		$rootScope.trustSrc = function(src) {
+			return $sce.trustAsResourceUrl(src);
+		};
 	});
 	
 	
@@ -536,6 +536,52 @@
 			});
 
 		});
+		
+		$scope.errorLogLightbox = function(step) {
+			//var stepScope = angular.element(document.getElementById(stepId)).scope();
+			//var stepScope=$scope;
+			//var step = stepScope.step;
+			//var step = $scope.step;
+			var featureUri = $scope.feature.uri;
+			var comments = "";
+
+			if (step.comments) {
+				$.each(step.comments, function(index, comment) {
+					comments += (comments === "" ? "" : "<br />") + '<dd>' +
+							comment.value + '</dd>';
+				});
+			}
+			$.colorbox({
+				html : '<div class="errorLogContent">' +
+						'<h4><strong>Error Log</strong></h4>' +
+						'<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>' +
+						'<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">' +
+						step.result.error_message +
+						'</pre>' +
+						'<dl>' +
+						'<dt>Failed Step:</dt>' +
+						'<dd>' +
+						step.keyword +
+						step.name +
+						'</dd>' +
+						(comments !== "" ? '<br /><dt>Comments:</dt>' +
+								comments : '') +
+						'<br /><dt>Feature File:</dt>' + '<dd>' + featureUri +
+						":" + step.line + '</dd>' + '</dl>' + '</div>',
+				width : "75%",
+				trapFocus : false
+			});
+		};
+		
+		$scope.embeddingLightbox = function(scenarioIdx, stepIdx) {
+			$.colorbox({
+				inline : true,
+				width : "75%",
+				href : '#lightbox_'+scenarioIdx+'_'+stepIdx,
+				closeButton : true,
+				trapFocus : false
+			});
+		};
 	});
 	
 	/**
@@ -558,6 +604,7 @@
 
 		$http.get('http://atbghx0017:8081/rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
 			var options = {
+				title: $routeParams.product,
 				vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}}, 
 				hAxis: {title: 'Date',  titleTextStyle: {color: 'black'}}, 
 				isStacked:true,
@@ -576,7 +623,6 @@
 		$rootScope.backBtnEnabled = true;
 	});
 	
-	google.setOnLoadCallback(function () {angular.bootstrap(document.body, ['cucumber']);});
 	google.load('visualization', '1', {packages: ['corechart']});
 	$('#ReportFileName').text(reportFileName);
 	$('#ReportFileNameLink').attr('href',reportFileName);

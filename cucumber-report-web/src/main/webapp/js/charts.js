@@ -41,7 +41,7 @@ function getResults(reportData){
 		var failedScenariosSum = 0;
 		var unknownScenariosSum = 0;
 		var passedScenariosSum = 0;
-	
+		
 		$.each( report.features, function( index, feature) {
 			failedScenariosSum += getFailedScenarioCount(feature);
 			unknownScenariosSum += getUnknownScenarioCount(feature);

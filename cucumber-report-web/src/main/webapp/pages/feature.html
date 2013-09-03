@@ -19,7 +19,7 @@
 <h5><b>Scenarios:</b></h5>
 <section ng-repeat="scenario in filteredScenarios | filter:searchText" class="panel panel-default">
 	<div class="panel-body">
-		{{scenarioCount = $index;""}} 
+		{{scenarioIdx = $index;""}}
 		<h5><b>Scenario: {{ scenario.name }}</b></h5>
 		<div ng-show="scenario.tags.length">
 			<span ng-repeat="tag in scenario.tags" class="label">{{ tag.name }}</span>
@@ -38,39 +38,39 @@
 				</tr>
 			</thead>
 			<tbody>
-				<tr ng-repeat="step in scenario.steps" id="step_{{scenarioIdx}}_{{$index}}" ng-class="{passed:'success', failed:'danger', unknown:'warning'}[step.result.status]">
+				<tr ng-repeat="step in scenario.steps" ng-class="{passed:'success', failed:'danger', unknown:'warning'}[step.result.status]">
+					{{stepIdx = $index;""}}
 					<td class="firstTD">
 						<strong>{{ step.keyword }}</strong> {{ step.name }}
 					</td>
 					<td>
 						<span ng-show="!step.result.error_message">{{ step.result.status }}</span>
-						<button ng-show="step.result.error_message" onclick="errorLogLightbox('step_{{scenarioIdx}}_{{$index}}');" tooltip-placement="left" tooltip="Error Log" type="button" class="btn btn-danger btn-sm">{{ step.result.status }}</button>	
+						<button ng-show="step.result.error_message" ng-click="errorLogLightbox(step)" tooltip-placement="left" tooltip="Error Log" type="button" class="btn btn-danger btn-sm">{{ step.result.status }}</button>
 					</td>
 					<td>{{ step.result.duration ? duration(step.result.duration) : '' }}</td>
 					<td>	
 						<span ng-repeat="n in step.embeddings">
 							<span ng-if="n.mime_type === 'image/png'">
-								<button tooltip-placement="left" tooltip="Embedded Screenshot" onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-sm">Screenshot</button>
+								<button tooltip-placement="left" tooltip="Embedded Screenshot" ng-click="embeddingLightbox(scenarioIdx, stepIdx)" type="button" class="btn btn-primary btn-sm">Screenshot</button>
 							</span>
 							
 							<span ng-if="n.mime_type === 'video/mp4'">
-								<button tooltip-placement="left" tooltip="Embedded Video" onclick="openLightbox('#lightbox_{{scenarioCount}}_{{$index}}')" type="button" class="btn btn-primary btn-sm">Video</button>
+								<button tooltip-placement="left" tooltip="Embedded Video" ng-click="embeddingLightbox(scenarioIdx, stepIdx)" type="button" class="btn btn-primary btn-sm">Video</button>
 							</span>
 
 
 							<div style='display:none'>
-								<div style='background:#FFF;' id='lightbox_{{scenarioCount}}_{{$index}}' class="lightbox">
+								<div style='background:#FFF;' id='lightbox_{{scenarioIdx}}_{{stepIdx}}' class="lightbox">
 									<div class="panelHead">
 										<h3 class="panelTitle">Embedded {{n.mime_type === 'image/png' ? 'Screenshot' : 'Video'}}</h3>
-										<!--<button onclick="$.colorbox.close()" type="button" class="btn btn-primary btn-sm">Close</button>-->
 									</div>
 									<div class="panelBody">
 										<a ng-href="{{getEmbedding(n)}}">
-											<img ng-if="n.mime_type === 'image/png'" style="cursor: '\e015', -moz-zoom-in;" ng-src="{{getEmbedding(n)}}">
+											<img ng-if="n.mime_type === 'image/png'" style="cursor: '\e015', -moz-zoom-in;" ng-src="{{trustSrc(getEmbedding(n))}}">
 										</a>
 										<div ng-if="n.mime_type === 'video/mp4'" id='inlinevideocontent' >
 											<video style="width: 600px; height:400px; margin: 0px auto; display: block;" controls>
-												<source ng-src="{{getEmbedding(n)}}" type="video/mp4" />
+												<source ng-src="{{trustSrc(getEmbedding(n))}}" type="video/mp4" />
 												Your browser does not support the video tag.
 											</video>
 										</div>
