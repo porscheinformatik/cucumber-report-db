@@ -28,6 +28,10 @@
 			<name>Peyman Aparviz</name>
 			<email>aparviz.peyman@porscheinformatik.at</email>
 		</developer>
+		<developer>
+			<name>Ortwin Probst</name>
+			<email>ortwin.probst@porscheinformatik.at</email>
+		</developer>
 	</developers>
 
 	<dependencyManagement>

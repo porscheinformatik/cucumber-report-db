@@ -211,10 +211,11 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     {
     }
 
+    @SuppressWarnings("unchecked")
     private void newScenario(Map<String, Object> scenario)
     {
         currentScenario = scenario;
-        List<Map<String, Object>> scenarios = (List) currentFeature.get("scenarios");
+        List<Map<String, Object>> scenarios = (List<Map<String, Object>>) currentFeature.get("scenarios");
         if (scenarios == null)
         {
             scenarios = new ArrayList<Map<String, Object>>();
@@ -228,10 +229,11 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
         currentScenario.put("steps", currentSteps);
     }
 
+    @SuppressWarnings("unchecked")
     protected List<Map<String, String>> getEmbeddings()
     {
         Map<String, Object> currentStep = currentSteps.get(currentSteps.size() - 1);
-        List<Map<String, String>> embeddings = (List) currentStep.get("embeddings");
+        List<Map<String, String>> embeddings = (List<Map<String, String>>) currentStep.get("embeddings");
         if (embeddings == null)
         {
             embeddings = new ArrayList<Map<String, String>>();
@@ -240,6 +242,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
         return embeddings;
     }
 
+    @SuppressWarnings("unchecked")
     private static void addToResultValue(Map<String, Object> featureOrScenario, String key, long i)
     {
         Map<String, Object> result = (Map<String, Object>) featureOrScenario.get("result");
