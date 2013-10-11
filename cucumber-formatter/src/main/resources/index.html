@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>Cucumber BDD Report</title>
+	
+	<link rel="stylesheet" href="css/bootstrap-spacelab.css" >
+	<link rel="stylesheet" href="css/colorbox.css" />
+	<link rel="stylesheet" href="css/style.css" />
+</head>
+
+<body ng-app="cucumber">
+
+	<script type="text/ng-template" id="pages/reports.html"></script>
+	<script type="text/ng-template" id="pages/features.html"></script>
+	<script type="text/ng-template" id="pages/feature.html"></script>
+
+	<loading></loading>
+
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+		<div class="container">
+			<div class="navbar-header">
+				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span> 
+					<span class="icon-bar"></span>
+				</button>
+					<button ng-click="goBack()" type="button"
+						class="btn btn-default navbar-btn" ng-class="controller" ng-disabled="!backBtnEnabled"
+						style="float: left; margin-right: 20px;">Go Back</button>
+				<a class="navbar-brand" href="#">BDD-Report</a>
+			</div>
+			<div class="navbar-collapse collapse">
+
+				<form class="navbar-form  form-inline form-search pull-left" name="searchForm" action="" role="search">
+					<div class="input-group" style="width: 200px;">
+						<input class="form-control col-lg-8" type="text"
+							ng-model="searchText" placeholder="Search" required>
+						<span class="input-group-btn">
+							<button ng-click="searchText = ''" class="btn btn-primary" ng-disabled="searchForm.$error.required"><span class="glyphicon glyphicon-remove"></span></button>
+						</span>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+
+	<div class="container">
+		<div ng-show="showJSONFileError" class="alert alert-danger" style="display: none;">
+			<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+			<strong>Oh snap!</strong> Unable to load local JSON file. (configured report file name: <a href="" id="ReportFileNameLink"><strong><span id="ReportFileName"></span></strong></a>) <br/>You can set the report file name in the configuration file (<a href="./js/config.js">/js/config.js</a>)
+		</div>
+		<ng-view></ng-view>
+	</div>
+	
+	<script src="http://www.google.com/jsapi"></script>
+	<script type="text/javascript" src="js/jquery.min.js"></script>
+	<script type="text/javascript" src="js/jquery.colorbox-min.js"></script>
+	<script type="text/javascript" src="js/dateAndTime.js"></script>
+	<script type="text/javascript" src="js/bootstrap.min.js"></script>
+	<script type="text/javascript" src="js/angular.min.js"></script>
+	<script type="text/javascript" src="js/angular-route.min.js"></script>
+	<script type="text/javascript" src="js/angular.localStorageModule.js"></script>
+	<script type="text/javascript" src="js/ui-bootstrap-tpls-0.5.0.min.js"></script>
+	<script type="text/javascript" src="js/config.js"></script>
+	<script type="text/javascript" src="js/app.js"></script>
+	<script type="text/javascript" src="js/charts.js"></script>
+	<script type="text/javascript" src="js/lightbox.js"></script>
+
+</body>
+</html>

@@ -1,20 +1,12 @@
 package at.porscheinformatik.cucumber.formatter;
 
-import java.io.Closeable;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import cucumber.runtime.CucumberException;
+import gherkin.formatter.JSONFormatter;
+
+import java.io.*;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-
-import cucumber.runtime.CucumberException;
-import gherkin.formatter.JSONFormatter;
 
 /**
  * Formats Cucumber results in a HTML page with search capability.
@@ -25,7 +17,6 @@ import gherkin.formatter.JSONFormatter;
  */
 public class HtmlFormatter extends AbstractJsonFormatter
 {
-    protected static final String dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
     protected static final String JSON_REPORT_FILENAME = "report.json";
     protected static final String FORMATTER_DIR = "/";
     protected static final String[] TEXT_ASSETS =
@@ -34,11 +25,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
         
         "pages/feature.html",
         "pages/features.html",
-        "pages/help.html",
-        "pages/products.html",
-        "pages/reports.html",
-        "pages/statistics.html",
-        
+
         "css/bootstrap-spacelab.css",
         "css/colorbox.css",
         "css/style.css",
@@ -112,7 +99,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
         
         for (String textAsset : TEXT_ASSETS)
         {
-            InputStream textAssetStream = LoaderClass.class.getResourceAsStream(FORMATTER_DIR + textAsset);
+            InputStream textAssetStream = getClass().getResourceAsStream(FORMATTER_DIR + textAsset);
             writeStreamAndClose(textAssetStream, reportFileOutputStream(htmlReportDir, textAsset));
         }
     }
