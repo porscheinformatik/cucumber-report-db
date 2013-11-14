@@ -120,11 +120,14 @@ public class FeatureDTO
     {
         for (ScenarioDTO scenario : scenarios)
         {
-            for(TagDTO currentTag : scenario.getTags())
+            if (scenario.getTags() != null)
             {
-                if (currentTag.getName().equals(tag))
+                for(TagDTO currentTag : scenario.getTags())
                 {
-                    return scenario;
+                    if (currentTag.getName().equals(tag))
+                    {
+                        return scenario;
+                    }
                 }
             }
         }
