@@ -151,10 +151,10 @@
 	</build>
 	
 	<scm>
-		<connection>scm:git:http://github.com/porscheinformatik/sonar-dependency-check-plugin.git</connection>
-		<developerConnection>scm:git:http://github.com/porscheinformatik/sonar-dependency-check-plugin.git</developerConnection>
+		<connection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</connection>
+		<developerConnection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</developerConnection>
 		<tag>HEAD</tag>
-		<url>https://github.com/porscheinformatik/sonar-dependency-check-plugin</url>
+		<url>https://github.com/porscheinformatik/cucumber-report-db</url>
 	</scm>
 
 </project>
