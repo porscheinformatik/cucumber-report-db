@@ -149,4 +149,12 @@
 			</plugin>
 		</plugins>
 	</build>
+	
+	<scm>
+		<connection>scm:git:http://github.com/porscheinformatik/sonar-dependency-check-plugin.git</connection>
+		<developerConnection>scm:git:http://github.com/porscheinformatik/sonar-dependency-check-plugin.git</developerConnection>
+		<tag>HEAD</tag>
+		<url>https://github.com/porscheinformatik/sonar-dependency-check-plugin</url>
+	</scm>
+
 </project>
