@@ -1,5 +1,20 @@
 package at.porscheinformatik.cucumber.formatter;
 
+import gherkin.deps.com.google.gson.GsonBuilder;
+import gherkin.formatter.Formatter;
+import gherkin.formatter.NiceAppendable;
+import gherkin.formatter.Reporter;
+import gherkin.formatter.model.Background;
+import gherkin.formatter.model.Examples;
+import gherkin.formatter.model.ExamplesTableRow;
+import gherkin.formatter.model.Feature;
+import gherkin.formatter.model.Match;
+import gherkin.formatter.model.Result;
+import gherkin.formatter.model.Scenario;
+import gherkin.formatter.model.ScenarioOutline;
+import gherkin.formatter.model.Step;
+import gherkin.formatter.model.TagStatement;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -7,19 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import gherkin.deps.com.google.gson.GsonBuilder;
-import gherkin.formatter.Formatter;
-import gherkin.formatter.NiceAppendable;
-import gherkin.formatter.Reporter;
-import gherkin.formatter.model.Background;
-import gherkin.formatter.model.Examples;
-import gherkin.formatter.model.Feature;
-import gherkin.formatter.model.Match;
-import gherkin.formatter.model.Result;
-import gherkin.formatter.model.Scenario;
-import gherkin.formatter.model.ScenarioOutline;
-import gherkin.formatter.model.Step;
 
 public abstract class AbstractJsonFormatter implements Formatter, Reporter
 {
@@ -82,6 +84,17 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     @Override
     public void scenario(Scenario scenario)
     {
+        setupScenario(scenario);
+    }
+
+    @Override
+    public void scenarioOutline(ScenarioOutline scenarioOutline)
+    {
+        setupScenario(scenarioOutline);
+    }
+
+    private void setupScenario(TagStatement scenario)
+    {
         if (currentScenario != null && !currentScenario.containsKey("name"))
         {
             currentScenario.putAll(scenario.toMap());
@@ -93,13 +106,14 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     }
 
     @Override
-    public void scenarioOutline(ScenarioOutline scenarioOutline)
-    {
-    }
-
-    @Override
     public void examples(Examples paramExamples)
     {
+        List<List<String>> examples = new ArrayList<List<String>>();
+        for (ExamplesTableRow example : paramExamples.getRows())
+        {
+            examples.add(example.getCells());
+        }
+        currentScenario.put("examples", examples);
     }
 
     @Override
@@ -216,13 +230,24 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     {
         currentScenario = scenario;
         List<Map<String, Object>> scenarios = (List<Map<String, Object>>) currentFeature.get("scenarios");
-        if (scenarios == null)
+        List<Map<String, Object>> scenarioOutlines = (List<Map<String, Object>>) currentFeature.get("scenarioOutlines");
+        if (scenarios == null && scenarioOutlines == null)
         {
             scenarios = new ArrayList<Map<String, Object>>();
+            scenarioOutlines = new ArrayList<Map<String, Object>>();
             currentFeature.put("scenarios", scenarios);
+            currentFeature.put("scenarioOutlines", scenarioOutlines);
         }
-        scenarios.add(currentScenario);
-        addToResultValue(currentFeature, "scenarioCount", 1);
+
+        if("scenario_outline".equals(currentScenario.get("type")))
+        {
+            scenarioOutlines.add(currentScenario);
+        }
+        else
+        {
+            scenarios.add(currentScenario);
+            addToResultValue(currentFeature, "scenarioCount", 1);
+        }
 
         currentSteps = new ArrayList<Map<String, Object>>();
         currentStepResultIndex = 0;
