@@ -5,7 +5,7 @@
 	<groupId>at.porscheinformatik.cucumber</groupId>
 	<artifactId>cucumber-report-db-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1.0.RC1</version>
+	<version>1.1.0.BUILD-SNAPSHOT</version>
 
 	<name>Porsche Informatik Cucumber Report DB Parent</name>
 	<description>Stores results of BDD tests with Cucumber-JVM in a database and provides reporting capabilities</description>
@@ -39,12 +39,12 @@
 			<dependency>
 				<groupId>at.porscheinformatik.cucumber</groupId>
 				<artifactId>cucumber-mongodb-rest</artifactId>
-				<version>1.1.0.RC1</version>
+				<version>1.1.0.BUILD-SNAPSHOT</version>
 			</dependency>
 			<dependency>
 				<groupId>at.porscheinformatik.cucumber</groupId>
 				<artifactId>cucumber-nosql-db</artifactId>
-				<version>1.1.0.RC1</version>
+				<version>1.1.0.BUILD-SNAPSHOT</version>
 			</dependency>
 
 			<dependency>
