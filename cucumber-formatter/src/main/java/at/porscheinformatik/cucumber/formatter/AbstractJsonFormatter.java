@@ -125,9 +125,12 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     @Override
     public void step(Step step)
     {
-        currentSteps.add(step.toMap());
-        addToResultValue(currentScenario, "stepCount", 1);
-        addToResultValue(currentFeature, "stepCount", 1);
+        if (step != null)
+        {
+            currentSteps.add(step.toMap());
+            addToResultValue(currentScenario, "stepCount", 1);
+            addToResultValue(currentFeature, "stepCount", 1);
+        }
     }
 
     /**
