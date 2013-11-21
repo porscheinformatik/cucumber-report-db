@@ -108,12 +108,18 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     @Override
     public void examples(Examples paramExamples)
     {
-        List<List<String>> examples = new ArrayList<List<String>>();
-        for (ExamplesTableRow example : paramExamples.getRows())
+        if (paramExamples != null)
         {
-            examples.add(example.getCells());
+            List<List<String>> examples = new ArrayList<List<String>>();
+            for (ExamplesTableRow example : paramExamples.getRows())
+            {
+                if (example != null)
+                {
+                    examples.add(example.getCells());
+                }
+            }
+            currentScenario.put("examples", examples);
         }
-        currentScenario.put("examples", examples);
     }
 
     @Override
