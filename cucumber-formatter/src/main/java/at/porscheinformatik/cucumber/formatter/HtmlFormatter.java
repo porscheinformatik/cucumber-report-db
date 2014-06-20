@@ -2,6 +2,7 @@ package at.porscheinformatik.cucumber.formatter;
 
 import cucumber.runtime.CucumberException;
 import gherkin.formatter.JSONFormatter;
+import gherkin.formatter.model.Scenario;
 
 import java.io.*;
 import java.util.Date;
@@ -96,7 +97,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
         htmlReportImgDir.mkdirs();
         htmlReportFontsDir.mkdirs();
         htmlReportPagesDir.mkdirs();
-        
+
         for (String textAsset : TEXT_ASSETS)
         {
             InputStream textAssetStream = getClass().getResourceAsStream(FORMATTER_DIR + textAsset);
@@ -132,7 +133,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
 
     protected OutputStream reportFileOutputStream(File htmlReportDir, String fileName)
     {
-        
+
         File file = new File(htmlReportDir, fileName);
         try
         {
@@ -196,5 +197,15 @@ public class HtmlFormatter extends AbstractJsonFormatter
         {
             // ignore
         }
+    }
+
+    @Override
+    public void startOfScenarioLifeCycle(Scenario scenario) {
+
+    }
+
+    @Override
+    public void endOfScenarioLifeCycle(Scenario scenario) {
+
     }
 }
