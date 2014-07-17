@@ -602,7 +602,7 @@
 	app.controller("StatisticsCtrl",function($rootScope, $scope, $http, $location, $routeParams){    
 		$rootScope.loading = true;
 
-		$http.get('http://atbghx0017:8081/rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
+		$http.get('rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
 			var options = {
 				title: $routeParams.product,
 				vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}}, 

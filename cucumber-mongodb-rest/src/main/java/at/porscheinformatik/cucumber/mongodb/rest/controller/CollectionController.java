@@ -20,7 +20,7 @@ import com.mongodb.util.JSON;
  * @author Stefan Mayer (yms)
  */
 @Controller
-@RequestMapping("/collection")
+@RequestMapping("/rest/collection")
 public class CollectionController
 {
     @Autowired

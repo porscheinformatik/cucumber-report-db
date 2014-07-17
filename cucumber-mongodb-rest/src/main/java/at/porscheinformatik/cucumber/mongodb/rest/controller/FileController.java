@@ -23,7 +23,7 @@ import com.mongodb.gridfs.GridFSDBFile;
  * @author Stefan Mayer (yms)
  */
 @Controller
-@RequestMapping("/file")
+@RequestMapping("/rest/file")
 public class FileController
 {
     @Autowired

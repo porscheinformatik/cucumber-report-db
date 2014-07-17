@@ -25,7 +25,7 @@ import com.mongodb.DBObject;
  * @author Stefan Mayer (yms)
  */
 @Controller
-@RequestMapping("/query")
+@RequestMapping("/rest/query")
 public class QueryController
 {
     @Autowired
