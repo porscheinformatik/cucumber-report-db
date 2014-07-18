@@ -16,7 +16,7 @@
 	<tbody>
 		<tr ng-repeat="report in filteredReports | filter: only | filter:searchText">
 			<td>
-				<button ng-click="featuresOverview('{{report.date.$date}}')" class="btn btn-primary btn-sm">Open</button>
+				<button ng-click="featuresOverview(report.date.$date)" class="btn btn-primary btn-sm">Open</button>
 			</td>
 			<td  class="firstTD tdCollapseBox" shortener-directive>
 				<div class="tdCollapse" ng-click="boolUncollapse = !boolUncollapse" ng-class="{'tdUncollapse':boolUncollapse}">

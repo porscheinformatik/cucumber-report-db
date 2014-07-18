@@ -1,6 +1,10 @@
-(function () {
-	"use strict";
-	var app = window.angular.module('cucumber', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
+/* global window, document */
+/* global serverUrl, fileBaseUrl, queryBaseUrl, collectionBaseUrl, reportFileName */
+
+(function (angular, google, $, undefined) {
+	'use strict';
+
+	var app = angular.module('cucumber', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
 	
 	var prepareReportData = function(reports) {
 		
@@ -158,7 +162,7 @@
 			restrict: 'E',
 			replace: true,
 			template: '<div ng-show=\"loading\" class=\"loading\"><div class=\"loadingBox\"><p id=\"loadingText\">Loading</p><p id=\"loadingSubText\">Please Wait ...</p><p><img src=\"img/load.gif\" /></p></div></div>',
-			link: function (scope, element, attr) {
+			link: function (scope, element) {
 				scope.$watch('loading', function (val) {
 					if (val){
 						$(element).show();
@@ -172,7 +176,6 @@
 	
 	app.run(function ($rootScope, $templateCache, $location, $routeParams, $sce, localStorageService) {
 		$rootScope.clearCache = function() { 
-			console.log("clear cache");
 			$templateCache.removeAll();
 		};
 		
@@ -290,7 +293,7 @@
 		$rootScope.loading = false;
 	}
 	
-	function prepareFeature(data, $rootScope, $scope, $routeParams, $filter, $location)
+	function prepareFeature(data, $rootScope, $scope, $routeParams, $filter)
 	{
 		$scope.report = data;
 		$scope.duration = $scope.report.duration;
@@ -331,14 +334,14 @@
 		$rootScope.backBtnEnabled = false;
 		
 		// if a local report.json file was found: load the data from the filesystem
-		loadJsonFromFilesystem().success(function(data) {
+		loadJsonFromFilesystem().success(function() {
 			$rootScope.databaseMode = false;
 			$rootScope.showDBError = false;
 			$rootScope.showJSONFileError = false;
-			$location.path('/reports//features/');
+			$location.path('/reports/features/');
 		})
 		// else: load the data from the mongo database 
-		.error(function(data, status, headers, config) {
+		.error(function() {
 			$rootScope.databaseMode = true;
 			$scope.regexCondition = function(input)
 			{
@@ -348,20 +351,20 @@
 				}
 				return false;
 			};
-			
+
 			$scope.reportsOverview = function(product) {
 				$location.path('/reports/' + product);
 			};
-			
+
 			restApiQueryRequest(collectionBaseUrl).success(function (data) {
 				$rootScope.showDBError = false;
 				$rootScope.showJSONFileError = false;
 				$scope.products = data.slice().reverse();
-				
+
 				$scope[$scope.searchArrayName] = $scope.products;
 				addSearchAndSortHandlers($scope, $filter, $scope.products);
 			})
-			.error(function(data, status, headers, config) {
+			.error(function() {
 				$rootScope.showJSONFileError = true;
 				$rootScope.showDBError = true;
 			});
@@ -396,7 +399,7 @@
 			$scope.pageLimit = 10;
 			$scope.pages = Math.ceil(data.count / $scope.pageLimit);
 			$scope.page = $routeParams.page === undefined ? 0 : $routeParams.page;
-			
+
 			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?sort=true&limit=' + $scope.pageLimit + '&skip=' + ($scope.pageLimit * $scope.page))
 			.success(function (data) {
 				$scope.reports = data;
@@ -418,11 +421,6 @@
 					
 					var sum = (statistics.passed + statistics.failed + statistics.unknown);
 					
-					// console.log("Average: " + sum);
-					// console.log("Passed: " + statistics.passed);
-					// console.log("Failed: " + statistics.failed);
-					// console.log("Unknown: " + statistics.unknown);
-					
 					statistics.passedPercent = (statistics.passed / sum) * 100;
 					statistics.failedPercent = (statistics.failed / sum) * 100;
 					statistics.unknownPercent = (statistics.unknown / sum) * 100;
@@ -435,18 +433,16 @@
 				
 				
 			})
-			.error(function(data, status, headers, config) {
+			.error(function() {
 				$rootScope.loading = false;
 				$location.path('/products/');
 			});
 
 		})
-		.error(function(data, status, headers, config) {
+		.error(function() {
 			$rootScope.loading = false;
 			$location.path('/products/');
 		});
-		
-		
 	});
 	
 	/**
@@ -462,7 +458,7 @@
 			prepareReport(data, $rootScope, $scope, $routeParams, $filter, $location);
 		})
 		// else: load the data from the mongo database 
-		.error(function(data, status, headers, config) {
+		.error(function() {
 			$rootScope.databaseMode = true;
 			$rootScope.backBtnEnabled = true;
 			$rootScope.goBack = function() {
@@ -480,7 +476,7 @@
 				}
 				prepareReport(data[0], $rootScope, $scope, $routeParams, $filter, $location);
 			})
-			.error(function(data, status, headers, config) {
+			.error(function() {
 				$rootScope.loading = false;
 				$location.path('/products/');
 			});
@@ -513,7 +509,7 @@
 			};
 		})
 		// else: load the data from the mongo database 
-		.error(function(data, status, headers, config) {
+		.error(function() {
 			$rootScope.databaseMode=true;
 			$rootScope.loading = true;
 			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
@@ -530,7 +526,7 @@
 					return fileBaseUrl + $routeParams.colName + '/' + embedding.url + '/';
 				};
 			})
-			.error(function(data, status, headers, config) {
+			.error(function() {
 				$rootScope.loading = false;
 				$location.path('/products/');
 			});
@@ -538,10 +534,6 @@
 		});
 		
 		$scope.errorLogLightbox = function(step) {
-			//var stepScope = angular.element(document.getElementById(stepId)).scope();
-			//var stepScope=$scope;
-			//var step = stepScope.step;
-			//var step = $scope.step;
 			var featureUri = $scope.feature.uri;
 			var comments = "";
 
@@ -587,7 +579,7 @@
 	/**
 	 * Help Controller (see help.html)
 	 */
-	app.controller('HelpCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
+	app.controller('HelpCtrl', function($rootScope, $routeParams, $scope, $location) {
 		
 		$rootScope.goBack = function() {
 			$location.path('/products/');
@@ -612,7 +604,7 @@
 			};
 			
 			var googleChart = new google.visualization[$routeParams.type](document.getElementById('chart'));
-			googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)),options);
+			googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)), options);
 			
 			$rootScope.loading = false;
 		});
@@ -622,11 +614,11 @@
 		};
 		$rootScope.backBtnEnabled = true;
 	});
-	
+
 	google.load('visualization', '1', {packages: ['corechart']});
 	$('#ReportFileName').text(reportFileName);
 	$('#ReportFileNameLink').attr('href',reportFileName);
 	$('#ServerURL').text(serverUrl);
 	$('#ServerURLLink').attr('href',collectionBaseUrl);
-	
-}());
+
+}(window.angular, window.google, window.jQuery));
