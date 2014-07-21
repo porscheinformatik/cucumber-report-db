@@ -4,21 +4,26 @@
 	<meta charset="utf-8">
 	<title>Cucumber BDD Report</title>
 
-	<link rel="stylesheet" href="css/bootstrap-spacelab.css" >
-	<link rel="stylesheet" href="css/colorbox.css" />
+	<link rel="stylesheet" href="webjars/bootswatch-spacelab/3.2.0/css/bootstrap.min.css" >
 	<link rel="stylesheet" href="css/style.css" />
 </head>
 
 <body ng-app="cucumber">
 
-	<script type="text/ng-template" id="pages/products.html"></script>
-	<script type="text/ng-template" id="pages/reports.html"></script>
-	<script type="text/ng-template" id="pages/features.html"></script>
-	<script type="text/ng-template" id="pages/feature.html"></script>
-	<script type="text/ng-template" id="pages/statistics.html"></script>
-	<script type="text/ng-template" id="pages/help.html"></script>
-
-	<loading></loading>
+	<div ng-show="loading">
+		<div class="modal-backdrop fade in" style="z-index: 1040;"></div>
+		<div class="modal" tabindex="-1" role="dialog" style="z-index: 1050; display: block;">
+			<div class="modal-dialog">
+				<div class="modal-content">
+					<h3 class="modal-header">Loading</h3>
+					<div class="modal-body">
+						<progressbar value="100" class="progress-striped active"></progressbar>
+						Please Wait ...
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
 		<div class="container">
@@ -28,9 +33,7 @@
 					<span class="icon-bar"></span> 
 					<span class="icon-bar"></span>
 				</button>
-					<button ng-click="goBack()" type="button"
-						class="btn btn-default navbar-btn" ng-class="controller" ng-disabled="!backBtnEnabled"
-						style="float: left; margin-right: 20px;">Go Back</button>
+				<button ng-click="goBack()" type="button" class="btn btn-default navbar-btn" ng-class="controller" ng-disabled="!backBtnEnabled">Go Back</button>
 				<a class="navbar-brand" href="#">BDD-Report</a>
 			</div>
 			<div class="navbar-collapse collapse">
@@ -49,7 +52,7 @@
 					</li>
 				</ul>
 				<form class="navbar-form  form-inline form-search pull-left" name="searchForm" action="" role="search">
-					<div class="input-group" style="width: 200px;">
+					<div class="input-group">
 						<input class="form-control col-lg-8" type="text"
 							ng-model="searchText" placeholder="Search" required>
 						<span class="input-group-btn">
@@ -82,16 +85,14 @@
 		</div>
 		<ng-view></ng-view>
 	</div>
-	
+
 	<script src="http://www.google.com/jsapi"></script>
-	<script type="text/javascript" src="webjars/jquery/1.9.0/jquery.min.js"></script>
-	<script type="text/javascript" src="js/jquery.colorbox-min.js"></script>
+	<script type="text/javascript" src="webjars/jquery/2.1.0/jquery.min.js"></script>
 	<script type="text/javascript" src="js/dateAndTime.js"></script>
-	<script type="text/javascript" src="webjars/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 	<script type="text/javascript" src="webjars/angularjs/1.2.17/angular.min.js"></script>
 	<script type="text/javascript" src="webjars/angularjs/1.2.17/angular-route.min.js"></script>
 	<script type="text/javascript" src="js/angular.localStorageModule.js"></script>
-	<script type="text/javascript" src="webjars/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.min.js"></script>
+	<script type="text/javascript" src="webjars/angular-ui-bootstrap/0.11.0/ui-bootstrap-tpls.js"></script>
 	<script type="text/javascript" src="js/config.js"></script>
 	<script type="text/javascript" src="js/app.js"></script>
 	<script type="text/javascript" src="js/charts.js"></script>

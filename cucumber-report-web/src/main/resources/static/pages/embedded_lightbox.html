@@ -1,0 +1,19 @@
+<div class="modal-header">
+	<h3>Embedded {{embedded.mime_type === 'image/png' ? 'Screenshot' : 'Video'}}</h3>
+</div>
+<div class="modal-body">
+	<div class="container">
+		<a ng-if="embedded.mime_type === 'image/png'" ng-href="{{ getEmbedding(embedded) }}">
+			<img style="cursor: '\e015', -moz-zoom-in; width: 100%;" ng-src="{{ getEmbedding(embedded) }}">
+		</a>
+	</div>
+	<div ng-if="embedded.mime_type === 'video/mp4'" id="inlinevideocontent">
+		<video style="width: 600px; height: 400px; margin: 0px auto; display: block;" controls>
+			<source ng-src="{{ getEmbedding(embedded) }}" type="video/mp4" />
+			Your browser does not support the video tag.
+		</video>
+	</div>
+</div>
+<div class="modal-footer">
+	<button class="btn btn-primary" ng-click="$close()">Close</button>
+</div>

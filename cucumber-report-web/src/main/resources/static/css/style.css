@@ -57,10 +57,6 @@ body{
 	max-height: 250px;
 }
 
-.lightbox{
-	max-width: 100%;
-	max-height: 100%;
-}
 .panelHead{
 	color: #ffffff;
 	background-color: #446e9b;
@@ -77,15 +73,7 @@ body{
 	margin-bottom: 0;
 	font-size: 16px;
 }
-/*
-.panelBody{
-	position: absolute;
-	top: 41px;
-	max-width: 100%;
-	max-height: 100%;
-	padding: 15px;
-}
-*/
+
 .panelBody img{
 	max-width:100%;
 	cursor: pointer;
@@ -101,14 +89,8 @@ body{
 	max-height: 20px;
 	overflow: hidden;
 	cursor: pointer;
-/*
-	-webkit-transition: max-height 1s;
-	-moz-transition: max-height 1s;
-	-o-transition: max-height 1s;
-	transition: max-height 1s;
-*/
 }
 
 .tdUncollapse {
-	max-height: none; /*2000px;*/
+	max-height: none;
 }

@@ -45,19 +45,19 @@
 			</td>
 			<td><span ng-repeat="tag in feature.tags" class="label label-default">{{ tag.name }}</span></td>
 			<td>
-				<span class="badge badge-danger" ng-show="feature.result.failedScenarioCount">FAILED</span>
-				<span class="badge badge-success" ng-hide="feature.result.failedScenarioCount">OK</span>
+				<span class="label label-danger" ng-show="feature.result.failedScenarioCount">FAILED</span>
+				<span class="label label-success" ng-hide="feature.result.failedScenarioCount">OK</span>
 			</td>
 			<td><strong>{{ duration(feature) }}</strong></td>
-			<td><span class="badge badge-success">{{ feature.result.passedScenarioCount || "" }}</span></td>
-			<td><span class="badge badge-warning">{{ feature.result.unknownScenarioCount || ""  }}</span></td>
-			<td><span class="badge badge-danger">{{ feature.result.failedScenarioCount || "" }}</span></td>
-			<td><span class="badge">{{ feature.result.scenarioCount || "" }}</span></td>
-			<td><span class="badge badge-success">{{ feature.result.passedStepCount || "" }}</span></td>
-			<td><span class="badge badge-warning">{{ feature.result.unknownStepCount || "" }}</span></td>
-			<td><span class="badge badge-danger">{{ feature.result.failedStepCount || "" }}</span></td>
-			<td><span class="badge badge-warning">{{ feature.result.skippedStepCount || "" }}</span></td>
-			<td><span class="badge">{{ feature.result.stepCount || "" }}</span></td>
+			<td><span class="label label-success">{{ feature.result.passedScenarioCount || "" }}</span></td>
+			<td><span class="label label-warning">{{ feature.result.unknownScenarioCount || ""  }}</span></td>
+			<td><span class="label label-danger">{{ feature.result.failedScenarioCount || "" }}</span></td>
+			<td><span class="label label-info">{{ feature.result.scenarioCount || "" }}</span></td>
+			<td><span class="label label-success">{{ feature.result.passedStepCount || "" }}</span></td>
+			<td><span class="label label-warning">{{ feature.result.unknownStepCount || "" }}</span></td>
+			<td><span class="label label-danger">{{ feature.result.failedStepCount || "" }}</span></td>
+			<td><span class="label label-warning">{{ feature.result.skippedStepCount || "" }}</span></td>
+			<td><span class="label label-info">{{ feature.result.stepCount || "" }}</span></td>
 		</tr>
 		<tr>
 			<td></td>
@@ -65,15 +65,15 @@
 			<td></td>
 			<td></td>
 			<td><strong>{{ filteredFeatures.length ? duration(sum( filteredFeatures, 'duration')) : '' }}</td>
-			<td><span class="badge badge-success">{{ sum( filteredFeatures, 'passedScenarioCount') }}</span></td>
-			<td><span class="badge badge-warning">{{ sum( filteredFeatures, 'unknownScenarioCount') }}</span></td>
-			<td><span class="badge badge-danger">{{ sum( filteredFeatures, 'failedScenarioCount') }}</span></td>
-			<td><span class="badge">{{ sum( filteredFeatures, 'scenarioCount') }}</span></td>
-			<td><span class="badge badge-success">{{ sum( filteredFeatures, 'passedStepCount') }}</span></td>
-			<td><span class="badge badge-warning">{{ sum( filteredFeatures, 'unknownStepCount') }}</span></td>
-			<td><span class="badge badge-danger">{{ sum( filteredFeatures, 'failedStepCount') }}</span></td>
-			<td><span class="badge badge-warning">{{ sum( filteredFeatures, 'skippedStepCount') }}</span></td>
-			<td><span class="badge">{{ sum( filteredFeatures, 'stepCount') }}</span></td>
+			<td><span class="label label-success">{{ sum( filteredFeatures, 'passedScenarioCount') }}</span></td>
+			<td><span class="label label-warning">{{ sum( filteredFeatures, 'unknownScenarioCount') }}</span></td>
+			<td><span class="label label-danger">{{ sum( filteredFeatures, 'failedScenarioCount') }}</span></td>
+			<td><span class="label label-info">{{ sum( filteredFeatures, 'scenarioCount') }}</span></td>
+			<td><span class="label label-success">{{ sum( filteredFeatures, 'passedStepCount') }}</span></td>
+			<td><span class="label label-warning">{{ sum( filteredFeatures, 'unknownStepCount') }}</span></td>
+			<td><span class="label label-danger">{{ sum( filteredFeatures, 'failedStepCount') }}</span></td>
+			<td><span class="label label-warning">{{ sum( filteredFeatures, 'skippedStepCount') }}</span></td>
+			<td><span class="label label-info">{{ sum( filteredFeatures, 'stepCount') }}</span></td>
 		</tr>
 	</tbody>
 </table>

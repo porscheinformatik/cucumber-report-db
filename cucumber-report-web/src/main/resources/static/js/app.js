@@ -156,29 +156,9 @@
 			redirectTo : '/products/'
 		});
 	} ]);
-	
-	app.directive('loading', function () {
-		return {
-			restrict: 'E',
-			replace: true,
-			template: '<div ng-show=\"loading\" class=\"loading\"><div class=\"loadingBox\"><p id=\"loadingText\">Loading</p><p id=\"loadingSubText\">Please Wait ...</p><p><img src=\"img/load.gif\" /></p></div></div>',
-			link: function (scope, element) {
-				scope.$watch('loading', function (val) {
-					if (val){
-						$(element).show();
-					}else{
-						$(element).hide();
-					}
-				});
-			}
-		};
-	});
-	
-	app.run(function ($rootScope, $templateCache, $location, $routeParams, $sce, localStorageService) {
-		$rootScope.clearCache = function() { 
-			$templateCache.removeAll();
-		};
-		
+
+	app.run(function ($rootScope, $location, $routeParams, $sce, localStorageService) {
+
 		$rootScope.range = function (start, end) {
 			var ret = [];
 			if (!end) {
@@ -326,7 +306,7 @@
 	/**
 	 * ProductList Controller (see products.html)
 	 */
-	app.controller('ProductListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
+	app.controller('ProductListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, restApiQueryRequest, loadJsonFromFilesystem) {
 		$scope.searchArrayName = 'filteredProducts';
 		$scope.orderPredicate = "";
 		$scope.orderReverse = true;
@@ -375,7 +355,7 @@
 	/**
 	 * ReportList Controller (see reports.html)
 	 */
-	app.controller('ReportListCtrl', function($rootScope, $routeParams, $http, $scope, $location, $filter, $templateCache, restApiCollectionRequest, restApiQueryRequest) {
+	app.controller('ReportListCtrl', function($rootScope, $routeParams, $http, $scope, $location, $filter, restApiCollectionRequest, restApiQueryRequest) {
 		$scope.searchArrayName = 'filteredReports';
 		$scope.orderPredicate = "";
 		$scope.orderReverse = true;
@@ -448,7 +428,7 @@
 	/**
 	 * FeatureList Controller (see features.html)
 	 */
-	app.controller('FeatureListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
+	app.controller('FeatureListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, restApiQueryRequest, loadJsonFromFilesystem) {
 		
 		$scope.colName = $routeParams.colName;
 		// if a local report.json file was found: load the data from the filesystem
@@ -486,7 +466,7 @@
 	/**
 	 * Feature Controller (see feature.html)
 	 */
-	app.controller('FeatureCtrl', function($rootScope, $scope, $location, $filter, $routeParams, $templateCache, restApiQueryRequest, loadJsonFromFilesystem) {
+	app.controller('FeatureCtrl', function($rootScope, $scope, $location, $filter, $routeParams, $modal, restApiQueryRequest, loadJsonFromFilesystem) {
 		
 		$scope.colName = $routeParams.colName;
 		$scope.reportDate = $routeParams.date;
@@ -532,50 +512,52 @@
 			});
 
 		});
-		
-		$scope.errorLogLightbox = function(step) {
-			var featureUri = $scope.feature.uri;
-			var comments = "";
 
-			if (step.comments) {
-				$.each(step.comments, function(index, comment) {
-					comments += (comments === "" ? "" : "<br />") + '<dd>' +
-							comment.value + '</dd>';
-				});
-			}
-			$.colorbox({
-				html : '<div class="errorLogContent">' +
-						'<h4><strong>Error Log</strong></h4>' +
-						'<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>' +
-						'<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">' +
-						step.result.error_message +
-						'</pre>' +
-						'<dl>' +
-						'<dt>Failed Step:</dt>' +
-						'<dd>' +
-						step.keyword +
-						step.name +
-						'</dd>' +
-						(comments !== "" ? '<br /><dt>Comments:</dt>' +
-								comments : '') +
-						'<br /><dt>Feature File:</dt>' + '<dd>' + featureUri +
-						":" + step.line + '</dd>' + '</dl>' + '</div>',
-				width : "75%",
-				trapFocus : false
-			});
+		$scope.errorLogLightbox = function(step) {
+      var featureUri = $scope.feature.uri;
+      var comments = "";
+
+      if (step.comments) {
+        $.each(step.comments, function(index, comment) {
+          comments += (comments === "" ? "" : "<br />") + '<dd>' +
+              comment.value + '</dd>';
+        });
+      }
+
+      var template = '<div class="modal-header"><h3>Error Log</h3></div>' +
+        '<div class="modal-body">' +
+        '<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>' +
+        '<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">' +
+        step.result.error_message +
+        '</pre>' +
+        '<dl><dt>Failed Step:</dt><dd>' +
+        step.keyword +
+        step.name +
+        '</dd>' +
+        (comments !== "" ? '<br /><dt>Comments:</dt>' + comments : '') +
+        '<br /><dt>Feature File:</dt>' + '<dd>' + featureUri + ":" + step.line + '</dd>' + '</dl>' + '</div>' +
+        '<div class="modal-footer"><button class="btn btn-primary" ng-click="$close()">Close</button></div>';
+
+      $modal.open({
+        template : template,
+        size: 'lg'
+      });
+
 		};
-		
-		$scope.embeddingLightbox = function(scenarioIdx, stepIdx) {
-			$.colorbox({
-				inline : true,
-				width : "75%",
-				href : '#lightbox_'+scenarioIdx+'_'+stepIdx,
-				closeButton : true,
-				trapFocus : false
-			});
-		};
+
+    $scope.embeddingLightbox = function(embedded) {
+      var scope = $rootScope.$new(true);
+      scope.getEmbedding = $scope.getEmbedding;
+      scope.embedded = embedded;
+      $modal.open({
+        templateUrl : 'pages/embedded_lightbox.html',
+        size : 'lg',
+        scope : scope
+      });
+    };
+
 	});
-	
+
 	/**
 	 * Help Controller (see help.html)
 	 */
@@ -591,7 +573,7 @@
 	/**
 	 * Statistics Controller (see statistics.html)
 	 */
-	app.controller("StatisticsCtrl",function($rootScope, $scope, $http, $location, $routeParams){    
+	app.controller('StatisticsCtrl', function($rootScope, $scope, $http, $location, $routeParams){    
 		$rootScope.loading = true;
 
 		$http.get('rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
