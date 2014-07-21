@@ -576,7 +576,7 @@
 	app.controller('StatisticsCtrl', function($rootScope, $scope, $http, $location, $routeParams){    
 		$rootScope.loading = true;
 
-		$http.get('rest/query/bddReports/' + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
+		$http.get(queryBaseUrl + $routeParams.product + '/?limit=' + $routeParams.limit).success(function(reportData) {
 			var options = {
 				title: $routeParams.product,
 				vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}}, 
@@ -584,13 +584,13 @@
 				isStacked:true,
 				colors:['#5cb85c','#f0ad4e','#d9534f']
 			};
-			
+
 			var googleChart = new google.visualization[$routeParams.type](document.getElementById('chart'));
 			googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)), options);
 			
 			$rootScope.loading = false;
 		});
-		
+
 		$rootScope.goBack = function() {
 			$location.path('/products/');
 		};

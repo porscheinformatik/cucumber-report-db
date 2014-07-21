@@ -1,5 +1,5 @@
 var serverUrl = '/rest/';
-var queryBaseUrl = serverUrl + 'query/bddReports/';
-var collectionBaseUrl = serverUrl + 'collection/bddReports/';
-var fileBaseUrl = serverUrl + 'file/bddReports/';
+var queryBaseUrl = serverUrl + 'query/';
+var collectionBaseUrl = serverUrl + 'collection/';
+var fileBaseUrl = serverUrl + 'file/';
 var reportFileName = 'report.json';
