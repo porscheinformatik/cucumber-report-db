@@ -121,7 +121,7 @@ public class QueryController
             buf.append("]");
         }
         cursor.close();
-
+        
         return buf.toString();
     }
 }

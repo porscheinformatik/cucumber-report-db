@@ -132,6 +132,11 @@
 			controller : 'StatisticsCtrl',
 			resolve : loader
 		})
+		.when('/statistics/rankings/:product', {
+			templateUrl : 'pages/rankings.html',
+			controller : 'RankingsCtrl',
+			resolve : loader
+		})
 		.when('/products/', {
 			templateUrl : 'pages/products.html',
 			controller : 'ProductListCtrl',
@@ -197,6 +202,10 @@
 			localStorageService.add("chartsType", type);
 			localStorageService.add("chartsLimit", limit);
 			$location.path('/statistics/' + product + '/type/' + type + '/limit/' + limit);
+		};
+		
+		$rootScope.openRanking = function(product){
+			$location.path('/statistics/rankings/' + product);
 		};
 		
 		$rootScope.storageType = 'Local storage';
@@ -591,6 +600,108 @@
 			$rootScope.loading = false;
 		});
 
+		$rootScope.goBack = function() {
+			$location.path('/products/');
+		};
+		$rootScope.backBtnEnabled = true;
+	});
+
+	
+	function sortByValue(array, value) {
+	    return array.sort(function(a, b) {
+	        var x = a[value]; var y = b[value];
+	        return ((x < y) ? +1 : ((x > y) ? -1 : 0));
+	    });};
+	
+  
+	function durationInMS(durationInNS){
+			var value=0;
+			
+				value = durationInNS; 	
+				
+			if(value<1000000000)
+			{
+				var msec=0; 
+				if(value%1000000 >= 0)
+				{
+					msec=Math.round(value/1000000); 
+				}
+				return msec > 0 ? msec+'ms' : '<1ms';
+			}
+			else
+			{
+				value = (value / 1000000).toFixed()*1;
+				var timeSpan = new TimeSpan(new Date(value) - new Date(0));
+				return (timeSpan.days>0 ?
+							' (' + timeSpan.toString('d') + ' Day' + 
+								(timeSpan.days>1 ? 's' : '') + 
+							')'  + ':' : ''
+						) + 
+						timeSpan.toString('HH:mm:ss');
+			}
+		};    
+	
+		function sumOverAll(array,value){
+			var sum=0;
+			for (var i in array){
+				   sum += array[i].value;
+			}
+			return sum;
+		};
+		
+	/**
+	 * Rankings Controller (see rankings.html)
+	 */
+	app.controller('RankingsCtrl',function($rootScope, $scope, $http, $location, $routeParams, $filter){
+		$rootScope.loading = true;
+		$scope.durationInMS=durationInMS;
+		$scope.product=$routeParams.product;
+		var rankingsRootPath='/rest/statistics/rankings/';
+		var failedPath='/mostFailedStepsRanking';
+		var executedPath='/mostExecutedStepsRanking';
+		var singleDurationPath='/highestSingleStepDurationRanking';
+		var cumulatedDurationPath='/CumulatedStepDurationRanking';
+		
+		$http.get(rankingsRootPath + $routeParams.product + failedPath)
+		.success(function(steps){
+			$scope.failedSteps=steps;
+			
+			var sum=sumOverAll($scope.failedSteps.results,"value");
+			$scope.sumOverAllFailed=sum;
+			
+			sortByValue($scope.failedSteps.results, "value");
+			$rootScope.loading = false;});
+		
+		$http.get(rankingsRootPath + $routeParams.product + executedPath)
+		.success(function(steps){
+			$scope.executedSteps=steps;
+			
+			var sum=sumOverAll($scope.executedSteps.results,"value");
+			$scope.sumOverAllExecuted=sum;
+			
+			sortByValue($scope.executedSteps.results, "value");
+			$rootScope.loading = false;});
+		
+		$http.get(rankingsRootPath + $routeParams.product + singleDurationPath)
+		.success(function(steps){
+			$scope.singleSteps=steps;
+			
+			var sum=sumOverAll($scope.singleSteps.results,"value");
+			$scope.sumOverAllSingle=sum;
+			
+			sortByValue($scope.singleSteps.results, "value");
+			$rootScope.loading = false;});
+		
+		$http.get(rankingsRootPath + $routeParams.product + cumulatedDurationPath)
+		.success(function(steps){
+			$scope.cumulatedSteps=steps;
+			
+			var sum=sumOverAll($scope.cumulatedSteps.results,"value");
+			$scope.sumOverAllCumulated=sum;
+			
+			sortByValue($scope.cumulatedSteps.results, "value");
+			$rootScope.loading = false;});
+		
 		$rootScope.goBack = function() {
 			$location.path('/products/');
 		};
