@@ -10,5 +10,5 @@
 <stringAttribute key="org.eclipse.jdt.launching.MAIN_TYPE" value="at.porscheinformatik.cucumber.CucumberReportApplication"/>
 <stringAttribute key="org.eclipse.jdt.launching.PROJECT_ATTR" value="cucumber-report-web"/>
 <stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.m2e.launchconfig.sourcepathProvider"/>
-<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dmongodb.host=ATBGHX0017&#13;&#10;-Dspring.liveBeansView.mbeanDomain&#13;&#10;-Dcom.sun.management.jmxremote&#13;&#10;-Dcom.sun.management.jmxremote.port=29483&#13;&#10;-Dcom.sun.management.jmxremote.authenticate=false&#13;&#10;-Dcom.sun.management.jmxremote.ssl=false"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Dspring.liveBeansView.mbeanDomain&#13;&#10;-Dcom.sun.management.jmxremote&#13;&#10;-Dcom.sun.management.jmxremote.port=29483&#13;&#10;-Dcom.sun.management.jmxremote.authenticate=false&#13;&#10;-Dcom.sun.management.jmxremote.ssl=false"/>
 </launchConfiguration>

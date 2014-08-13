@@ -35,5 +35,5 @@ public class CollectionController
     public CommandResult getCollectionData(@PathVariable(value = "collection") String collection) throws IOException
     {
         return mongodb.getCollection(collection).getStats();
-    }
+    }    
 }

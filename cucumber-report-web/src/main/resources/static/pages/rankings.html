@@ -1,0 +1,85 @@
+<ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li><a href="#/products/">Products</a></li>
+  <li class="active">Rankings</li>
+</ol>
+<h2>Steps Ranking of {{product}}</h2>
+<h3><a ng-click="showAll_Failed = ! showAll_Failed" style="cursor: pointer" title="Show All/Top5"><b>Most Failed</b> <i ng-show="!showAll_Failed">- Top 5</i><i ng-show="showAll_Failed">- Complete List</i></a></h3>
+
+<table class="table table-striped table-hover table-bordered">
+	<caption style="text-align:left">Shows a failed steps specific ranking of <b>{{product}}</b>. </caption>
+	<thead>
+		<tr>
+			<th class="firstTD">Step</th>
+			<th>Failed</th>
+			<th><div>in %</div></th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="step in failedSteps.results | filter: regexCondition | filter:searchText | orderBy:'':true">
+			<td class="firstTD" ng-show="(showAll_Failed && $index >=0)||(!showAll_Failed && $index <5)">{{step._id}}</td>
+			<td ng-show="(showAll_Failed && $index >=0)||(!showAll_Failed && $index <5)"><span>{{step.value}}</span></td>
+			<td ng-show="(showAll_Failed && $index >=0)||(!showAll_Failed && $index <5)"><div>{{(step.value/(sumOverAllFailed/100))|number:2}}</div></td>
+		</tr>
+	</tbody>
+</table>
+
+<h3><a ng-click="showAll_MostExecuted = ! showAll_MostExecuted" style="cursor: pointer" title="Show All/Top5"><b>Most Executed</b> <i ng-show="!showAll_MostExecuted">- Top 5</i><i ng-show="showAll_MostExecuted">- Complete List</i></a></h3>
+
+<table class="table table-striped table-hover table-bordered">
+	<caption style="text-align:left">Shows a executed steps specific ranking of <b>{{product}}</b>. </caption>
+	<thead>
+		<tr>
+			<th class="firstTD">Step</th>
+			<th>Executed</th>
+			<th>in %</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="step in executedSteps.results | filter: regexCondition | filter:searchText | orderBy:'':true">
+			<td class="firstTD" ng-show="(showAll_MostExecuted && $index >=0)||(!showAll_MostExecuted && $index <5)">{{step._id}}</td>
+			<td ng-show="(showAll_MostExecuted && $index >=0)||(!showAll_MostExecuted && $index <5)"><span>{{step.value}}</span></td>
+			<td ng-show="(showAll_MostExecuted && $index >=0)||(!showAll_MostExecuted && $index <5)"><div>{{(step.value/(sumOverAllExecuted/100))|number:2}}</div></td>
+		</tr>
+	</tbody>
+</table>
+
+<h3><a ng-click="showAll_SingleStepDurations = ! showAll_SingleStepDurations" style="cursor: pointer" title="Show All/Top5"><b>Highest Single-Step Duration</b> <i ng-show="!showAll_SingleStepDurations">- Top 5</i><i ng-show="showAll_SingleStepDurations">- Complete List</i></a></h3>
+
+<table class="table table-striped table-hover table-bordered">
+	<caption style="text-align:left">Shows a single-step duration specific ranking of <b>{{product}}</b>. </caption>
+	<thead>
+		<tr>
+			<th class="firstTD">Step</th>
+			<th>Highest Duration</th>
+			<th>in %</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="step in singleSteps.results | filter: regexCondition | filter:searchText | orderBy:'':true">
+			<td class="firstTD" ng-show="(showAll_SingleStepDurations && $index >=0)||(!showAll_SingleStepDurations && $index <5)">{{step._id}}</td>
+			<td ng-show="(showAll_SingleStepDurations && $index >=0)||(!showAll_SingleStepDurations && $index <5)"><span>{{step.value ? durationInMS(step.value) : ''}}</span></td>
+			<td ng-show="(showAll_SingleStepDurations && $index >=0)||(!showAll_SingleStepDurations && $index <5)"><div>{{(step.value/(sumOverAllSingle/100))|number:2}}</div></td>
+		</tr>
+	</tbody>
+</table>
+
+<h3><a ng-click="showAll_CumulatedStepDuration = ! showAll_CumulatedStepDuration" style="cursor: pointer" title="Show All/Top5"><b>Cumulated Step Duration</b> <i ng-show="!showAll_CumulatedStepDuration">- Top 5</i><i ng-show="showAll_CumulatedStepDuration">- Complete List</i></a></h3>
+
+<table class="table table-striped table-hover table-bordered">
+	<caption style="text-align:left">Shows a cumulated step duration specific ranking of <b>{{product}}</b>. </caption>
+	<thead>
+		<tr>
+			<th class="firstTD">Step</th>
+			<th>Cumulated Duration</th>
+			<th>in %</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="step in cumulatedSteps.results | filter: regexCondition | filter:searchText | orderBy:'':true">
+			<td class="firstTD" ng-show="(showAll_CumulatedStepDuration && $index >=0)||(!showAll_CumulatedStepDuration && $index <5)">{{step._id}}</td>
+			<td ng-show="(showAll_CumulatedStepDuration && $index >=0)||(!showAll_CumulatedStepDuration && $index <5)"><span>{{step.value ? durationInMS(step.value) : ''}}</span></td>
+			<td ng-show="(showAll_CumulatedStepDuration && $index >=0)||(!showAll_CumulatedStepDuration && $index <5)"><div>{{(step.value/(sumOverAllCumulated/100))|number:2}}</div></td>
+		</tr>
+	</tbody>
+</table>
