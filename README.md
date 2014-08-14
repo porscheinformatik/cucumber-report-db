@@ -5,7 +5,9 @@ Cucumber Report DB
 
 Stores results of BDD tests with Cucumber-JVM in a database and provides reporting capabilities.
 
-The project includes the submodule 'silk-bdd-result-plugin' which is a plugin for fetching the test results from the database into a Silc Central test management system.
+The project includes the submodule 'silk-bdd-result-plugin' which is a plugin for fetching the test results from the database into a Silc Central test management system.  
+
+Want to learn more? [See the wiki.](https://github.com/porscheinformatik/cucumber-report-db/wiki)
 
 ## License
 
