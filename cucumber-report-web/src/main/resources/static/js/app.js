@@ -661,6 +661,15 @@
 		var executedPath='/mostExecutedStepsRanking';
 		var singleDurationPath='/highestSingleStepDurationRanking';
 		var cumulatedDurationPath='/CumulatedStepDurationRanking';
+		$scope.selectedStep=null;
+		$scope.selectStep=function(step){
+			if($scope.selectedStep===step){
+				$scope.selectedStep=null;
+			}
+			else{
+				$scope.selectedStep=step;
+			}
+		};
 		
 		$http.get(rankingsRootPath + $routeParams.product + failedPath)
 		.success(function(steps){
