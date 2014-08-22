@@ -35,6 +35,10 @@
 			<name>Christian Köberl</name>
 			<email>christian.koeberl@porscheinformatik.at</email>
 		</developer>
+		<developer>
+			<name>Klaus Bayrhammer</name>
+			<email>extern.klaus.bayrhammer@porscheinformatik.at</email>
+		</developer>
 	</developers>
 
 	<dependencyManagement>
