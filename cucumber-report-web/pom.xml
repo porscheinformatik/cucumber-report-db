@@ -1,82 +1,126 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<name>Porsche Informatik Cucumber Report Web</name>
-	<artifactId>cucumber-report-web</artifactId>
-	<packaging>war</packaging>
-	
-	<parent>
-		<groupId>at.porscheinformatik.cucumber</groupId>
-		<artifactId>cucumber-report-db-parent</artifactId>
-		<version>1.1.0.BUILD-SNAPSHOT</version>
-		<relativePath>..</relativePath>
-	</parent>
+    <name>Porsche Informatik Cucumber Report Web</name>
+    <artifactId>cucumber-report-web</artifactId>
+    <packaging>war</packaging>
 
-	<dependencies>
+    <parent>
+        <groupId>at.porscheinformatik.cucumber</groupId>
+        <artifactId>cucumber-report-db-parent</artifactId>
+        <version>1.1.0.BUILD-SNAPSHOT</version>
+        <relativePath>..</relativePath>
+    </parent>
 
-		<dependency>
-			<groupId>at.porscheinformatik.cucumber</groupId>
-			<artifactId>cucumber-mongodb-rest</artifactId>
-		</dependency>
+    <dependencies>
 
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-web</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-tomcat</artifactId>
-			<scope>provided</scope>
-		</dependency>
+        <dependency>
+            <groupId>at.porscheinformatik.cucumber</groupId>
+            <artifactId>cucumber-mongodb-rest</artifactId>
+        </dependency>
 
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>angularjs</artifactId>
-			<version>1.2.17</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>angular-ui-bootstrap</artifactId>
-			<version>0.11.0-2</version>
-			<exclusions>
-				<exclusion>
-					<groupId>org.webjars</groupId>
-					<artifactId>bootstrap</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>bootswatch-spacelab</artifactId>
-			<version>3.2.0-1</version>
-		</dependency>
-		<dependency>
-			<groupId>org.webjars</groupId>
-			<artifactId>jquery</artifactId>
-			<version>2.1.0-2</version>
-		</dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-		</dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>angularjs</artifactId>
+            <version>1.2.17</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>angular-ui-bootstrap</artifactId>
+            <version>0.11.0-2</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.webjars</groupId>
+                    <artifactId>bootstrap</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>bootswatch-spacelab</artifactId>
+            <version>3.2.0-1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+            <version>2.1.0-2</version>
+        </dependency>
 
-	</dependencies>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.mortbay.jetty</groupId>
-				<artifactId>jetty-maven-plugin</artifactId>
-				<version>8.1.11.v20130520</version>
-			</plugin>
-			<plugin>
-				<artifactId>maven-war-plugin</artifactId>
-				<configuration>
-					<attachClasses>true</attachClasses>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    </dependencies>
+
+    <developers>
+        <developer>
+            <id>yms</id>
+            <name>Stefan Mayer</name>
+            <email>s.mayer@porscheinformatik.at</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>ypa</id>
+            <name>Peyman Aparviz</name>
+            <email>aparviz.peyman@porscheinformatik.at</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>pro</id>
+            <name>Ortwin Probst</name>
+            <email>ortwin.probst@porscheinformatik.at</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>koc</id>
+            <name>Christian Köberl</name>
+            <email>christian.koeberl@porscheinformatik.at</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>xbk</id>
+            <name>Klaus Bayrhammer</name>
+            <email>extern.klaus.bayrhammer@porscheinformatik.at</email>
+            <roles>
+                <role>Developer</role>
+            </roles>
+        </developer>
+    </developers>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.mortbay.jetty</groupId>
+                <artifactId>jetty-maven-plugin</artifactId>
+                <version>8.1.11.v20130520</version>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <configuration>
+                    <attachClasses>true</attachClasses>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
