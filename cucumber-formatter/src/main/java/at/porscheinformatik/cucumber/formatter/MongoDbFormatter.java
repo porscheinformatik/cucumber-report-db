@@ -1,7 +1,14 @@
 package at.porscheinformatik.cucumber.formatter;
 
-import java.io.File;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
+
+import cucumber.runtime.CucumberException;
+import gherkin.formatter.NiceAppendable;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +20,7 @@ import at.porscheinformatik.cucumber.nosql.driver.MongoDbDriver;
 /**
  * @author Stefan Mayer (yms)
  */
-public abstract class MongoDbFormatter extends AbstractDbFormatter
+public abstract class MongoDbFormatter extends AbstractJsonFormatter
 {
     private static final Logger LOG = LoggerFactory.getLogger(MongoDbFormatter.class);
 
@@ -24,12 +31,12 @@ public abstract class MongoDbFormatter extends AbstractDbFormatter
     protected abstract String getDbName();
     protected abstract String getCollection();
     
-    public MongoDbFormatter(File htmlReportDir)
+    public MongoDbFormatter()
     {
-        super(htmlReportDir);
+        super();
         connect();
     }
-    
+
     public void connect()
     {
         try
@@ -40,10 +47,46 @@ public abstract class MongoDbFormatter extends AbstractDbFormatter
         }
         catch (Exception e)
         {
-            //app-check workaround (yms): 
-            //throw new CucumberException(e);
             LOG.warn("Could not connect to NoSQL database!");
         }
+    }
+
+    protected void dbInsertJson(String data)
+    {
+        try
+        {
+            databaseDriver.insertData(data);
+        }
+        catch (Exception e)
+        {
+            LOG.warn("Could not insert JSON data to NoSQL database!");
+        }
+    }
+
+    protected void dbInsertMedia(String fileName, InputStream inputStream)
+    {
+        try
+        {
+            databaseDriver.insertMedia(fileName, inputStream);
+        }
+        catch (Exception e)
+        {
+            LOG.warn("Could not insert media data (" + fileName + ") to NoSQL database!");
+        }
+    }
+
+    @Override
+    protected String doEmbedding(String extension, byte[] data)
+    {
+        String fileName = new StringBuilder("embedded")
+                .append(embeddedIndex++)
+                .append("_")
+                .append(getFormattedDate())
+                .append(".")
+                .append(extension).toString();
+
+        dbInsertMedia(fileName, new ByteArrayInputStream(data));
+        return fileName;
     }
 
     @Override
@@ -54,30 +97,36 @@ public abstract class MongoDbFormatter extends AbstractDbFormatter
     }
 
     @Override
-    protected void dbInsertJson(String data)
+    protected NiceAppendable jsOut()
     {
         try
         {
-            databaseDriver.insertData(data);
+            return new NiceAppendable(new OutputStreamWriter(new DbOutputStream(), "UTF-8"));
         }
-        catch (Exception e)
+        catch (UnsupportedEncodingException e)
         {
-            //app-check workaround (yms):
-            LOG.warn("Could not insert JSON data to NoSQL database!");
+            throw new CucumberException(e);
         }
     }
 
-    @Override
-    protected void dbInsertMedia(String fileName, InputStream inputStream)
+    public class DbOutputStream extends OutputStream
     {
-        try
+        private static final String DATE_REGEX = "\"date\":\"(.*)\"";
+        private static final String DATE_REPLACEMENT = "\"date\":\\{\"\\$date\":\"$1\"\\}";
+
+        private StringBuilder output = new StringBuilder();
+
+        @Override
+        public void write(int b) throws IOException
         {
-            databaseDriver.insertMedia(fileName, inputStream);
+            output.append((char) b);
         }
-        catch (Exception e)
+
+        @Override
+        public void close() throws IOException
         {
-            //app-check workaround (yms):
-            LOG.warn("Could not insert media data (" + fileName + ") to NoSQL database!");
+            final String preparedJsonForDb = output.toString().replaceAll(DATE_REGEX, DATE_REPLACEMENT);
+            dbInsertJson(preparedJsonForDb);
         }
     }
 

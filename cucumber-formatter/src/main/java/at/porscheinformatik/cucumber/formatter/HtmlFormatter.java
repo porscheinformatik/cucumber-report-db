@@ -1,17 +1,26 @@
 package at.porscheinformatik.cucumber.formatter;
 
-import cucumber.runtime.CucumberException;
-import gherkin.formatter.JSONFormatter;
-import gherkin.formatter.model.Scenario;
-
-import java.io.*;
+import java.io.Closeable;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import cucumber.runtime.CucumberException;
+import gherkin.formatter.JSONFormatter;
+import gherkin.formatter.NiceAppendable;
+import gherkin.formatter.model.Scenario;
+
 /**
  * Formats Cucumber results in a HTML page with search capability.
- * <p>
+ * <p/>
  * This formatter delegates to {@link JSONFormatter} for generating the JSON report file. After that it includes a
  * simple <a href="http://angularjs.org/">AngularJS</a> application that reads the JSON and displays it in the browser.
  * The app includes a simple search mechanism.
@@ -21,41 +30,41 @@ public class HtmlFormatter extends AbstractJsonFormatter
     protected static final String JSON_REPORT_FILENAME = "report.json";
     protected static final String FORMATTER_DIR = "/";
     protected static final String[] TEXT_ASSETS =
-    {
-        "index.html",
-        
-        "pages/feature.html",
-        "pages/features.html",
+            {
+                    "index.html",
 
-        "css/bootstrap-spacelab.css",
-        "css/colorbox.css",
-        "css/style.css",
-        
-        "js/angular.min.js",
-        "js/angular-route.min.js",
-        "js/angular.localStorageModule.js",
-        "js/app.js",
-        "js/charts.js",
-        "js/bootstrap.min.js",
-        "js/config.js",
-        "js/dateAndTime.js",
-        "js/jquery.colorbox-min.js",
-        "js/jquery.min.js",
-        "js/json3.min.js",
-        "js/lightbox.js",
-        "js/ui-bootstrap-tpls-0.5.0.min.js",
-        
-        "img/loading.gif",
-        "img/load.gif",
-        "img/controls.png",
-        "img/border1.png",
-        "img/border2.png",
-        
-        "fonts/glyphicons-halflings-regular.eot",
-        "fonts/glyphicons-halflings-regular.svg",
-        "fonts/glyphicons-halflings-regular.ttf",
-        "fonts/glyphicons-halflings-regular.woff"
-    };
+                    "pages/feature.html",
+                    "pages/features.html",
+
+                    "css/bootstrap-spacelab.css",
+                    "css/colorbox.css",
+                    "css/style.css",
+
+                    "js/angular.min.js",
+                    "js/angular-route.min.js",
+                    "js/angular.localStorageModule.js",
+                    "js/app.js",
+                    "js/charts.js",
+                    "js/bootstrap.min.js",
+                    "js/config.js",
+                    "js/dateAndTime.js",
+                    "js/jquery.colorbox-min.js",
+                    "js/jquery.min.js",
+                    "js/json3.min.js",
+                    "js/lightbox.js",
+                    "js/ui-bootstrap-tpls-0.5.0.min.js",
+
+                    "img/loading.gif",
+                    "img/load.gif",
+                    "img/controls.png",
+                    "img/border1.png",
+                    "img/border2.png",
+
+                    "fonts/glyphicons-halflings-regular.eot",
+                    "fonts/glyphicons-halflings-regular.svg",
+                    "fonts/glyphicons-halflings-regular.ttf",
+                    "fonts/glyphicons-halflings-regular.woff"
+            };
 
     protected final File htmlReportDir;
     protected final File htmlReportJsDir;
@@ -74,7 +83,6 @@ public class HtmlFormatter extends AbstractJsonFormatter
 
     public HtmlFormatter(File htmlReportDir)
     {
-        super(htmlReportDir);
         this.htmlReportDir = htmlReportDir;
         this.htmlReportJsDir = new File(htmlReportDir + "/js");
         this.htmlReportCssDir = new File(htmlReportDir + "/css");
@@ -109,21 +117,22 @@ public class HtmlFormatter extends AbstractJsonFormatter
     protected String doEmbedding(String extension, byte[] data)
     {
         String fileName = new StringBuilder("embedded")
-            .append(embeddedIndex++)
-            .append(".")
-            .append(extension).toString();
+                .append(embeddedIndex++)
+                .append(".")
+                .append(extension).toString();
         writeBytesAndClose(data, reportFileOutputStream(htmlReportDir, fileName));
 
         return fileName;
     }
 
     @Override
-    protected Appendable jsOut(File htmlReportDir)
+    protected NiceAppendable jsOut()
     {
         htmlReportDir.mkdirs();
         try
         {
-            return new OutputStreamWriter(reportFileOutputStream(htmlReportDir, JSON_REPORT_FILENAME), "UTF-8");
+            return new NiceAppendable(new OutputStreamWriter(reportFileOutputStream(htmlReportDir, JSON_REPORT_FILENAME),
+                    "UTF-8"));
         }
         catch (UnsupportedEncodingException e)
         {
@@ -200,12 +209,14 @@ public class HtmlFormatter extends AbstractJsonFormatter
     }
 
     @Override
-    public void startOfScenarioLifeCycle(Scenario scenario) {
+    public void startOfScenarioLifeCycle(Scenario scenario)
+    {
 
     }
 
     @Override
-    public void endOfScenarioLifeCycle(Scenario scenario) {
+    public void endOfScenarioLifeCycle(Scenario scenario)
+    {
 
     }
 }

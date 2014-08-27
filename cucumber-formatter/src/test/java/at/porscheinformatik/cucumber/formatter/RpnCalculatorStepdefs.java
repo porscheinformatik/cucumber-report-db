@@ -1,4 +1,8 @@
-package cucumber.examples.java.calculator;
+package at.porscheinformatik.cucumber.formatter;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -6,10 +10,6 @@ import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
-
-import java.util.List;
-
-import static org.junit.Assert.assertEquals;
 
 public class RpnCalculatorStepdefs {
     private RpnCalculator calc;

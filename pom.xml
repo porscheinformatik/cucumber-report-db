@@ -18,12 +18,10 @@
 
 	<developers>
 		<developer>
-			<id>yms</id>
 			<name>Stefan Mayer</name>
 			<email>s.mayer@porscheinformatik.at</email>
 		</developer>
 		<developer>
-			<id>ypa</id>
 			<name>Peyman Aparviz</name>
 			<email>aparviz.peyman@porscheinformatik.at</email>
 		</developer>

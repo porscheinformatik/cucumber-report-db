@@ -1,5 +1,12 @@
 package at.porscheinformatik.cucumber.formatter;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import gherkin.deps.com.google.gson.GsonBuilder;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.NiceAppendable;
@@ -14,14 +21,6 @@ import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.ScenarioOutline;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.TagStatement;
-
-import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public abstract class AbstractJsonFormatter implements Formatter, Reporter
 {
@@ -39,7 +38,6 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     };
 
     protected final List<Map<String, Object>> allFeatures = new ArrayList<Map<String, Object>>();
-    protected final NiceAppendable out;
 
     protected Map<String, Object> currentFeature;
     protected Map<String, Object> currentScenario;
@@ -51,11 +49,10 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
 
     protected abstract String doEmbedding(String extension, byte[] data);
 
-    protected abstract Appendable jsOut(File htmlReportDir);
+    protected abstract NiceAppendable jsOut();
 
-    public AbstractJsonFormatter(File htmlReportDir)
+    public AbstractJsonFormatter()
     {
-        this.out = new NiceAppendable(jsOut(htmlReportDir));
         this.date = new Date();
     }
 
@@ -149,13 +146,13 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
         Map<String, Object> report = new HashMap<String, Object>();
         report.put("features", allFeatures);
         report.put("date", date);
-        out.append(new GsonBuilder().setDateFormat(dateFormat).create().toJson(report));
+        jsOut().append(new GsonBuilder().setDateFormat(dateFormat).create().toJson(report));
     }
 
     @Override
     public void close()
     {
-        out.close();
+        jsOut().close();
     }
 
     @Override
@@ -301,5 +298,17 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     protected String getFormattedDate()
     {
         return new SimpleDateFormat(dateFormat).format(date);
+    }
+
+    @Override
+    public void startOfScenarioLifeCycle(final Scenario scenario)
+    {
+
+    }
+
+    @Override
+    public void endOfScenarioLifeCycle(final Scenario scenario)
+    {
+
     }
 }
