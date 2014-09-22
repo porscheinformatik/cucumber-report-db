@@ -7,72 +7,61 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
-import cucumber.runtime.CucumberException;
 import gherkin.formatter.NiceAppendable;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.lang3.StringUtils;
 
-import at.porscheinformatik.cucumber.nosql.db.MongoDB;
-import at.porscheinformatik.cucumber.nosql.driver.DatabaseDriver;
-import at.porscheinformatik.cucumber.nosql.driver.MongoDbDriver;
+import com.sun.jersey.api.client.Client;
+import com.sun.jersey.api.client.WebResource;
+import com.sun.jersey.api.client.config.DefaultClientConfig;
 
 /**
- * @author Stefan Mayer (yms)
+ * Use SystemProperty {@link at.porscheinformatik.cucumber.formatter.MongoDbFormatter#BASEURL_SYS_PROP} to specify a
+ * url where the cucumber-report-web is provided
  */
-public abstract class MongoDbFormatter extends AbstractJsonFormatter
+public class MongoDbFormatter extends AbstractJsonFormatter
 {
-    private static final Logger LOG = LoggerFactory.getLogger(MongoDbFormatter.class);
 
-    private DatabaseDriver databaseDriver;
+    public static final String DEFAULT_COLLECTION = "collection_version";
 
-    protected abstract String getHost();
-    protected abstract int getPort();
-    protected abstract String getDbName();
-    protected abstract String getCollection();
-    
-    public MongoDbFormatter()
+    public static final String BASEURL_SYS_PROP = "cucumber.report.server.baseUrl";
+    public static final String DEFAULT_BASE_URL = "http://localhost:8080";
+
+    private NiceAppendable jsonOutput;
+
+    private WebResource restResource;
+
+    public MongoDbFormatter() throws UnsupportedEncodingException
     {
-        super();
-        connect();
+        Client client = Client.create(new DefaultClientConfig());
+        restResource = client.resource(getBaseUrl());
+        jsonOutput = new NiceAppendable(new OutputStreamWriter(new DbOutputStream(), "UTF-8"));
     }
 
-    public void connect()
+    private String getBaseUrl()
     {
-        try
+        String baseUrlFromProperty = System.getProperty(BASEURL_SYS_PROP);
+        if (StringUtils.isEmpty(baseUrlFromProperty))
         {
-            MongoDB mongoDB = new MongoDB(getHost(), getPort(), getDbName(), getCollection());
-            databaseDriver = new MongoDbDriver(mongoDB);
-            databaseDriver.connect();
+            return DEFAULT_BASE_URL;
         }
-        catch (Exception e)
-        {
-            LOG.warn("Could not connect to NoSQL database!");
-        }
+        return baseUrlFromProperty;
     }
 
     protected void dbInsertJson(String data)
     {
-        try
-        {
-            databaseDriver.insertData(data);
-        }
-        catch (Exception e)
-        {
-            LOG.warn("Could not insert JSON data to NoSQL database!");
-        }
+        restResource.path("rest").path("cucumberplugin").path(getCollection()).path("report").entity(data).post();
     }
 
     protected void dbInsertMedia(String fileName, InputStream inputStream)
     {
-        try
-        {
-            databaseDriver.insertMedia(fileName, inputStream);
-        }
-        catch (Exception e)
-        {
-            LOG.warn("Could not insert media data (" + fileName + ") to NoSQL database!");
-        }
+        restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media").path(fileName)
+                .entity(inputStream).post();
+    }
+
+    protected String getCollection()
+    {
+        return DEFAULT_COLLECTION;
     }
 
     @Override
@@ -90,23 +79,9 @@ public abstract class MongoDbFormatter extends AbstractJsonFormatter
     }
 
     @Override
-    public void close()
-    {
-        super.close();
-        databaseDriver.close();
-    }
-
-    @Override
     protected NiceAppendable jsOut()
     {
-        try
-        {
-            return new NiceAppendable(new OutputStreamWriter(new DbOutputStream(), "UTF-8"));
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new CucumberException(e);
-        }
+        return jsonOutput;
     }
 
     public class DbOutputStream extends OutputStream

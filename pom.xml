@@ -72,7 +72,13 @@
 				<version>2.2.4</version>
 			</dependency>
 
-			<!-- Dependencies for testing -->
+            <dependency>
+                <groupId>com.sun.jersey</groupId>
+                <artifactId>jersey-client</artifactId>
+                <version>1.18.1</version>
+            </dependency>
+
+            <!-- Dependencies for testing -->
 			<dependency>
 				<groupId>info.cukes</groupId>
 				<artifactId>cucumber-java</artifactId>
