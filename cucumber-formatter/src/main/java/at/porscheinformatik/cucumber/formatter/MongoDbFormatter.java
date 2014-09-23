@@ -25,7 +25,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     public static final String DEFAULT_COLLECTION = "collection_version";
 
     public static final String BASEURL_SYS_PROP = "cucumber.report.server.baseUrl";
-    public static final String DEFAULT_BASE_URL = "http://localhost:8080";
+    public static final String DEFAULT_BASE_URL = "http://localhost:8081";
 
     private NiceAppendable jsonOutput;
 

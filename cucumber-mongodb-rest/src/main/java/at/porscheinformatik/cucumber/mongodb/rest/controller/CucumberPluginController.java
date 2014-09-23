@@ -4,8 +4,6 @@ import java.io.IOException;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.MongoDbFactory;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -24,8 +22,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/rest/cucumberplugin")
 public class CucumberPluginController
 {
-    private static final Logger LOGGER = LoggerFactory.getLogger(CucumberPluginController.class);
-
     @Autowired
     private MongoTemplate mongoTemplate;
 

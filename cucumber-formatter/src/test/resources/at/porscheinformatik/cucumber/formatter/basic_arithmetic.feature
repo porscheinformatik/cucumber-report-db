@@ -4,16 +4,18 @@ Feature: Basic Arithmetic
   Background: A Calculator
     Given a calculator I just turned on
 
+  @SILK_ID_1
   Scenario: Addition
   # Try to change one of the values below to provoke a failure
     When I add 4 and 5
     Then the result is 9
 
+    @SILK_ID_2
   Scenario: Another Addition
   # Try to change one of the values below to provoke a failure
     When I add 4 and 7
     Then the result is 11
-
+    @SILK_ID_3
   Scenario Outline: Many additions
     Given the previous entries:
       | first | second | operation |

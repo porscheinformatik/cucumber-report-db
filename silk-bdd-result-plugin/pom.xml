@@ -14,14 +14,13 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>at.porscheinformatik.cucumber</groupId>
-			<artifactId>cucumber-nosql-db</artifactId>
-		</dependency>
-
-		<dependency>
 			<groupId>commons-io</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
+        <dependency>
+            <groupId>com.sun.jersey</groupId>
+            <artifactId>jersey-client</artifactId>
+        </dependency>
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
