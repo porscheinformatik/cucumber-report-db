@@ -656,7 +656,7 @@
 		$rootScope.loading = true;
 		$scope.durationInMS=durationInMS;
 		$scope.product=$routeParams.product;
-		var rankingsRootPath='/rest/statistics/rankings/';
+		var rankingsRootPath='rest/statistics/rankings/';
 		var failedPath='/mostFailedStepsRanking';
 		var executedPath='/mostExecutedStepsRanking';
 		var singleDurationPath='/highestSingleStepDurationRanking';

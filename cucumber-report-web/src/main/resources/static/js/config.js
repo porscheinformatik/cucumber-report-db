@@ -1,4 +1,4 @@
-var serverUrl = '/rest/';
+var serverUrl = 'rest/';
 var queryBaseUrl = serverUrl + 'query/';
 var collectionBaseUrl = serverUrl + 'collection/';
 var fileBaseUrl = serverUrl + 'file/';
