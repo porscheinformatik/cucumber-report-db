@@ -84,6 +84,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
 
     public HtmlFormatter(File htmlReportDir) throws UnsupportedEncodingException
     {
+        htmlReportDir.mkdirs();
         this.htmlReportDir = htmlReportDir;
         this.htmlReportJsDir = new File(htmlReportDir + "/js");
         this.htmlReportCssDir = new File(htmlReportDir + "/css");
@@ -103,7 +104,6 @@ public class HtmlFormatter extends AbstractJsonFormatter
 
     private void copyReportFiles(File htmlReportDir)
     {
-        htmlReportDir.mkdirs();
         htmlReportJsDir.mkdirs();
         htmlReportCssDir.mkdirs();
         htmlReportImgDir.mkdirs();
