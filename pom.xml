@@ -5,7 +5,7 @@
 	<groupId>at.porscheinformatik.cucumber</groupId>
 	<artifactId>cucumber-report-db-parent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1.0.RC8-SNAPSHOT</version>
+	<version>1.1.0.RC8</version>
 
 	<name>Porsche Informatik Cucumber Report DB Parent</name>
 	<description>Stores results of BDD tests with Cucumber-JVM in a database and provides reporting capabilities</description>
@@ -132,7 +132,7 @@
 	<scm>
 		<connection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</connection>
 		<developerConnection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</developerConnection>
-		<tag>HEAD</tag>
+		<tag>1.1.0.RC8</tag>
 		<url>https://github.com/porscheinformatik/cucumber-report-db</url>
 	</scm>
 
