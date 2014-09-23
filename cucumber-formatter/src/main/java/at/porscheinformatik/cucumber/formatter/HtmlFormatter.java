@@ -80,8 +80,9 @@ public class HtmlFormatter extends AbstractJsonFormatter
     protected int currentStepResultIndex;
 
     protected Date date;
+    private NiceAppendable jsonOutput ;
 
-    public HtmlFormatter(File htmlReportDir)
+    public HtmlFormatter(File htmlReportDir) throws UnsupportedEncodingException
     {
         this.htmlReportDir = htmlReportDir;
         this.htmlReportJsDir = new File(htmlReportDir + "/js");
@@ -89,6 +90,8 @@ public class HtmlFormatter extends AbstractJsonFormatter
         this.htmlReportImgDir = new File(htmlReportDir + "/img");
         this.htmlReportFontsDir = new File(htmlReportDir + "/fonts");
         this.htmlReportPagesDir = new File(htmlReportDir + "/pages");
+        jsonOutput = new NiceAppendable(new OutputStreamWriter(reportFileOutputStream(htmlReportDir,
+                JSON_REPORT_FILENAME), "UTF-8"));
     }
 
     @Override
@@ -100,6 +103,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
 
     private void copyReportFiles(File htmlReportDir)
     {
+        htmlReportDir.mkdirs();
         htmlReportJsDir.mkdirs();
         htmlReportCssDir.mkdirs();
         htmlReportImgDir.mkdirs();
@@ -128,16 +132,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
     @Override
     protected NiceAppendable jsOut()
     {
-        htmlReportDir.mkdirs();
-        try
-        {
-            return new NiceAppendable(new OutputStreamWriter(reportFileOutputStream(htmlReportDir, JSON_REPORT_FILENAME),
-                    "UTF-8"));
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            throw new CucumberException(e);
-        }
+        return jsonOutput;
     }
 
     protected OutputStream reportFileOutputStream(File htmlReportDir, String fileName)
