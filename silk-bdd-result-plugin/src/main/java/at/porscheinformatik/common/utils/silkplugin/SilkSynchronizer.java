@@ -9,10 +9,11 @@ import java.io.InputStream;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
-import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
@@ -30,7 +31,7 @@ public class SilkSynchronizer
     public static final String REPORT_OBSOLETE_LIMIT_PROPERTY = "report.obsolete-limit";
     public static final String COLLECTION_NAMING_REGEX_CONVENTION = "collection.naming-convention";
 
-    private static Logger LOGGER;
+    private static final Logger LOGGER = LoggerFactory.getLogger(SilkSynchronizer.class);
 
     private Properties config;
     private WebResource restResource;
@@ -38,7 +39,6 @@ public class SilkSynchronizer
     @Before
     public void preCondition()
     {
-        LOGGER = Logger.getLogger(SilkSynchronizer.class);
         LOGGER.info("Starting Turntable-Silk-BDD-Plugin");
 
         loadConfigurations(CONFIG_FILE);
@@ -60,7 +60,7 @@ public class SilkSynchronizer
         }
         catch (IOException e)
         {
-            LOGGER.error(e);
+            LOGGER.error("Error loading properties", e);
             fail("[Error] Could not read the configuration file!");
         }
         return config;
