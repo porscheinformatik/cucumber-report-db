@@ -7,6 +7,7 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
+import cucumber.runtime.CucumberException;
 import gherkin.formatter.NiceAppendable;
 
 import org.apache.commons.lang3.StringUtils;
@@ -31,11 +32,18 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     private WebResource restResource;
 
-    public MongoDbFormatter() throws UnsupportedEncodingException
+    public MongoDbFormatter()
     {
         Client client = Client.create(new DefaultClientConfig());
         restResource = client.resource(getBaseUrl());
-        jsonOutput = new NiceAppendable(new OutputStreamWriter(new DbOutputStream(), "UTF-8"));
+        try
+        {
+            jsonOutput = new NiceAppendable(new OutputStreamWriter(new DbOutputStream(), "UTF-8"));
+        }
+        catch (UnsupportedEncodingException e)
+        {
+            throw new CucumberException(e);
+        }
     }
 
     private String getBaseUrl()
@@ -67,12 +75,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     @Override
     protected String doEmbedding(String extension, byte[] data)
     {
-        String fileName = new StringBuilder("embedded")
-                .append(embeddedIndex++)
-                .append("_")
-                .append(getFormattedDate())
-                .append(".")
-                .append(extension).toString();
+        String fileName = String.format("embedded%d_%s.%s", embeddedIndex++, getFormattedDate(), extension);
 
         dbInsertMedia(fileName, new ByteArrayInputStream(data));
         return fileName;

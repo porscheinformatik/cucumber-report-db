@@ -10,13 +10,10 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.util.Date;
-import java.util.List;
-import java.util.Map;
 
 import cucumber.runtime.CucumberException;
 import gherkin.formatter.JSONFormatter;
 import gherkin.formatter.NiceAppendable;
-import gherkin.formatter.model.Scenario;
 
 /**
  * Formats Cucumber results in a HTML page with search capability.
@@ -73,11 +70,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
     protected final File htmlReportFontsDir;
     protected final File htmlReportPagesDir;
 
-    protected Map<String, Object> currentFeature;
-    protected Map<String, Object> currentScenario;
-    protected List<Map<String, Object>> currentSteps;
     protected int embeddedIndex = 1;
-    protected int currentStepResultIndex;
 
     protected Date date;
     private NiceAppendable jsonOutput ;
@@ -120,10 +113,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
     @Override
     protected String doEmbedding(String extension, byte[] data)
     {
-        String fileName = new StringBuilder("embedded")
-                .append(embeddedIndex++)
-                .append(".")
-                .append(extension).toString();
+        String fileName = String.format("embedded%d.%s", embeddedIndex++, extension);
         writeBytesAndClose(data, reportFileOutputStream(htmlReportDir, fileName));
 
         return fileName;
@@ -199,19 +189,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
         }
         catch (IOException ioe)
         {
-            // ignore
+            ioe.printStackTrace();
         }
-    }
-
-    @Override
-    public void startOfScenarioLifeCycle(Scenario scenario)
-    {
-
-    }
-
-    @Override
-    public void endOfScenarioLifeCycle(Scenario scenario)
-    {
-
     }
 }

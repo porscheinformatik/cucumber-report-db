@@ -78,7 +78,7 @@ public class QueryController
 
     private DBCursor findByValue(DBCollection dbCollection, String field, String value)
     {
-        Object val = null;
+        Object val;
         try
         {
             val = Long.parseLong(value);

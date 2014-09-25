@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.mapreduce.MapReduceResults;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,12 +25,13 @@ public class StatisticsController
     @Autowired
     private MongoOperations mongodb;
     
-    private String mapStepsDurations="classpath:mapStepsDurations.js";
-    private String reduceCumulatedStepDurations="classpath:reduceCumulatedStepDurations.js";
-    private String reduceHighestSingleStepDurations="classpath:reduceHighestSingleStepDurations.js";
-    private String mapMostFailedSteps="classpath:mapMostFailedSteps.js";
-    private String mapMostExecutedSteps="classpath:mapMostExecutedSteps.js";
-    
+    private static final String MAP_STEPS_DURATIONS ="classpath:mapStepsDurations.js";
+    private static final String MAP_MOST_FAILED_STEPS ="classpath:mapMostFailedSteps.js";
+    private static final String MAP_MOST_EXECUTED_STEPS ="classpath:mapMostExecutedSteps.js";
+
+    private static final String REDUCE_HIGHEST_SINGLE_STEP_DURATIONS ="classpath:reduceHighestSingleStepDurations.js";
+    private static final String REDUCE_CUMULATED_STEP_DURATIONS ="classpath:reduceCumulatedStepDurations.js";
+
     @RequestMapping(value = "/{collection}/CumulatedStepDurationRanking", method = RequestMethod.GET)
     @ResponseBody
     public void findHighestCumulatedStepDuration(
@@ -37,7 +39,7 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, mapStepsDurations, reduceCumulatedStepDurations, response);
+    	mapReduce(collection, MAP_STEPS_DURATIONS, REDUCE_CUMULATED_STEP_DURATIONS, response);
     }
 
 
@@ -48,7 +50,7 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, mapStepsDurations, reduceHighestSingleStepDurations, response);
+    	mapReduce(collection, MAP_STEPS_DURATIONS, REDUCE_HIGHEST_SINGLE_STEP_DURATIONS, response);
     }
     
     @RequestMapping(value = "/{collection}/mostFailedStepsRanking", method = RequestMethod.GET)
@@ -58,7 +60,7 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, mapMostFailedSteps, reduceCumulatedStepDurations, response);
+    	mapReduce(collection, MAP_MOST_FAILED_STEPS, REDUCE_CUMULATED_STEP_DURATIONS, response);
     }
     
     @RequestMapping(value = "/{collection}/mostExecutedStepsRanking", method = RequestMethod.GET)
@@ -68,13 +70,13 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, mapMostExecutedSteps, reduceCumulatedStepDurations, response);
+    	mapReduce(collection, MAP_MOST_EXECUTED_STEPS, REDUCE_CUMULATED_STEP_DURATIONS, response);
     }
     
     private void mapReduce(String collection, String mapFunction, String reduceFunction, HttpServletResponse response)
     		throws IOException {
     	MapReduceResults<ValueObject> allCollectionSteps=mongodb.mapReduce(collection, mapFunction, reduceFunction, ValueObject.class);
-		response.setContentType("application/json");
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
 		response.getWriter().write(allCollectionSteps.getRawResults().toString());
     }
 }
