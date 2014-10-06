@@ -55,7 +55,7 @@ public class RpnCalculatorStepdefs
         try
         {
             FileInputStream fis;
-            fis = new FileInputStream(new File("C:\\tmp\\belegStorno.png"));
+            fis = new FileInputStream(new File("src/main/resources/img/loading.gif"));
             scenario.embed(org.apache.commons.io.IOUtils.toByteArray(fis), "image/bmp");
         }
         catch (java.lang.Exception e)
