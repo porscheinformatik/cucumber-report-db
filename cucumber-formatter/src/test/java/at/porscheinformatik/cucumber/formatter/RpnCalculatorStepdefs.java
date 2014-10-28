@@ -2,7 +2,6 @@ package at.porscheinformatik.cucumber.formatter;
 
 import static org.junit.Assert.assertEquals;
 
-import java.io.File;
 import java.io.FileInputStream;
 import java.util.List;
 
@@ -54,8 +53,7 @@ public class RpnCalculatorStepdefs
     {
         try
         {
-            FileInputStream fis;
-            fis = new FileInputStream(new File("src/main/resources/img/loading.gif"));
+            FileInputStream fis = new FileInputStream(this.getClass().getResource("/img/loading.gif").getFile());
             scenario.embed(org.apache.commons.io.IOUtils.toByteArray(fis), "image/bmp");
         }
         catch (java.lang.Exception e)
