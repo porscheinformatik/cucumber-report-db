@@ -366,7 +366,6 @@
 	});
 	
 
-	google.load('visualization', '1', {packages: ['corechart']});
 	$('#ReportFileName').text(reportFileName);
 	$('#ReportFileNameLink').attr('href',reportFileName);
 	$('#ServerURL').text(serverUrl);
