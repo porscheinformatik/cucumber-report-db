@@ -7,19 +7,16 @@
 <table class="table table-striped table-hover table-bordered">
 	<thead> 
 		<tr class="sortToggle">
-			<th>Options</th>
 			<th class="firstTD">Features</th>
 			<th>Statistics</th>
 			<th><span ng-click="orderPredicate = 'report[\'date\']'; orderReverse=!orderReverse;">Datum</span></th>
+            <th>Admin</th>
 		</tr>
 	</thead>
 	<tbody>
 		<tr ng-repeat="report in filteredReports | filter: only | filter:searchText">
-			<td>
-				<button ng-click="featuresOverview(report.date.$date)" class="btn btn-primary btn-sm">Open</button>
-			</td>
 			<td  class="firstTD tdCollapseBox" shortener-directive>
-				<div class="tdCollapse" ng-click="boolUncollapse = !boolUncollapse" ng-class="{'tdUncollapse':boolUncollapse}">
+				<div class="tdCollapse" ng-click="featuresOverview(report.date.$date)" ng-class="{'tdUncollapse':boolUncollapse}">
 					{{report.featureNames}}
 				</div>
 			</td>
@@ -32,6 +29,10 @@
 				</div>
 			</td>
 			<td class="noWrap">{{ report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
+            <td>
+                <button ng-click="deleteDocument(report._id.$oid)" class="btn-sm btn-danger"><span
+                    class="glyphicon glyphicon-remove-sign"></span></button>
+            </td>
 		</tr>
 	</tbody>
 </table>

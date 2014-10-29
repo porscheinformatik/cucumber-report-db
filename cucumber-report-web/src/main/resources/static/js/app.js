@@ -379,59 +379,73 @@
 		$scope.featuresOverview = function(date) {
 			$location.path('/reports/' + $routeParams.colName + '/features/' + date);
 		};
+        $scope.deleteDocument = function (id) {
+            $http.delete(queryBaseUrl + $routeParams.colName + '/' + id);
+            load();
+        };
  
 		$rootScope.loading = true;
-		restApiCollectionRequest(collectionBaseUrl + $routeParams.colName + "/")
-		.success(function (data) {
-			$rootScope.databaseMode = true;
-			
-			$scope.pageLimit = 10;
-			$scope.pages = Math.ceil(data.count / $scope.pageLimit);
-			$scope.page = $routeParams.page === undefined ? 0 : $routeParams.page;
+        function load()
+        {
+            restApiCollectionRequest(collectionBaseUrl + $routeParams.colName + "/")
+                .success(function (data)
+                {
+                    $rootScope.databaseMode = true;
 
-			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?sort=true&limit=' + $scope.pageLimit + '&skip=' + ($scope.pageLimit * $scope.page))
-			.success(function (data) {
-				$scope.reports = data;
-				
-				$scope[$scope.searchArrayName] = $scope.reports;
-				addSearchAndSortHandlers($scope, $filter, $scope.reports);
-				
-				$scope.getStatistics = function(features) {
-					var statistics = {
-						passed : 0,
-						failed : 0,
-						unknown : 0
-					};
-					angular.forEach(features, function(feature){
-						statistics.passed += feature.result.passedScenarioCount;
-						statistics.failed += feature.result.failedScenarioCount;
-						statistics.unknown += feature.result.unknownScenarioCount;
-					});
-					
-					var sum = (statistics.passed + statistics.failed + statistics.unknown);
-					
-					statistics.passedPercent = (statistics.passed / sum) * 100;
-					statistics.failedPercent = (statistics.failed / sum) * 100;
-					statistics.unknownPercent = (statistics.unknown / sum) * 100;
-					
-					return statistics;
-				};
-				
-				
-				$rootScope.loading = false;
-				
-				
-			})
-			.error(function() {
-				$rootScope.loading = false;
-				$location.path('/products/');
-			});
+                    $scope.pageLimit = 10;
+                    $scope.pages = Math.ceil(data.count / $scope.pageLimit);
+                    $scope.page = $routeParams.page === undefined ? 0 : $routeParams.page;
 
-		})
-		.error(function() {
-			$rootScope.loading = false;
-			$location.path('/products/');
-		});
+                    restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?sort=true&limit=' + $scope.pageLimit + '&skip=' + ($scope.pageLimit * $scope.page))
+                        .success(function (data)
+                        {
+                            $scope.reports = data;
+
+                            $scope[$scope.searchArrayName] = $scope.reports;
+                            addSearchAndSortHandlers($scope, $filter, $scope.reports);
+
+                            $scope.getStatistics = function (features)
+                            {
+                                var statistics = {
+                                    passed: 0,
+                                    failed: 0,
+                                    unknown: 0
+                                };
+                                angular.forEach(features, function (feature)
+                                {
+                                    statistics.passed += feature.result.passedScenarioCount;
+                                    statistics.failed += feature.result.failedScenarioCount;
+                                    statistics.unknown += feature.result.unknownScenarioCount;
+                                });
+
+                                var sum = (statistics.passed + statistics.failed + statistics.unknown);
+
+                                statistics.passedPercent = (statistics.passed / sum) * 100;
+                                statistics.failedPercent = (statistics.failed / sum) * 100;
+                                statistics.unknownPercent = (statistics.unknown / sum) * 100;
+
+                                return statistics;
+                            };
+
+
+                            $rootScope.loading = false;
+
+
+                        })
+                        .error(function ()
+                        {
+                            $rootScope.loading = false;
+                            $location.path('/products/');
+                        });
+
+                })
+                .error(function ()
+                {
+                    $rootScope.loading = false;
+                    $location.path('/products/');
+                });
+        }
+        load();
 	});
 	
 	/**
