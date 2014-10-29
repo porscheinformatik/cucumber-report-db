@@ -11,6 +11,8 @@ import cucumber.runtime.CucumberException;
 import gherkin.formatter.NiceAppendable;
 
 import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
@@ -22,6 +24,7 @@ import com.sun.jersey.api.client.config.DefaultClientConfig;
  */
 public class MongoDbFormatter extends AbstractJsonFormatter
 {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MongoDbFormatter.class);
 
     public static final String DEFAULT_COLLECTION = "collection_version";
 
@@ -58,13 +61,29 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     protected void dbInsertJson(String data)
     {
-        restResource.path("rest").path("cucumberplugin").path(getCollection()).path("report").entity(data).post();
+        try
+        {
+            restResource.path("rest").path("cucumberplugin").path(getCollection()).path("report").entity(data).post();
+            LOGGER.info("JSON sent to cucumber-report-db");
+        }
+        catch (Exception e)
+        {
+            LOGGER.info("Error occured sending JSON to cucumber-report-db", e);
+        }
     }
 
     protected void dbInsertMedia(String fileName, InputStream inputStream)
     {
-        restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media").path(fileName)
-                .entity(inputStream).post();
+        try
+        {
+            restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media").path(fileName)
+                    .entity(inputStream).post();
+            LOGGER.info("Image {} sent to cucumber-report-db", fileName);
+        }
+        catch (Exception e)
+        {
+            LOGGER.error("Error occured sending image {} to cucumber-report-db", fileName, e);
+        }
     }
 
     protected String getCollection()
