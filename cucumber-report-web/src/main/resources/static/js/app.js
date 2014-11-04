@@ -4,7 +4,20 @@
 (function (angular, google, $, undefined) {
 	'use strict';
 
-	var app = angular.module('cucumber', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule']);
+	var app = angular.module('cucumber', ['ngRoute', 'ui.bootstrap', 'LocalStorageModule'])
+        .directive('ngReallyClick', [function() {
+        return {
+            restrict: 'A',
+            link: function(scope, element, attrs) {
+                element.bind('click', function() {
+                    var message = attrs.ngReallyMessage;
+                    if (message && confirm(message)) {
+                        scope.$apply(attrs.ngReallyClick);
+                    }
+                });
+            }
+        }
+    }]);
 	
 	var prepareReportData = function(reports) {
 		
