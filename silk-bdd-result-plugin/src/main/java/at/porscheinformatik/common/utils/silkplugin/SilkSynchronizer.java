@@ -65,7 +65,7 @@ public class SilkSynchronizer
         }
         return config;
     }
-    
+
     private String getCollectionName()
     {
         final String version = System.getProperty(DEFAULT_SILK_VERSION);

@@ -38,9 +38,7 @@ public class ConfigurationGUI extends JFrame
 {
     private static final long serialVersionUID = 2474865722690481411L;
 
-    private JTextField textFieldDbName;
-    private JTextField textFieldPort;
-    private JTextField textFieldHost;
+    private JTextField textServerBaseUrl;
     private JTextField textObsoletetLimit;
     private JTextField textExecIdFormat;
     private JTextField textCollectionNamingConvention;
@@ -92,9 +90,7 @@ public class ConfigurationGUI extends JFrame
             {
                 try
                 {
-                    config.setProperty("database.host", textFieldHost.getText());
-                    config.setProperty("database.port", textFieldPort.getText());
-                    config.setProperty("database.name", textFieldDbName.getText());
+                    config.setProperty("server.base.url", textServerBaseUrl.getText());
 
                     config.setProperty("report.obsolete-limit", textObsoletetLimit.getText());
                     config.setProperty("silk.execution-id-name", textExecIdFormat.getText());
@@ -135,20 +131,10 @@ public class ConfigurationGUI extends JFrame
         panelDb.setOpaque(false);
         panelDb.setBounds(x, y, 365, 120);
 
-        JLabel labelHost = new JLabel("Host: ");
-        panelDb.add(labelHost);
-        textFieldHost = new JTextField(config.getProperty("database.host"));
-        panelDb.add(textFieldHost);
-
-        JLabel labelPort = new JLabel("Port: ");
-        panelDb.add(labelPort);
-        textFieldPort = new JTextField(config.getProperty("database.port"));
-        panelDb.add(textFieldPort);
-
-        JLabel labelDbName = new JLabel("Database name: ");
+        JLabel labelDbName = new JLabel("Server URL: ");
         panelDb.add(labelDbName);
-        textFieldDbName = new JTextField(config.getProperty("database.name"));
-        panelDb.add(textFieldDbName);
+        textServerBaseUrl = new JTextField(config.getProperty("server.base.url"));
+        panelDb.add(textServerBaseUrl);
 
         //----------------------------------------------------------------
         JPanel panelOther = new JPanel(new GridLayout(4, 2, 0, 5));
