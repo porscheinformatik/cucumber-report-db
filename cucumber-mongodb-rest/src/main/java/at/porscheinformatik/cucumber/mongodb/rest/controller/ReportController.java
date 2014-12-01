@@ -11,6 +11,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,6 +29,7 @@ import at.porscheinformatik.cucumber.nosql.driver.MongoDbDriver;
 
 @Controller
 @RequestMapping("/rest/reports/")
+@Secured({Roles.ROLE_REPORTER})
 public class ReportController
 {
     private static final String NL = System.getProperty("line.separator");

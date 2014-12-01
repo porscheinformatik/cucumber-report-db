@@ -49,6 +49,12 @@
 				<scope>import</scope>
 			</dependency>
 
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-security</artifactId>
+                <version>1.0.1.RELEASE</version>
+            </dependency>
+
 			<dependency>
 				<groupId>at.porscheinformatik.cucumber</groupId>
 				<artifactId>cucumber-mongodb-rest</artifactId>

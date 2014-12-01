@@ -17,6 +17,7 @@ import org.slf4j.LoggerFactory;
 import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 /**
  * Use SystemProperty {@link at.porscheinformatik.cucumber.formatter.MongoDbFormatter#BASEURL_SYS_PROP} to specify a
@@ -27,9 +28,12 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDbFormatter.class);
 
     public static final String DEFAULT_COLLECTION = "collection_version";
-
     public static final String BASEURL_SYS_PROP = "cucumber.report.server.baseUrl";
     public static final String DEFAULT_BASE_URL = "http://localhost:8081";
+    public static final String USERNAME_SYS_PROP = "cucumber.report.server.username";
+    public static final String DEFAULT_USERNAME = "formatter";
+    public static final String PASSWORD_SYS_PROP = "cucumber.report.server.password";
+    public static final String DEFAULT_PASSWORD = "password";
 
     private NiceAppendable jsonOutput;
 
@@ -39,6 +43,8 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     {
         Client client = Client.create(new DefaultClientConfig());
         restResource = client.resource(getBaseUrl());
+        restResource.addFilter(new HTTPBasicAuthFilter(getReportDbUserName(), getReportDbPassword()));
+
         try
         {
             jsonOutput = new NiceAppendable(new OutputStreamWriter(new DbOutputStream(), "UTF-8"));
@@ -51,10 +57,25 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     private String getBaseUrl()
     {
-        String baseUrlFromProperty = System.getProperty(BASEURL_SYS_PROP);
+        return getSystemPropertyOrDefault(BASEURL_SYS_PROP, DEFAULT_BASE_URL);
+    }
+
+    private String getReportDbUserName()
+    {
+        return getSystemPropertyOrDefault(USERNAME_SYS_PROP, DEFAULT_USERNAME);
+    }
+
+    private String getReportDbPassword()
+    {
+        return getSystemPropertyOrDefault(PASSWORD_SYS_PROP, DEFAULT_PASSWORD);
+    }
+
+    private String getSystemPropertyOrDefault(String propertykey, final String defaultValue)
+    {
+        String baseUrlFromProperty = System.getProperty(propertykey);
         if (StringUtils.isEmpty(baseUrlFromProperty))
         {
-            return DEFAULT_BASE_URL;
+            return defaultValue;
         }
         return baseUrlFromProperty;
     }

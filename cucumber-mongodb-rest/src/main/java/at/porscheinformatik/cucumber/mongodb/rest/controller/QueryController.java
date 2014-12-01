@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -33,6 +34,7 @@ public class QueryController
     private MongoOperations mongodb;
 
     @RequestMapping(value = "/{collection}/{id}", method = RequestMethod.DELETE)
+    @Secured({Roles.ROLE_ADMIN})
     public void deleteDocument(@PathVariable("collection") String collection, @PathVariable("id") String id)
     {
         Query query = new Query(Criteria.where("_id").is(id));
