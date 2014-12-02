@@ -31,9 +31,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     public static final String BASEURL_SYS_PROP = "cucumber.report.server.baseUrl";
     public static final String DEFAULT_BASE_URL = "http://localhost:8081";
     public static final String USERNAME_SYS_PROP = "cucumber.report.server.username";
-    public static final String DEFAULT_USERNAME = "formatter";
     public static final String PASSWORD_SYS_PROP = "cucumber.report.server.password";
-    public static final String DEFAULT_PASSWORD = "password";
 
     private NiceAppendable jsonOutput;
 
@@ -42,8 +40,11 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     public MongoDbFormatter()
     {
         Client client = Client.create(new DefaultClientConfig());
-        restResource = client.resource(getBaseUrl());
-        restResource.addFilter(new HTTPBasicAuthFilter(getReportDbUserName(), getReportDbPassword()));
+        restResource = client.resource(getBaseUrlWithDefault());
+        if (isReportDbUserNameSet())
+        {
+            restResource.addFilter(new HTTPBasicAuthFilter(getReportDbUserName(), getReportDbPassword()));
+        }
 
         try
         {
@@ -55,29 +56,29 @@ public class MongoDbFormatter extends AbstractJsonFormatter
         }
     }
 
-    private String getBaseUrl()
+    private String getBaseUrlWithDefault()
     {
-        return getSystemPropertyOrDefault(BASEURL_SYS_PROP, DEFAULT_BASE_URL);
+        String baseUrlFromProperty = System.getProperty(BASEURL_SYS_PROP);
+        if (StringUtils.isEmpty(baseUrlFromProperty))
+        {
+            return DEFAULT_BASE_URL;
+        }
+        return baseUrlFromProperty;
     }
 
     private String getReportDbUserName()
     {
-        return getSystemPropertyOrDefault(USERNAME_SYS_PROP, DEFAULT_USERNAME);
+        return System.getProperty(USERNAME_SYS_PROP);
+    }
+
+    private boolean isReportDbUserNameSet()
+    {
+        return System.getProperty(USERNAME_SYS_PROP) != null;
     }
 
     private String getReportDbPassword()
     {
-        return getSystemPropertyOrDefault(PASSWORD_SYS_PROP, DEFAULT_PASSWORD);
-    }
-
-    private String getSystemPropertyOrDefault(String propertykey, final String defaultValue)
-    {
-        String baseUrlFromProperty = System.getProperty(propertykey);
-        if (StringUtils.isEmpty(baseUrlFromProperty))
-        {
-            return defaultValue;
-        }
-        return baseUrlFromProperty;
+        return System.getProperty(PASSWORD_SYS_PROP);
     }
 
     protected void dbInsertJson(String data)

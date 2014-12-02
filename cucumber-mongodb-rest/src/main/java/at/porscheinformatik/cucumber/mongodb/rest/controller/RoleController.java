@@ -3,7 +3,6 @@ package at.porscheinformatik.cucumber.mongodb.rest.controller;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
@@ -16,7 +15,6 @@ import com.google.common.collect.Lists;
 
 @Controller
 @RequestMapping("/rest/roles")
-@Secured({Roles.ROLE_ADMIN, Roles.ROLE_USER})
 public class RoleController
 {
     @RequestMapping(value = "/", method = RequestMethod.GET)
