@@ -48,10 +48,19 @@ public class ReportController
         try
         {
             // FIXME (xbk 23/09/2014): replace with mongotemplate
-            DatabaseDriver dbDriver = new MongoDbDriver(new MongoDB(DatabaseConfig.getHost(), DatabaseConfig.getPort(),
-                    DatabaseConfig.getDatabase(), collection));
-            dbDriver.connect();
-            ReportDTO report = dbDriver.fetchLastByValue(ReportDTO.class, "features.scenarios.tags.name", execIdTag);
+            ReportDTO report;
+            DatabaseDriver dbDriver;
+            dbDriver = new MongoDbDriver(new MongoDB(DatabaseConfig.getHost(),
+                    DatabaseConfig.getPort(), DatabaseConfig.getDatabase(), collection));
+            try
+            {
+                dbDriver.connect();
+                report = dbDriver.fetchLastByValue(ReportDTO.class, "features.scenarios.tags.name", execIdTag);
+            }
+            finally
+            {
+                dbDriver.close();
+            }
 
             for (FeatureDTO feature : report.getFeatures())
             {
