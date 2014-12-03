@@ -19,6 +19,7 @@ import com.sun.jersey.api.client.Client;
 import com.sun.jersey.api.client.UniformInterfaceException;
 import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
+import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
 public class SilkSynchronizer
 {
@@ -32,6 +33,8 @@ public class SilkSynchronizer
     public static final String COLLECTION_NAMING_REGEX_CONVENTION = "collection.naming-convention";
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SilkSynchronizer.class);
+    public static final String SERVER_PASSWORD = "server.password";
+    public static final String SERVER_USERNAME = "server.username";
 
     private Properties config;
     private WebResource restResource;
@@ -44,8 +47,12 @@ public class SilkSynchronizer
         loadConfigurations(CONFIG_FILE);
 
         String baseUrl = config.getProperty(SERVER_BASE_URL);
+        String username = config.getProperty(SERVER_USERNAME);
+        String password = config.getProperty(SERVER_PASSWORD);
+
         Client client = Client.create(new DefaultClientConfig());
         restResource = client.resource(baseUrl);
+        restResource.addFilter(new HTTPBasicAuthFilter(username, password));
     }
 
     public Properties loadConfigurations(String file)

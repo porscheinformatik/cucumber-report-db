@@ -10,7 +10,7 @@
 			<th class="firstTD">Features</th>
 			<th>Statistics</th>
 			<th><span ng-click="orderPredicate = 'report[\'date\']'; orderReverse=!orderReverse;">Datum</span></th>
-            <th>Admin</th>
+            <th ng-show="isAdmin">Admin</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -29,7 +29,7 @@
 				</div>
 			</td>
 			<td class="noWrap">{{ report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
-            <td>
+            <td ng-show="isAdmin">
                 <button ng-really-message="Are you sure?" ng-really-click="deleteDocument(report._id.$oid)"
                         class="btn-sm btn-danger"><span
                     class="glyphicon glyphicon-remove-sign"></span></button>

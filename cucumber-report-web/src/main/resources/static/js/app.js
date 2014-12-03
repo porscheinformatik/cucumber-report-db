@@ -396,7 +396,11 @@
             $http.delete(queryBaseUrl + $routeParams.colName + '/' + id);
             load();
         };
- 
+
+        $http.get(rolesBaseUrl).success(function (data) {
+            $scope.isAdmin = $.inArray("ROLE_ADMIN", data) === 0;
+        });
+
 		$rootScope.loading = true;
         function load()
         {

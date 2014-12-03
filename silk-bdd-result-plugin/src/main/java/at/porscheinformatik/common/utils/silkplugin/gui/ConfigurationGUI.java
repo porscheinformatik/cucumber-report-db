@@ -39,6 +39,8 @@ public class ConfigurationGUI extends JFrame
     private static final long serialVersionUID = 2474865722690481411L;
 
     private JTextField textServerBaseUrl;
+    private JTextField textServerUsername;
+    private JTextField textServerPassword;
     private JTextField textObsoletetLimit;
     private JTextField textExecIdFormat;
     private JTextField textCollectionNamingConvention;
@@ -91,6 +93,8 @@ public class ConfigurationGUI extends JFrame
                 try
                 {
                     config.setProperty("server.base.url", textServerBaseUrl.getText());
+                    config.setProperty("server.username", textServerUsername.getText());
+                    config.setProperty("server.password", textServerPassword.getText());
 
                     config.setProperty("report.obsolete-limit", textObsoletetLimit.getText());
                     config.setProperty("silk.execution-id-name", textExecIdFormat.getText());
@@ -131,10 +135,20 @@ public class ConfigurationGUI extends JFrame
         panelDb.setOpaque(false);
         panelDb.setBounds(x, y, 365, 120);
 
-        JLabel labelDbName = new JLabel("Server URL: ");
-        panelDb.add(labelDbName);
+        JLabel labelServerUrl = new JLabel("Server URL: ");
+        panelDb.add(labelServerUrl);
         textServerBaseUrl = new JTextField(config.getProperty("server.base.url"));
         panelDb.add(textServerBaseUrl);
+
+        JLabel labelServerUsername = new JLabel("Server Username: ");
+        panelDb.add(labelServerUsername);
+        textServerUsername= new JTextField(config.getProperty("server.username"));
+        panelDb.add(textServerUsername);
+
+        JLabel labelServerPassword = new JLabel("Server Password: ");
+        panelDb.add(labelServerPassword);
+        textServerPassword = new JTextField(config.getProperty("server.password"));
+        panelDb.add(textServerPassword);
 
         //----------------------------------------------------------------
         JPanel panelOther = new JPanel(new GridLayout(4, 2, 0, 5));
