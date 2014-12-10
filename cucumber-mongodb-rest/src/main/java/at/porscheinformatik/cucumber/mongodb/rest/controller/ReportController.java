@@ -9,33 +9,32 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import at.porscheinformatik.cucumber.mongodb.rest.DatabaseConfig;
 import at.porscheinformatik.cucumber.mongodb.rest.controller.dto.FeatureDTO;
 import at.porscheinformatik.cucumber.mongodb.rest.controller.dto.ReportDTO;
 import at.porscheinformatik.cucumber.mongodb.rest.controller.dto.ScenarioDTO;
 import at.porscheinformatik.cucumber.mongodb.rest.controller.dto.StepDTO;
-import at.porscheinformatik.cucumber.nosql.db.MongoDB;
-import at.porscheinformatik.cucumber.nosql.driver.DatabaseDriver;
-import at.porscheinformatik.cucumber.nosql.driver.MongoDbDriver;
+import at.porscheinformatik.cucumber.mongodb.rest.db.MongoDB;
 
 @Controller
 @RequestMapping("/rest/reports/")
-@Secured({Roles.ROLE_REPORTER})
 public class ReportController
 {
     private static final String NL = System.getProperty("line.separator");
 
     private static final String DEFAULT_SILK_EXECUTION_ID_NAME = "@SILK_ID_%s";
     private static final Logger LOGGER = LoggerFactory.getLogger(ReportController.class);
+
+    @Autowired
+    private MongoDB mongoDB;
 
     @RequestMapping(value = "{collection}/{executionId}", method = RequestMethod.GET)
     public ResponseEntity checkResultOfExecution(@PathVariable("collection") String collection,
@@ -50,19 +49,8 @@ public class ReportController
         try
         {
             // FIXME (xbk 23/09/2014): replace with mongotemplate
-            ReportDTO report;
-            DatabaseDriver dbDriver;
-            dbDriver = new MongoDbDriver(new MongoDB(DatabaseConfig.getHost(),
-                    DatabaseConfig.getPort(), DatabaseConfig.getDatabase(), collection));
-            try
-            {
-                dbDriver.connect();
-                report = dbDriver.fetchLastByValue(ReportDTO.class, "features.scenarios.tags.name", execIdTag);
-            }
-            finally
-            {
-                dbDriver.close();
-            }
+            ReportDTO report = mongoDB.fetchLast(ReportDTO.class, collection, "features.scenarios.tags.name",
+                    execIdTag);
 
             for (FeatureDTO feature : report.getFeatures())
             {
