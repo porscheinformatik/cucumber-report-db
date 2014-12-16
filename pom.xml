@@ -103,7 +103,6 @@
 
 	<modules>
 		<module>cucumber-mongodb-rest</module>
-		<module>cucumber-nosql-db</module>
 		<module>cucumber-report-web</module>
 		<module>cucumber-formatter</module>
 		<module>silk-bdd-result-plugin</module>

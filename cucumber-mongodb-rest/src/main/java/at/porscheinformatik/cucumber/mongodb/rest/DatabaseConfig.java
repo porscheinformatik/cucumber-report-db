@@ -7,13 +7,15 @@ import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 
 import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
+import com.mongodb.MongoClientURI;
 
 @Configuration
 public class DatabaseConfig extends AbstractMongoConfiguration
 {
-    private static final String DEFAULT_MONGO_DB_HOST = "localhost";
-    private static final String DEFAULT_MONGO_DB_PORT = "27017";
+    private static final String DEFAULT_MONGO_DB_URI = "mongodb://localhost:27017/";
     private static final String DEFAULT_DATABASE_NAME = "bddReports";
+    public static final String SYSTEM_PROPERTY_MONGO_URI = "cucumber.report.db.mongo.uri";
+    public static final String SYSTEM_PROPERTY_MONGO_DATABASE = "cucumber.report.db.mongo.database";
 
     @Override
     protected String getDatabaseName()
@@ -24,23 +26,17 @@ public class DatabaseConfig extends AbstractMongoConfiguration
     @Override
     public Mongo mongo() throws UnknownHostException
     {
-        String dbHost = getHost();
-        int dbPort = getPort();
-        return new MongoClient(dbHost, dbPort);
+        String dbUri = getUri();
+        return new MongoClient(new MongoClientURI(dbUri));
     }
 
-    public static int getPort()
+    public static String getUri()
     {
-        return Integer.parseInt(System.getProperty("mongodb.port", DEFAULT_MONGO_DB_PORT));
-    }
-
-    public static String getHost()
-    {
-        return System.getProperty("mongodb.host", DEFAULT_MONGO_DB_HOST);
+        return System.getProperty(SYSTEM_PROPERTY_MONGO_URI, DEFAULT_MONGO_DB_URI);
     }
 
     public static String getDatabase()
     {
-        return System.getProperty("mongodb.database", DEFAULT_DATABASE_NAME);
+        return System.getProperty(SYSTEM_PROPERTY_MONGO_DATABASE, DEFAULT_DATABASE_NAME);
     }
 }
