@@ -14,3 +14,23 @@ Want to learn more? [See the wiki.](https://github.com/porscheinformatik/cucumbe
 This software is licensed under the Apache Software License, Version 2.0, http://www.apache.org/licenses/LICENSE-2.0.txt
 
 
+### Report-DB
+
+Requirements:
+* Java 6 or laster
+* MongoDB 2.6.3 or later [Download](https://www.mongodb.org/downloads) or [as-a-service](https://mongolab.com/)
+* Maven 3
+
+Setup:
+* Clone the Repo
+* execute ```mvn clean install -PspringBoot```
+* execute ```java -cp "cucumber-report-web/target/classes/;cucumber-report-web/target/dependency/*"  at.porscheinformatik.cucumber.CucumberReportApplication```
+
+With the following system properties the app can be
+* cucumber.report.db.mongo.uri
+* cucumber.report.db.mongo.username
+* cucumber.report.db.mongo.password
+
+### Setup Formatter
+* Include the ```at.porscheinformatik.cucumber.formatter.MongoDbFormatter``` in your cucumber-run (see ```at.porscheinformatik.cucumber.formatter.MongoFormatIT``` for an example)
+With the system property cucumber.report.server.baseUrl you can set the path to the "Report-DB"
