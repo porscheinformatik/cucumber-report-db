@@ -74,7 +74,6 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     {
         Map<String, Object> scenario = new HashMap<String, Object>();
         scenario.put("background", background.toMap());
-        System.out.println(background);
         newScenario(scenario);
     }
 
