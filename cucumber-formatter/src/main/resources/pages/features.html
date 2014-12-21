@@ -27,19 +27,9 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="feature in filteredFeatures ">
-			<td>
-				<div>
-					<span ng-click="isCollapsed = !isCollapsed" style="cursor:pointer" class="glyphicon glyphicon-chevron-{{ isCollapsed ? 'right' : 'down' }}"></span>
-				</div>
-			</td>
+		<tr ng-repeat="feature in filteredFeatures " ng-click="featureDetails(feature)" style="cursor:pointer">
 			<td class="firstTD">
-				<strong ng-click="featureDetails(feature)" style="cursor:pointer">{{ feature.name }}</strong>
-				<div collapse="isCollapsed">
-					<p>{{ feature.description }}</p>
-					<div ng-repeat="comment in feature.comments">{{ comment.value }}</div>
-					<pre class="uri">{{ feature.uri.replace(uriWrapRegEx, uriWrapReplaceFunc) }}</pre>
-				</div>
+				<strong>{{ feature.name }}</strong>
 			</td>
 			<td><span ng-repeat="tag in feature.tags" class="label label-default">{{ tag.name }}</span></td>
 			<td>
@@ -58,7 +48,6 @@
 			<td><span class="badge">{{ feature.result.stepCount || "" }}</span></td>
 		</tr>
 		<tr>
-			<td></td>
 			<td class="firstTD"><strong>{{ filteredFeatures.length ? 'Sum' : 'No entries found!'}}</strong></td>
 			<td></td>
 			<td></td>
