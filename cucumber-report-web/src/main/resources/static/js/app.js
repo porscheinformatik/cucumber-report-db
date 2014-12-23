@@ -291,7 +291,6 @@
 		
 		addSearchAndSortHandlers($scope, $filter, $scope.report.features);
 		
-		$scope.isCollapsed = true;
 		$rootScope.loading = false;
 	}
 	
