@@ -27,9 +27,12 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 {
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDbFormatter.class);
 
+    public static final String COLLECTION_NAME_PROP = "cucumber.report.collection.name";
     public static final String DEFAULT_COLLECTION = "collection_version";
+
     public static final String BASEURL_SYS_PROP = "cucumber.report.server.baseUrl";
     public static final String DEFAULT_BASE_URL = "http://localhost:8081";
+
     public static final String USERNAME_SYS_PROP = "cucumber.report.server.username";
     public static final String PASSWORD_SYS_PROP = "cucumber.report.server.password";
 
@@ -110,7 +113,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     protected String getCollection()
     {
-        return DEFAULT_COLLECTION;
+        return System.getProperty(COLLECTION_NAME_PROP, DEFAULT_COLLECTION);
     }
 
     @Override
