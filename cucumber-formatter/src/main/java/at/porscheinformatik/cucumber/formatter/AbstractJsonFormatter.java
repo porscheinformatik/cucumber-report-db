@@ -22,6 +22,9 @@ import gherkin.formatter.model.ScenarioOutline;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.TagStatement;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
+
 public abstract class AbstractJsonFormatter implements Formatter, Reporter
 {
     protected static final String dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
@@ -45,16 +48,11 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     protected int embeddedIndex = 1;
     protected int currentStepResultIndex;
 
-    protected Date date;
+    protected Date date = new LocalDateTime(DateTimeZone.UTC).toDate();
 
     protected abstract String doEmbedding(String extension, byte[] data);
 
     protected abstract NiceAppendable jsOut();
-
-    public AbstractJsonFormatter()
-    {
-        this.date = new Date();
-    }
 
     @Override
     public void uri(String paramString)
@@ -156,7 +154,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
 
     @Override
     public void syntaxError(String paramString1, String paramString2, List<String> paramList, String paramString3,
-        Integer paramInteger)
+            Integer paramInteger)
     {
         throw new UnsupportedOperationException();
     }
@@ -244,7 +242,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
             currentFeature.put("scenarioOutlines", scenarioOutlines);
         }
 
-        if("scenario_outline".equals(currentScenario.get("type")))
+        if ("scenario_outline".equals(currentScenario.get("type")))
         {
             scenarioOutlines.add(currentScenario);
         }

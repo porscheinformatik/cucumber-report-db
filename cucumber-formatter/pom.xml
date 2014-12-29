@@ -47,6 +47,9 @@
             <artifactId>commons-io</artifactId>
             <scope>test</scope>
         </dependency>
-
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+        </dependency>
     </dependencies>
 </project>
