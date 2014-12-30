@@ -106,7 +106,7 @@
 				}
 				else
 				{
-					value = (value / 1000000).toFixed()*1;
+					value = (value / 1000000).toFixed();
 					var timeSpan = new TimeSpan(new Date(value) - new Date(0));
 					return (timeSpan.days>0 ?
 								' (' + timeSpan.toString('d') + ' Day' + 
@@ -133,7 +133,7 @@
 			};
 		}]
 	};
-		app.config([ '$routeProvider', function($routeProvider) {
+    app.config([ '$routeProvider', function($routeProvider) {
 		$routeProvider
 		.when('/help/', {
 			templateUrl : 'pages/help.html',
@@ -248,7 +248,7 @@
 		});
 		$scope.$watch("orderPredicate", function(query){
 			if($scope.lastOrderPredicate !== query){
-				$scope.orderReverse = query === "name" ? false : true;
+				$scope.orderReverse = query !== "name";
 			}
 			$scope[$scope.searchArrayName] = $filter('orderBy')($scope[$scope.searchArrayName], query, $scope.orderReverse);
 			$scope.lastOrderPredicate = query;
@@ -323,7 +323,13 @@
 		$rootScope.reportDate = $scope.report.date.$date;
 		$rootScope.loading = false;
 	}
-	
+
+    app.controller('Menu', function($scope, $http) {
+        $http.get(productsUrl).success(function (res) {
+            $scope.products = res;
+        });
+    });
+
 	/**
 	 * ProductList Controller (see products.html)
 	 */
@@ -344,14 +350,6 @@
 		// else: load the data from the mongo database 
 		.error(function() {
 			$rootScope.databaseMode = true;
-			$scope.regexCondition = function(input)
-			{
-				var patt = new RegExp("[A-Z0-9]*\\_[A-Z0-9\\.\\-]*"); 
-				if(patt.test(input) && input.indexOf(".chunks") === -1 && input.indexOf(".files") === -1 && (input.indexOf($routeParams.product) !== -1 || $routeParams.product === undefined)){
-					return input;
-				}
-				return false;
-			};
 
 			$scope.reportsOverview = function(product) {
 				$location.path('/reports/' + product);
@@ -641,10 +639,9 @@
 	    return array.sort(function(a, b) {
 	        var x = a[value]; var y = b[value];
 	        return ((x < y) ? +1 : ((x > y) ? -1 : 0));
-	    });};
-	
-  
-	function durationInMS(durationInNS){
+        });
+    }
+    function durationInMS(durationInNS){
 			var value=0;
 			
 				value = durationInNS; 	
@@ -660,7 +657,7 @@
 			}
 			else
 			{
-				value = (value / 1000000).toFixed()*1;
+				value = (value / 1000000).toFixed();
 				var timeSpan = new TimeSpan(new Date(value) - new Date(0));
 				return (timeSpan.days>0 ?
 							' (' + timeSpan.toString('d') + ' Day' + 
@@ -669,21 +666,20 @@
 						) + 
 						timeSpan.toString('HH:mm:ss');
 			}
-		};    
-	
-		function sumOverAll(array,value){
+    }
+    function sumOverAll(array,value){
 			var sum=0;
 			for (var i in array){
 				   sum += array[i].value;
 			}
 			return sum;
-		};
-		
-	/**
+    }
+    /**
 	 * Rankings Controller (see rankings.html)
 	 */
-	app.controller('RankingsCtrl',function($rootScope, $scope, $http, $location, $routeParams, $filter){
-		$rootScope.loading = true;
+    app.controller('RankingsCtrl', function ($rootScope, $scope, $http, $location, $routeParams)
+    {
+        $rootScope.loading = true;
 		$scope.durationInMS=durationInMS;
 		$scope.product=$routeParams.product;
 		var rankingsRootPath='rest/statistics/rankings/';
@@ -734,7 +730,7 @@
 		$http.get(rankingsRootPath + $routeParams.product + cumulatedDurationPath)
 		.success(function(steps){
 			$scope.cumulatedSteps=steps;
-			
+
 			var sum=sumOverAll($scope.cumulatedSteps.results,"value");
 			$scope.sumOverAllCumulated=sum;
 			

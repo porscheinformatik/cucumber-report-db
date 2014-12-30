@@ -25,7 +25,7 @@
 		</div>
 	</div>
 
-	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+	<div class="navbar navbar-inverse navbar-fixed-top" role="navigation" ng-controller="Menu">
 		<div class="container">
 			<div class="navbar-header">
 				<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
@@ -43,10 +43,7 @@
 					<li ng-show="databaseMode" class="dropdown">
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">Products <b class="caret"></b></a>
 						<ul class="dropdown-menu">
-							<li><a href="#/products/?product=VDV3">Yuca|tan</a></li>
-							<li><a href="#/products/?product=VGSG">VGSG</a></li>
-							<li><a href="#/products/?product=TTRU">TTRU</a></li>
-							<li><a href="#/products/?product=NADIN">NADIN</a></li>
+                            <li ng-repeat="product in products"><a href="#/products/?product={{product}}">{{product}}</a></li>
 							<li class="divider"></li>
 							<li><a href="#/products/">View all</a></li>
 						</ul>
