@@ -350,7 +350,13 @@
 		// else: load the data from the mongo database 
 		.error(function() {
 			$rootScope.databaseMode = true;
-
+            $scope.productCondition = function(input)
+            {
+                if(input.indexOf($routeParams.product) !== -1 || $routeParams.product === undefined){
+                    return input;
+                }
+                return false;
+            };
 			$scope.reportsOverview = function(product) {
 				$location.path('/reports/' + product);
 			};
@@ -368,7 +374,7 @@
 				$rootScope.showDBError = true;
 			});
 		});
-		
+
 	});
 	
 	/**
