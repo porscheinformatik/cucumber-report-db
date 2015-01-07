@@ -106,7 +106,7 @@
 				}
 				else
 				{
-					value = (value / 1000000).toFixed();
+					value = (value / 1000000).toFixed()*1;
 					var timeSpan = new TimeSpan(new Date(value) - new Date(0));
 					return (timeSpan.days>0 ?
 								' (' + timeSpan.toString('d') + ' Day' + 
@@ -663,7 +663,7 @@
 			}
 			else
 			{
-				value = (value / 1000000).toFixed();
+				value = (value / 1000000).toFixed()*1;
 				var timeSpan = new TimeSpan(new Date(value) - new Date(0));
 				return (timeSpan.days>0 ?
 							' (' + timeSpan.toString('d') + ' Day' + 
