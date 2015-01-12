@@ -28,7 +28,11 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     private static final Logger LOGGER = LoggerFactory.getLogger(MongoDbFormatter.class);
 
     public static final String COLLECTION_NAME_PROP = "cucumber.report.collection.name";
-    public static final String DEFAULT_COLLECTION = "collection_version";
+    public static final String DEFAULT_COLLECTION = "product_version";
+
+    public static final String PRODUCT_NAME_PROP = "cucumber.report.product.name";
+    public static final String PRODUCT_VERSION_PROP = "cucumber.report.product.version";
+    public static final String DEFAULT_PRODUCT_VERSION = "1.0";
 
     public static final String BASEURL_SYS_PROP = "cucumber.report.server.baseUrl";
     public static final String DEFAULT_BASE_URL = "http://localhost:8081";
@@ -113,6 +117,10 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     protected String getCollection()
     {
+        if (System.getProperty(PRODUCT_NAME_PROP)!= null)
+        {
+            return System.getProperty(PRODUCT_NAME_PROP) + "_" + System.getProperty(PRODUCT_VERSION_PROP, DEFAULT_PRODUCT_VERSION);
+        }
         return System.getProperty(COLLECTION_NAME_PROP, DEFAULT_COLLECTION);
     }
 
