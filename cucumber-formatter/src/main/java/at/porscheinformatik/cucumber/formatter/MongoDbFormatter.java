@@ -10,7 +10,6 @@ import java.io.UnsupportedEncodingException;
 import cucumber.runtime.CucumberException;
 import gherkin.formatter.NiceAppendable;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -65,12 +64,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     private String getBaseUrlWithDefault()
     {
-        String baseUrlFromProperty = System.getProperty(BASEURL_SYS_PROP);
-        if (StringUtils.isEmpty(baseUrlFromProperty))
-        {
-            return DEFAULT_BASE_URL;
-        }
-        return baseUrlFromProperty;
+        return System.getProperty(BASEURL_SYS_PROP, DEFAULT_BASE_URL);
     }
 
     private String getReportDbUserName()
