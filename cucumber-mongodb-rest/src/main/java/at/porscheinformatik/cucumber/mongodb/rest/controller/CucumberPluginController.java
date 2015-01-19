@@ -15,10 +15,7 @@ import org.springframework.data.mongodb.gridfs.GridFsTemplate;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 @RequestMapping("/rest/cucumberplugin")
@@ -47,9 +44,17 @@ public class CucumberPluginController
     @RequestMapping(value = "/{collection}/media/{name}", method = RequestMethod.POST)
     public ResponseEntity insertMedia(@PathVariable("collection") String collection,
             @PathVariable(value = "name") String name,
+            @RequestParam(value = "extension") String extension,
             HttpServletRequest httpServletRequest) throws IOException
     {
         LOGGER.info("insert binary into collection {}", collection);
+
+        // fix for missing extension in name, it seems, that Spring cuts the extension from the name
+        if ((extension != null) && (extension.length() > 0) && (!name.toLowerCase().endsWith("." + extension.toLowerCase())))
+        {
+            name += "." + extension;
+        }
+
         GridFsOperations gridfs = new GridFsTemplate(dbFactory, converter, collection);
         gridfs.store(httpServletRequest.getInputStream(), name);
         return new ResponseEntity(HttpStatus.OK);

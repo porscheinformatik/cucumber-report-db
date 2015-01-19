@@ -1,15 +1,11 @@
 package at.porscheinformatik.cucumber.formatter;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
+import java.io.*;
 
 import cucumber.runtime.CucumberException;
 import gherkin.formatter.NiceAppendable;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -99,8 +95,12 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     {
         try
         {
-            restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media").path(fileName)
-                    .entity(inputStream).post();
+            File file = new File(fileName);
+            String name = file.getName();
+            String extension = StringUtils.substringAfterLast(name, ".");
+
+            restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media").path(fileName).queryParam("extension", extension).entity(inputStream).post();
+
             LOGGER.info("Image {} sent to cucumber-report-db", fileName);
         }
         catch (Exception e)
