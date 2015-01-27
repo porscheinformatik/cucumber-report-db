@@ -1,11 +1,15 @@
 package at.porscheinformatik.cucumber.formatter;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 
 import cucumber.runtime.CucumberException;
 import gherkin.formatter.NiceAppendable;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -91,16 +95,13 @@ public class MongoDbFormatter extends AbstractJsonFormatter
         }
     }
 
-    protected void dbInsertMedia(String fileName, InputStream inputStream)
+    protected void dbInsertMedia(String fileName, final String mimeType, InputStream inputStream)
     {
         try
         {
-            File file = new File(fileName);
-            String name = file.getName();
-            String extension = StringUtils.substringAfterLast(name, ".");
-
-            restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media").path(fileName).queryParam("extension", extension).entity(inputStream).post();
-
+            restResource.path("rest").path("cucumberplugin").path(getCollection()).path("media")
+                    .queryParam("filename", fileName)
+                    .type(mimeType).entity(inputStream).post();
             LOGGER.info("Image {} sent to cucumber-report-db", fileName);
         }
         catch (Exception e)
@@ -119,11 +120,11 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     }
 
     @Override
-    protected String doEmbedding(String extension, byte[] data)
+    protected String doEmbedding(String extension, String mimeType, byte[] data)
     {
         String fileName = String.format("embedded%d_%s.%s", embeddedIndex++, getFormattedDate(), extension);
 
-        dbInsertMedia(fileName, new ByteArrayInputStream(data));
+        dbInsertMedia(fileName, mimeType, new ByteArrayInputStream(data));
         return fileName;
     }
 

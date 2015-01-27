@@ -3,6 +3,7 @@ package at.porscheinformatik.cucumber.formatter;
 import static org.junit.Assert.assertEquals;
 
 import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.List;
 
 import cucumber.api.Scenario;
@@ -53,13 +54,25 @@ public class RpnCalculatorStepdefs
     {
         try
         {
-            FileInputStream fis = new FileInputStream(this.getClass().getResource("/img/loading.gif").getFile());
-            scenario.embed(org.apache.commons.io.IOUtils.toByteArray(fis), "image/bmp");
+            if ("passed" .equals(scenario.getStatus()))
+            {
+                embedFileFromClasspath(scenario, "/img/loading.gif", "image/bmp");
+            }
+            else
+            {
+                embedFileFromClasspath(scenario, "/sampleVideo.mp4", "video/mp4");
+            }
         }
         catch (java.lang.Exception e)
         {
             e.printStackTrace();
         }
+    }
+
+    private void embedFileFromClasspath(final Scenario scenario, String path, String mimeType) throws IOException
+    {
+        FileInputStream fis = new FileInputStream(this.getClass().getResource(path).getFile());
+        scenario.embed(org.apache.commons.io.IOUtils.toByteArray(fis), mimeType);
     }
 
     @Given("^the previous entries:$")

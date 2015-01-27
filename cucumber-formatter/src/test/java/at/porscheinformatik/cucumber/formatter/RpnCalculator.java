@@ -13,7 +13,7 @@ public class RpnCalculator {
     public void push(Object arg) {
         try
         {
-            Thread.sleep(500L);
+            Thread.sleep(100L);
         }
         catch (InterruptedException e)
         {

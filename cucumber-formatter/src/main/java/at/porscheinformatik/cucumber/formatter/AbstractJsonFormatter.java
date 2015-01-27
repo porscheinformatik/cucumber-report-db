@@ -50,7 +50,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
 
     protected Date date = new LocalDateTime(DateTimeZone.UTC).toDate();
 
-    protected abstract String doEmbedding(String extension, byte[] data);
+    protected abstract String doEmbedding(String extension, final String mimeType, byte[] data);
 
     protected abstract NiceAppendable jsOut();
 
@@ -214,7 +214,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
         String extension = MIME_TYPES_EXTENSIONS.get(mimeType);
         if (extension != null)
         {
-            String fileName = doEmbedding(extension, data);
+            String fileName = doEmbedding(extension,mimeType,data);
 
             Map<String, String> embedding = new HashMap<String, String>();
             embedding.put("mime_type", mimeType);

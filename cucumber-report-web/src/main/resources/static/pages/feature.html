@@ -44,10 +44,10 @@
 					<td>{{ step.result.duration ? duration(step.result.duration) : '' }}</td>
 					<td>	
 						<span ng-repeat="n in step.embeddings">
-							<span ng-if="n.mime_type === 'image/png'">
+							<span ng-if="isEmbeddedImage(n.mime_type)">
 								<button tooltip-placement="left" tooltip="Embedded Screenshot" ng-click="embeddingLightbox(n)" type="button" class="btn btn-primary btn-sm">Screenshot</button>
 							</span>
-							<span ng-if="n.mime_type === 'video/mp4'">
+							<span ng-if="isEmbeddedVideo(n.mime_type)">
 								<button tooltip-placement="left" tooltip="Embedded Video" ng-click="embeddingLightbox(n)" type="button" class="btn btn-primary btn-sm">Video</button>
 							</span>
 						</span>

@@ -111,7 +111,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
     }
 
     @Override
-    protected String doEmbedding(String extension, byte[] data)
+    protected String doEmbedding(String extension, String mimeType, byte[] data)
     {
         String fileName = String.format("embedded%d.%s", embeddedIndex++, extension);
         writeBytesAndClose(data, reportFileOutputStream(htmlReportDir, fileName));
