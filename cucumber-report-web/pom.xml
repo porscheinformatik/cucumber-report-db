@@ -3,7 +3,7 @@
 
     <name>Porsche Informatik Cucumber Report Web</name>
     <artifactId>cucumber-report-web</artifactId>
-    <packaging>war</packaging>
+    <packaging>${packaging.type}</packaging>
 
     <parent>
         <groupId>at.porscheinformatik.cucumber</groupId>

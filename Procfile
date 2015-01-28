@@ -1,0 +1,1 @@
+web:    java -Dcucumber.report.db.mongo.uri=$MONGO_URI -Dcucumber.report.db.mongo.database=$MONGO_DB -Dcucumber.report.db.mongo.username=$MONGO_USER -Dcucumber.report.db.mongo.password=$MONGO_PWD -Dserver.port=$PORT $JAVA_OPTS -cp cucumber-report-web/target/classes/:"cucumber-report-web/target/dependency/*" at.porscheinformatik.cucumber.CucumberReportApplication
