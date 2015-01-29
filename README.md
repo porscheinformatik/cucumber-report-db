@@ -1,8 +1,6 @@
 Cucumber Report DB
 ===================
 
-[![Build Status](https://travis-ci.org/stefanmayer/cucumber-report-db.png?branch=master)](https://travis-ci.org/stefanmayer/cucumber-report-db)
-
 Stores results of BDD tests with Cucumber-JVM in a database and provides reporting capabilities. It can display graphs of different test runs
 as well as compute statistics of most failed steps or highest runtime grouped by steps
 
