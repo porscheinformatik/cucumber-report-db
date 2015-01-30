@@ -24,7 +24,7 @@ Setup:
 * Clone the Repo
 * Start the MongoDB ```mongod --dbpath /path/to/db```
 * execute ```mvn clean install -Pjar```
-* execute ```java -cp "cucumber-report-web/target/classes/;cucumber-report-web/target/dependency/*"  at.porscheinformatik.cucumber.CucumberReportApplication```
+* execute ```java -jar cucumber-report-web/target/cucumber-report-web*.jar```
 
 Per default the web application connects to a mongodb hosted on ```mongodb://localhost:27017/``` without authentication (the mongodb default)
 
