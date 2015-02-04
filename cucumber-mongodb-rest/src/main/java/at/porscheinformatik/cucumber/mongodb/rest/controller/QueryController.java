@@ -20,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 
 /**
@@ -48,19 +47,30 @@ public class QueryController
     @RequestMapping(value = "/{collection}/", method = RequestMethod.GET)
     @ResponseBody
     public void find(
-        HttpServletRequest request,
-        @PathVariable(value = "collection") String collection,
-        HttpServletResponse response) throws IOException
+            HttpServletRequest request,
+            @PathVariable(value = "collection") String collection,
+            HttpServletResponse response) throws IOException
     {
         final String limitValue = request.getParameter("limit");
         final String skipValue = request.getParameter("skip");
+        final String last = request.getParameter("last");
         final String field = request.getParameter("field");
         final String value = request.getParameter("value");
         final String sort = request.getParameter("sort");
 
+        DBCursor dbData = getDbCursor(collection, field, value);
+        skipElements(collection, skipValue, last, field, value, dbData);
+        limitResult(limitValue, dbData);
+        sortResult(sort, dbData);
+
+        response.setContentType("application/json");
+        response.getWriter().write(formatJson(dbData));
+    }
+
+    private DBCursor getDbCursor(final String collection, final String field, final String value)
+    {
         DBCollection dbCollection = mongodb.getCollection(collection);
         DBCursor dbData;
-        DBObject sortBy = new BasicDBObject("_id", -1);
 
         if (field == null || value == null)
         {
@@ -70,25 +80,7 @@ public class QueryController
         {
             dbData = findByValue(dbCollection, field, value);
         }
-
-        if (skipValue != null)
-        {
-            dbData.skip(Integer.parseInt(skipValue));
-        }
-
-        if (limitValue != null)
-        {
-            dbData.limit(Integer.parseInt(limitValue));
-        }
-
-        if (sort != null && Boolean.parseBoolean(sort))
-        {
-            dbData.sort(sortBy);
-        }
-
-        // TODO check maybe Spring can handle DBCursor automatically
-        response.setContentType("application/json");
-        response.getWriter().write(formatJson(dbData));
+        return dbData;
     }
 
     private DBCursor findByValue(DBCollection dbCollection, String field, String value)
@@ -116,6 +108,46 @@ public class QueryController
         return dbCollection.find(dbObject);
     }
 
+    private void skipElements(final String collection, final String skipValue, final String last, final String field,
+            final String value, final DBCursor dbData)
+    {
+        if (skipValue != null)
+        {
+            dbData.skip(Integer.parseInt(skipValue));
+        }
+        else if (last != null)
+        {
+            int length = getDbCursor(collection, field, value).length();
+            int nrOfSkips = skipToLast(length, Integer.valueOf(last));
+            dbData.skip(nrOfSkips);
+        }
+    }
+
+    int skipToLast(int cursorLength, int limit)
+    {
+        if (cursorLength > limit)
+        {
+            return cursorLength - limit;
+        }
+        return 0;
+    }
+
+    private void limitResult(final String limitValue, final DBCursor dbData)
+    {
+        if (limitValue != null)
+        {
+            dbData.limit(Integer.parseInt(limitValue));
+        }
+    }
+
+    private void sortResult(final String sort, final DBCursor dbData)
+    {
+        if (sort != null && Boolean.parseBoolean(sort))
+        {
+            dbData.sort(new BasicDBObject("_id", -1));
+        }
+    }
+
     private static String formatJson(DBCursor cursor)
     {
         StringBuilder buf = new StringBuilder();
@@ -136,7 +168,7 @@ public class QueryController
             buf.append("]");
         }
         cursor.close();
-        
+
         return buf.toString();
     }
 }
