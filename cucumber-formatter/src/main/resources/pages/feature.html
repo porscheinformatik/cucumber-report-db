@@ -12,7 +12,7 @@
 <h5 ng-show="feature.description"><b>Description: </b></h5>
 <p ng-show="feature.description">{{ feature.description }}</p>
 -->
-<pre class="uri">{{ feature.uri.replace(uriWrapRegEx, uriWrapReplaceFunc) }}</pre><br />
+<pre class="uri">{{feature.uri}}</pre><br />
 
 <h5><b>Scenarios:</b></h5>
 <section ng-repeat="scenario in filteredScenarios | filter:searchText" class="panel panel-default">

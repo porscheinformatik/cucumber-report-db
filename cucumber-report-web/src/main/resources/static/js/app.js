@@ -190,15 +190,6 @@
 		};
 		$rootScope.$routeParams = $routeParams;
 
-		$rootScope.uriWrapRegEx = new RegExp("[\\/\\\\\\._A-Z]","g");
-		$rootScope.uriWrapReplaceFunc = function (m) {
-			if(/[A-Z]/g.test(m)){
-				return '\u200b'+m;
-			}else{
-				return {'\\': "\\\u200b",'.': '.\u200b','_': '_\u200b', '/':'\/\u200b'}[m];
-			}
-		};
-
 		$rootScope.openChart = function(product, type, limit) {
 			if(typeof type === 'undefined'){
 				type = localStorageService.get("chartsType");

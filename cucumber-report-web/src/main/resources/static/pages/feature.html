@@ -10,7 +10,7 @@
 	<span ng-repeat="tag in feature.tags" class="label label-default">{{ tag.name }}</span>
 	<br /><br />
 </div>
-<pre class="uri">{{ feature.uri.replace(uriWrapRegEx, uriWrapReplaceFunc) }}</pre><br />
+<pre class="uri">{{ feature.uri }}</pre><br />
 
 <h3>Scenarios</h3>
 <section ng-repeat="scenario in filteredScenarios | filter:searchText" class="panel panel-default">
