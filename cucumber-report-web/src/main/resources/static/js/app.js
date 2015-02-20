@@ -622,7 +622,11 @@
 	app.controller('StatisticsCtrl', function($rootScope, $scope, $http, $location, $routeParams){
 		$rootScope.loading = true;
 
-		$http.get(queryBaseUrl + $routeParams.product + '/?last=' + $routeParams.limit).success(function(reportData) {
+        var url = queryBaseUrl + $routeParams.product + '/';
+        if($routeParams.limit !== '0') {
+            url += '?last=' + $routeParams.limit;
+        }
+        $http.get(url).success(function(reportData) {
 			var options = {
 				title: $routeParams.product,
 				vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}},
