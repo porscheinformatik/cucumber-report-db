@@ -579,6 +579,13 @@
                 size: 'lg'
             });
 		};
+        $scope.getHeaderRow = function(step) {
+          return step.rows[0];
+        };
+
+        $scope.getDataRows = function(step) {
+          return step.rows.slice().splice(1);
+        };
 
         $scope.isEmbeddedImage = function (mimeType) {
             return mimeType === 'image/png' || mimeType === 'image/bmp';

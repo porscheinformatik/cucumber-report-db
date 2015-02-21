@@ -36,6 +36,18 @@
 				<tr ng-repeat="step in scenario.steps" ng-class="{passed:'success', failed:'danger', unknown:'warning'}[step.result.status]">
 					<td class="firstTD">
 						<strong>{{ step.keyword }}</strong> {{ step.name }}
+                        <table class="table table-bordered" ng-if="step.rows">
+                            <tr>
+                                <th ng-repeat="headerCols in getHeaderRow(step).cells">
+                                    {{ headerCols }}
+                                </th>
+                            </tr>
+                            <tr ng-repeat="dataRows in getDataRows(step)">
+                                <td ng-repeat="dataCols in dataRows.cells">
+                                    {{ dataCols }}
+                                </td>
+                            </tr>
+                        </table>
 					</td>
 					<td>
 						<span ng-show="!step.result.error_message">{{ step.result.status }}</span>
