@@ -62,6 +62,9 @@
 							<span ng-if="isEmbeddedVideo(n.mime_type)">
 								<button tooltip-placement="left" tooltip="Embedded Video" ng-click="embeddingLightbox(n)" type="button" class="btn btn-primary btn-sm">Video</button>
 							</span>
+							<span ng-if="isEmbeddedZIP(n.mime_type)">
+								<button tooltip-placement="left" tooltip="Embedded Zip File" ng-click="downloadZipFile(feature.name, scenario.name, n)" type="button" class="btn btn-primary btn-sm">Zip File</button>
+							</span>
 						</span>
 					</td>
 				</tr>

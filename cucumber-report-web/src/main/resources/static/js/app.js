@@ -593,6 +593,25 @@
         $scope.isEmbeddedVideo = function (mimeType) {
             return mimeType === 'video/mp4';
         };
+		$scope.isEmbeddedZIP = function (mimeType) {
+			return mimeType === 'application/zip';
+		};
+
+		$scope.downloadZipFile = function(featurename, scenarioname, embedded) {
+			var scope = $rootScope.$new(true);
+			scope.getEmbedding = $scope.getEmbedding;
+			scope.embedded = embedded;
+			var url = fileBaseUrl + $routeParams.colName + '/' + embedded.url + '/';
+
+			var downloadLink = document.createElement("a");
+			downloadLink.href = url;
+			downloadLink.download = featurename+'-'+scenarioname+'.zip';
+
+			document.body.appendChild(downloadLink);
+			downloadLink.click();
+			document.body.removeChild(downloadLink);
+
+		};
 
         $scope.embeddingLightbox = function(embedded) {
           var scope = $rootScope.$new(true);
