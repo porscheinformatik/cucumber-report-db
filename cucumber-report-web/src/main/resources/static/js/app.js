@@ -593,6 +593,12 @@
         $scope.isEmbeddedVideo = function (mimeType) {
             return mimeType === 'video/mp4';
         };
+		$scope.isEmbeddedZIP = function (mimeType) {
+			return mimeType === 'application/zip';
+		};
+        $scope.downloadUrl = function(embedded) {
+            return fileBaseUrl + $routeParams.colName + '/' + embedded.url + '/';
+        };
 
         $scope.embeddingLightbox = function(embedded) {
           var scope = $rootScope.$new(true);

@@ -37,6 +37,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
             put("image/jpeg", "jpg");
             put("image/png", "png");
             put("video/mp4", "mp4");
+            put("application/zip", "zip");
         }
     };
 

@@ -5,6 +5,7 @@ import static org.junit.Assert.assertEquals;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.List;
+import java.util.Random;
 
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
@@ -56,7 +57,12 @@ public class RpnCalculatorStepdefs
         {
             if ("passed" .equals(scenario.getStatus()))
             {
-                embedFileFromClasspath(scenario, "/img/loading.gif", "image/bmp");
+                if (new Random().nextInt(2) % 2 == 0)
+                {
+                    embedFileFromClasspath(scenario, "/img/loading.gif", "image/bmp");
+                } else {
+                    embedFileFromClasspath(scenario, "/sampleVideo.zip", "application/zip");
+                }
             }
             else
             {
