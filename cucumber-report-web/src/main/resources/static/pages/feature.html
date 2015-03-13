@@ -38,12 +38,12 @@
 						<strong>{{ step.keyword }}</strong> {{ step.name }}
                         <table class="table table-bordered" ng-if="step.rows">
                             <tr>
-                                <th ng-repeat="headerCols in getHeaderRow(step).cells">
+                                <th ng-repeat="headerCols in getHeaderRow(step).cells track by $index">
                                     {{ headerCols }}
                                 </th>
                             </tr>
                             <tr ng-repeat="dataRows in getDataRows(step)">
-                                <td ng-repeat="dataCols in dataRows.cells">
+                                <td ng-repeat="dataCols in dataRows.cells track by $index">
                                     {{ dataCols }}
                                 </td>
                             </tr>
