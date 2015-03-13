@@ -61,3 +61,8 @@ Feature: Basic Arithmetic
         Given the previous entries:
             | first   | second   | operation |
             | <first> | <second> | +         |
+
+
+    Scenario: Datatable with empty values
+        Given the variables:
+            |   |  |
