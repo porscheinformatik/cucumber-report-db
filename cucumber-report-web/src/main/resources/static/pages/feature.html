@@ -34,19 +34,26 @@
 			</thead>
 			<tbody>
 				<tr ng-repeat="step in scenario.steps" ng-class="{passed:'success', failed:'danger', unknown:'warning'}[step.result.status]">
-					<td class="firstTD">
+					<td class="firstTD" >
 						<strong>{{ step.keyword }}</strong> {{ step.name }}
-                        <table class="table table-bordered" ng-if="step.rows">
-                            <tr>
-                                <th ng-repeat="headerCols in getHeaderRow(step).cells track by $index">
-                                    {{ headerCols }}
-                                </th>
-                            </tr>
-                            <tr ng-repeat="dataRows in getDataRows(step)">
-                                <td ng-repeat="dataCols in dataRows.cells track by $index">
-                                    {{ dataCols }}
-                                </td>
-                            </tr>
+                        <button class="btn btn-xs" ng-if="step.rows" ng-click="step.showRows = !step.showRows">
+                            {{step.showRows ? 'Hide' : 'Show'}}
+                        </button>
+                        <table ng-init="step.showRows = false" class="table table-bordered" ng-if="step.rows" ng-hide="!step.showRows">
+							<thead>
+								<tr>
+									<th ng-repeat="headerCols in getHeaderRow(step).cells track by $index">
+										{{ headerCols }}
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="dataRows in getDataRows(step)">
+									<td ng-repeat="dataCols in dataRows.cells track by $index">
+										{{ dataCols }}
+									</td>
+								</tr>
+							</tbody>
                         </table>
 					</td>
 					<td>
@@ -54,7 +61,7 @@
 						<button ng-show="step.result.error_message" ng-click="errorLogLightbox(step)" tooltip-placement="left" tooltip="Error Log" type="button" class="btn btn-danger btn-sm">{{ step.result.status }}</button>
 					</td>
 					<td>{{ step.result.duration ? duration(step.result.duration) : '' }}</td>
-					<td>	
+					<td>
 						<span ng-repeat="n in step.embeddings">
 							<span ng-if="isEmbeddedImage(n.mime_type)">
 								<button tooltip-placement="left" tooltip="Embedded Screenshot" ng-click="embeddingLightbox(n)" type="button" class="btn btn-primary btn-sm">Screenshot</button>
