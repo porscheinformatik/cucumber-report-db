@@ -28,18 +28,6 @@ import org.joda.time.LocalDateTime;
 public abstract class AbstractJsonFormatter implements Formatter, Reporter
 {
     protected static final String dateFormat = "yyyy-MM-dd'T'HH:mm:ss'Z'";
-    protected static final Map<String, String> MIME_TYPES_EXTENSIONS = new HashMap<String, String>()
-    {
-        private static final long serialVersionUID = -3542309561998685099L;
-        {
-            put("image/bmp", "bmp");
-            put("image/gif", "gif");
-            put("image/jpeg", "jpg");
-            put("image/png", "png");
-            put("video/mp4", "mp4");
-            put("application/zip", "zip");
-        }
-    };
 
     protected final List<Map<String, Object>> allFeatures = new ArrayList<Map<String, Object>>();
 
@@ -211,17 +199,13 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     @Override
     public void embedding(String mimeType, byte[] data)
     {
-        // Creating a file instead of using data urls to not clutter the js file
-        String extension = MIME_TYPES_EXTENSIONS.get(mimeType);
-        if (extension != null)
-        {
-            String fileName = doEmbedding(extension,mimeType,data);
+        String extension = MimeTypeToExtensionsUtil.getExtension(mimeType);
+        String fileName = doEmbedding(extension,mimeType,data);
 
-            Map<String, String> embedding = new HashMap<String, String>();
-            embedding.put("mime_type", mimeType);
-            embedding.put("url", fileName);
-            getEmbeddings().add(embedding);
-        }
+        Map<String, String> embedding = new HashMap<String, String>();
+        embedding.put("mime_type", mimeType);
+        embedding.put("url", fileName);
+        getEmbeddings().add(embedding);
     }
 
     @Override

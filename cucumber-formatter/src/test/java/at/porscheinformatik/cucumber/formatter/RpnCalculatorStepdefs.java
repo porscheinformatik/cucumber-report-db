@@ -57,11 +57,14 @@ public class RpnCalculatorStepdefs
         {
             if ("passed" .equals(scenario.getStatus()))
             {
-                if (new Random().nextInt(2) % 2 == 0)
+                int random = new Random().nextInt(4);
+                if (random % 3 == 0)
                 {
                     embedFileFromClasspath(scenario, "/img/loading.gif", "image/bmp");
-                } else {
+                } else if(random % 3 == 1) {
                     embedFileFromClasspath(scenario, "/sampleVideo.zip", "application/zip");
+                } else {
+                    embedFileFromClasspath(scenario, "/logFile.log", "text/plain");
                 }
             }
             else

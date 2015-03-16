@@ -599,6 +599,14 @@
         $scope.downloadUrl = function(embedded) {
             return fileBaseUrl + $routeParams.colName + '/' + embedded.url + '/';
         };
+        $scope.getFileEnding = function(embedded) {
+            return embedded.url.substr(embedded.url.lastIndexOf(".")+1);
+        };
+        $scope.getFileEndingWithCapitalFirstLetter = function(embedded) {
+            var fileEnding = $scope.getFileEnding(embedded);
+            return fileEnding.charAt(0).toUpperCase() + fileEnding.slice(1);
+        };
+
 
         $scope.embeddingLightbox = function(embedded) {
           var scope = $rootScope.$new(true);

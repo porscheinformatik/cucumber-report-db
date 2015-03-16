@@ -11,14 +11,6 @@ public class RpnCalculator {
     private static final List<String> OPS = asList("-", "+", "*", "/");
 
     public void push(Object arg) {
-        try
-        {
-            Thread.sleep(100L);
-        }
-        catch (InterruptedException e)
-        {
-            e.printStackTrace();
-        }
         if (OPS.contains(arg)) {
             Number y = stack.removeLast();
             Number x = stack.isEmpty() ? 0 : stack.removeLast();
