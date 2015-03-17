@@ -1,31 +1,37 @@
 function getFailedScenarioCount(feature) {
 	var failedScenarios = 0;
-	feature.scenarios.forEach(function(scenario) {
-		if(scenario.result.failedStepCount){
-			failedScenarios++;
-		}
-	});
-	return failedScenarios;
+    if(feature.scenarios !== undefined) {
+        feature.scenarios.forEach(function(scenario) {
+            if(scenario.result.failedStepCount){
+                failedScenarios++;
+            }
+        });
+    }
+    return failedScenarios;
 }
 
 
 function getUnknownScenarioCount(feature) {
 	var unknownScenarios = 0;
-	feature.scenarios.forEach(function(scenario) {
-		if(scenario.result.unknownStepCount&&!scenario.result.failedStepCount){
-			unknownScenarios++;
-		}
-	});
+    if(feature.scenarios !== undefined) {
+        feature.scenarios.forEach(function (scenario) {
+            if (scenario.result.unknownStepCount && !scenario.result.failedStepCount) {
+                unknownScenarios++;
+            }
+        });
+    }
 	return unknownScenarios;
 }
 
 function getPassedScenarioCount(feature) {
 	var passedScenarios = 0;
-	feature.scenarios.forEach(function(scenario) {
-		if(scenario.result.passedStepCount&&!scenario.result.failedStepCount){
-			passedScenarios++;
-		}
-	});
+    if(feature.scenarios !== undefined) {
+        feature.scenarios.forEach(function (scenario) {
+            if (scenario.result.passedStepCount && !scenario.result.failedStepCount) {
+                passedScenarios++;
+            }
+        });
+    }
 	return passedScenarios;
 }
 
