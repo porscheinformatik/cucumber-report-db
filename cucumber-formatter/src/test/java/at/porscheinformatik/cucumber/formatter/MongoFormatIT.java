@@ -6,9 +6,9 @@ import cucumber.api.junit.Cucumber;
 import org.junit.Ignore;
 import org.junit.runner.RunWith;
 
-@CucumberOptions(features = "classpath:at/porscheinformatik/cucumber/formatter/basic_arithmetic.feature",
+@CucumberOptions(features = "classpath:at/porscheinformatik/cucumber/formatter",
         format = "at.porscheinformatik.cucumber.formatter.MongoDbFormatter",
-        glue = "at.porscheinformatik.cucumber.formatter")
+        glue = "at.porscheinformatik.cucumber.formatter", tags = "~@Skip")
 @RunWith(Cucumber.class)
 @Ignore
 public class MongoFormatIT

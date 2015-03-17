@@ -30,7 +30,15 @@
 			data.featureNames = '';
 			
 			angular.forEach(data.features, function(feature, index){
-				if (feature.scenarios.length) {
+                if(feature.scenarios === undefined || feature.scenarios.length === 0)
+                {
+                    feature.result = {};
+                    feature.result.failedScenarioCount = 0;
+                    feature.result.unknownScenarioCount = 0;
+                    feature.result.passedScenarioCount = 0;
+                    feature.result.duration = 0;
+                }
+                else {
 					var res = feature.result;
 					res.failedScenarioCount = getFailedScenarioCount(feature);
 					res.unknownScenarioCount = getUnknownScenarioCount(feature);
@@ -41,7 +49,7 @@
 				feature.result.searchKeyword = feature.status === "failed" ? ":failedFeature" : ":okFeature";
 				
 				angular.forEach(feature.scenarios, function(scenario){
-					
+
 					angular.forEach(scenario.steps, function(step){
 						if(!step.result){
 							step.result={status:"skipped"};

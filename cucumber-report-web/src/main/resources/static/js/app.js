@@ -47,11 +47,19 @@
 			data.featureNames = '';
 
 			angular.forEach(data.features, function(feature, index){
-				if (feature.scenarios.length) {
-					var res = feature.result;
-					res.failedScenarioCount = getFailedScenarioCount(feature);
-					res.unknownScenarioCount = getUnknownScenarioCount(feature);
-					res.passedScenarioCount = res.scenarioCount - res.failedScenarioCount - res.unknownScenarioCount;
+                if(feature.scenarios === undefined || feature.scenarios.length === 0)
+                {
+                    feature.result = {};
+                    feature.result.failedScenarioCount = 0;
+                    feature.result.unknownScenarioCount = 0;
+                    feature.result.passedScenarioCount = 0;
+                    feature.result.duration = 0;
+                }
+				else {
+                    var res = feature.result;
+                    res.failedScenarioCount = getFailedScenarioCount(feature);
+                    res.unknownScenarioCount = getUnknownScenarioCount(feature);
+                    res.passedScenarioCount = res.scenarioCount - res.failedScenarioCount - res.unknownScenarioCount;
 				}
 
 				feature.status = feature.result.failedScenarioCount ? "failed" : "ok";
