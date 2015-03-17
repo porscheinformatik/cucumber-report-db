@@ -352,6 +352,10 @@
 				$location.path('/reports/' + product);
 			};
 
+			restApiQueryRequest(categoriesUrl).success(function (res) {
+				$scope.categories = res;
+			});
+
 			restApiQueryRequest(collectionBaseUrl).success(function (data) {
 				$rootScope.showDBError = false;
 				$rootScope.showJSONFileError = false;

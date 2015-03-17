@@ -3,16 +3,16 @@
   <li class="active">Products</li>
 </ol>
 
-<table class="table table-striped table-hover table-bordered">
+<table ng-repeat="category in categories" class="table table-striped table-hover table-bordered">
 	<thead> 
 		<tr>
-			<th class="firstTD">Product / Version</th>
+			<th width="60%" class="firstTD">{{category.length == 0 ? 'Product / Version' : category+' Tests'}}</th>
 			<th>Statistics</th>
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="product in filteredProducts | filter:productCondition | filter:searchText | orderBy:'':true">
-			<td class="firstTD"><button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product}}</button></td>
+		<tr ng-repeat="product in filteredProducts | filter:productCondition | filter:searchText | filter:category | orderBy:'':true">
+			<td class="firstTD"><button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product.replace(category, '')}}</button></td>
 			<td>
 				<button ng-click="openChart(product)" class="btn btn-primary btn-sm">Charts</button>
 				<button ng-click="openRanking(product)" class="btn btn-primary btn-sm">Rankings</button>		

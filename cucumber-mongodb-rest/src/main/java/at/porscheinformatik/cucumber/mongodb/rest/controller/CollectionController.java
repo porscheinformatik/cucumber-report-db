@@ -80,4 +80,21 @@ public class CollectionController
             }
         }));
     }
+
+    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @ResponseBody
+    public Set<String> getCategories() throws IOException
+    {
+        Set<String> collections = getCollections();
+        return ImmutableSet.copyOf(Collections2.transform(collections, new Function<String, String>()
+        {
+            @Override
+            public String apply(final String s)
+            {
+                // e.g. "APPNAME_3.x-SNAPSHOT (Integration)" for integration tests
+                String[] split = s.split(" ");
+                return split.length == 1 ? "" : split[1].replace(")", "");
+            }
+        }));
+    }
 }
