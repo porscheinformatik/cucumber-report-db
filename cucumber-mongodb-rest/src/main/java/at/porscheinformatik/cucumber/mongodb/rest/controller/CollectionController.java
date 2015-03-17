@@ -91,9 +91,9 @@ public class CollectionController
             @Override
             public String apply(final String s)
             {
-                // e.g. "APPNAME_3.x-SNAPSHOT (Integration)" for integration tests
+                // e.g. "APPNAME_3.x-SNAPSHOT Integration" for an  Integration test category
                 String[] split = s.split(" ");
-                return split.length == 1 ? "" : split[1].replace(")", "");
+                return split.length == 1 ? "" : split[1];
             }
         }));
     }
