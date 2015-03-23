@@ -20,13 +20,18 @@ has to be set up correctly and the formatter has to be included in the cucumber 
 Requirements:
 * Java 6 or later
 * MongoDB 2.6.3 or later [Download](https://www.mongodb.org/downloads) or [as-a-service](https://mongolab.com/)
-* Maven 3
 
-Setup:
+Setup (latest release version):
+* Start the MongoDB ```mongod --dbpath /path/to/db```
+* Download the ```*-bootable.war``` from the [latest release](https://github.com/porscheinformatik/cucumber-report-db/releases/latest)
+* execute ```java -jar cucumber-report-web*-bootable.war```
+
+Setup (from source):
+* Install Maven 3
 * Clone the Repo
 * Start the MongoDB ```mongod --dbpath /path/to/db```
-* execute ```mvn clean install```
-* execute ```java -jar cucumber-report-web/target/cucumber-report-web*-bootable.war```
+* Download the ```*-bootable.war``` from the [latest release](https://github.com/porscheinformatik/cucumber-report-db/releases/latest)
+* execute ```java -jar cucumber-report-web*-bootable.war```
 
 Per default the web application connects to a mongodb hosted on ```mongodb://localhost:27017/``` without authentication (the mongodb default)
 
