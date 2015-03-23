@@ -1,0 +1,10 @@
+language: java
+deploy:
+  provider: releases
+  api_key:
+    secure: Woy2dR+fCDg9/LEoJTl6LmKHSwPINfgyNhUrhDF8C4+3iSNZjOBSRtqAVq4P27TYE9XSwTkfKH8l7L/wyLcc0Nt2oAQity9hkUhOGicGyOb+7ObB6Hzo67B0AIDLr8DdNDLu0/MixfXzAWytmMG3Cxj1jY+oNgDpvvrLKZln+1s=
+  file_glob: true
+  file: cucumber-report-web/target/cucumber-report-web-*.war
+  skip_cleanup: true
+  on:
+    tags: true
