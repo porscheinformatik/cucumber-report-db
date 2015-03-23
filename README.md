@@ -30,8 +30,8 @@ Setup (from source):
 * Install Maven 3
 * Clone the Repo
 * Start the MongoDB ```mongod --dbpath /path/to/db```
-* Download the ```*-bootable.war``` from the [latest release](https://github.com/porscheinformatik/cucumber-report-db/releases/latest)
-* execute ```java -jar cucumber-report-web*-bootable.war```
+* execute ```mvn clean install```
+* execute ```java -jar cucumber-report-web/target/cucumber-report-web*-bootable.war```
 
 Per default the web application connects to a mongodb hosted on ```mongodb://localhost:27017/``` without authentication (the mongodb default)
 
