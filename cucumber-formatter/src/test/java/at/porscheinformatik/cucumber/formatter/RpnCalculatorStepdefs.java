@@ -1,18 +1,18 @@
 package at.porscheinformatik.cucumber.formatter;
 
-import static org.junit.Assert.assertEquals;
-
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.List;
-import java.util.Random;
-
 import cucumber.api.Scenario;
 import cucumber.api.java.After;
 import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.List;
+import java.util.Random;
+
+import static org.junit.Assert.assertEquals;
 
 public class RpnCalculatorStepdefs
 {
@@ -44,6 +44,12 @@ public class RpnCalculatorStepdefs
         assertEquals(expected, calc.value());
     }
 
+    @When("^I have an assertion with tags$")
+    public void I_have_an_assertion_with_tags() {
+        assertEquals("<csh></csh>", "<notCsh></notCsh>");
+    }
+
+
     @Before({"~@foo"})
     public void before()
     {
@@ -61,6 +67,9 @@ public class RpnCalculatorStepdefs
                 if (random % 3 == 0)
                 {
                     embedFileFromClasspath(scenario, "/img/loading.gif", "image/bmp");
+                    embedFileFromClasspath(scenario, "/img/controls.png", "image/png");
+                    embedFileFromClasspath(scenario, "/sampleVideo.mp4", "video/mp4");
+                    embedFileFromClasspath(scenario, "/sampleVideo.zip", "application/zip");
                 } else if(random % 3 == 1) {
                     embedFileFromClasspath(scenario, "/sampleVideo.zip", "application/zip");
                 } else {

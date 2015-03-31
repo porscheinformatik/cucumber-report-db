@@ -335,7 +335,7 @@
 						'<h4><strong>Error Log</strong></h4>' +
 						'<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>' +
 						'<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">' +
-						step.result.error_message +
+                        htmlspecialchars(step.result.error_message) +
 						'</pre>' +
 						'<dl>' +
 						'<dt>Failed Step:</dt>' +

@@ -576,7 +576,7 @@
                 '<div class="modal-body">' +
                 '<button class="btn btn-default btn-xs" type="button" onclick="selectText(\'errorLogCode\')">Select all</button>' +
                 '<pre id="errorLogCode" class="errorLogCode prettyprint lang-java">' +
-                step.result.error_message +
+                htmlspecialchars(step.result.error_message) +
                 '</pre>' +
                 '<dl><dt>Failed Step:</dt><dd>' +
                 step.keyword +
