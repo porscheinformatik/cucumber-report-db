@@ -339,6 +339,20 @@
 		$rootScope.searchText = "";
 		$rootScope.backBtnEnabled = false;
 
+		$scope.productFilter = function (category) {
+			return function (product) {
+				if (category == '') {
+					for (var i in $scope.categories) {
+						var cat = $scope.categories[i];
+						if (cat != '' && product.indexOf(cat) >= 0) {
+							return false;
+						}
+					}
+				}
+				return true;
+			}
+		};
+
 		// if a local report.json file was found: load the data from the filesystem
 		loadJsonFromFilesystem().success(function() {
 			$rootScope.databaseMode = false;

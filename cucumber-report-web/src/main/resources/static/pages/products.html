@@ -11,7 +11,7 @@
 		</tr>
 	</thead>
 	<tbody>
-		<tr ng-repeat="product in filteredProducts | filter:productCondition | filter:searchText | filter:category | orderBy:'':true">
+		<tr ng-repeat="product in filteredProducts | filter:productCondition |  filter:productFilter(category) | filter:searchText | filter:category | orderBy:'':true">
 			<td class="firstTD"><button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product.replace(category, '')}}</button></td>
 			<td>
 				<button ng-click="openChart(product)" class="btn btn-primary btn-sm">Charts</button>
