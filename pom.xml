@@ -159,7 +159,6 @@
 	<scm>
 		<connection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</connection>
 		<developerConnection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</developerConnection>
-		<tag>cucumber-report-db-parent-1.1.0.RC16</tag>
 		<url>https://github.com/porscheinformatik/cucumber-report-db</url>
 	</scm>
 
