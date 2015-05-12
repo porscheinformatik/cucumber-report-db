@@ -9,6 +9,7 @@
 
 	<name>Porsche Informatik Cucumber Report DB Parent</name>
 	<description>Stores results of BDD tests with Cucumber-JVM in a database and provides reporting capabilities</description>
+    <url>https://github.com/porscheinformatik/cucumber-report-db</url>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,7 +17,20 @@
 		<java.version>1.6</java.version>
 	</properties>
 
-	<developers>
+    <licenses>
+        <license>
+            <name>The Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+        </license>
+    </licenses>
+
+    <scm>
+        <connection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</connection>
+        <developerConnection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</developerConnection>
+        <url>https://github.com/porscheinformatik/cucumber-report-db</url>
+    </scm>
+
+    <developers>
 		<developer>
 			<name>Stefan Mayer</name>
 			<email>s.mayer@porscheinformatik.at</email>
@@ -35,11 +49,12 @@
 		</developer>
 		<developer>
 			<name>Klaus Bayrhammer</name>
-			<email>extern.klaus.bayrhammer@porscheinformatik.at</email>
+			<email>bayrhammer.klaus@gmail.com</email>
+            <organizationUrl>https://github.com/klausbayrhammer/</organizationUrl>
 		</developer>
 	</developers>
 
-	<dependencyManagement>
+    <dependencyManagement>
 		<dependencies>
 			<dependency>
 				<groupId>io.spring.platform</groupId>
@@ -111,14 +126,14 @@
 		</dependencies>
 	</dependencyManagement>
 
-	<modules>
+    <modules>
 		<module>cucumber-mongodb-rest</module>
 		<module>cucumber-report-web</module>
 		<module>cucumber-formatter</module>
 		<module>silk-bdd-result-plugin</module>
 	</modules>
 
-	<build>
+    <build>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -156,10 +171,5 @@
         </profile>
     </profiles>
 
-	<scm>
-		<connection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</connection>
-		<developerConnection>scm:git:http://github.com/porscheinformatik/cucumber-report-db.git</developerConnection>
-		<url>https://github.com/porscheinformatik/cucumber-report-db</url>
-	</scm>
 
 </project>
