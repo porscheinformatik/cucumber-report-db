@@ -8,7 +8,7 @@
     <parent>
         <groupId>at.porscheinformatik</groupId>
         <artifactId>cucumber-report-db-parent</artifactId>
-        <version>1.1.0.RC20-SNAPSHOT</version>
+        <version>1.1.0.RC20</version>
         <relativePath>..</relativePath>
     </parent>
 
