@@ -26,7 +26,7 @@
 			function getFailedScenarioCount(feature) {
 				var failedScenarios = 0;
 				feature.scenarios.forEach(function(scenario) {
-					if(scenario.result.failedStepCount){
+					if(scenario.result.failedStepCount || scenario.result.stepCount === scenario.result.skippedStepCount){
 						failedScenarios++;
 					}
 				});
@@ -78,7 +78,13 @@
 						step.result.searchKeyword = ":" + step.result.status + "Step";
 					});
 
-					scenario.status = scenario.result.failedStepCount ? "failed" : (scenario.result.unknownStepCount ? 'unknown' : 'passed');
+					if (scenario.result.failedStepCount || scenario.result.stepCount === scenario.result.skippedStepCount) {
+						scenario.status = "failed";
+					} else if (scenario.result.unknownStepCount) {
+							scenario.status = 'unknown';
+					} else {
+						scenario.status = 'passed';
+					}
 					scenario.result.searchKeyword = ":" + scenario.status + "Scenario";
 				});
 
@@ -94,13 +100,10 @@
 			data.duration = function(feature){
 				var value=0;
 
-				if(isNaN(feature))
-				{
-					value = feature.result.duration;
-				}
-				else
-				{
+				if (!isNaN(feature)) {
 					value = feature;
+				} else if(feature.result.duration) {
+					value = feature.result.duration;
 				}
 
 				if(value<1000000000)

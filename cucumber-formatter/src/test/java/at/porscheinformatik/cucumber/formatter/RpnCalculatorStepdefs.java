@@ -56,6 +56,11 @@ public class RpnCalculatorStepdefs
         System.out.println("Runs before scenarios *not* tagged with @foo");
     }
 
+    @Before("@ExceptionOnBefore")
+    public void beforeWithException() {
+        throw new RuntimeException("Exception in @Before");
+    }
+
     @After
     public void after(Scenario scenario)
     {
