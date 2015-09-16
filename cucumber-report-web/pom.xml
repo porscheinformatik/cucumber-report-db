@@ -6,7 +6,7 @@
     <packaging>war</packaging>
 
     <parent>
-        <groupId>at.porscheinformatik</groupId>
+        <groupId>at.porscheinformatik.cucumber-report-db</groupId>
         <artifactId>cucumber-report-db-parent</artifactId>
         <version>1.1.0.RC22-SNAPSHOT</version>
         <relativePath>..</relativePath>
@@ -15,7 +15,7 @@
     <dependencies>
 
         <dependency>
-            <groupId>at.porscheinformatik</groupId>
+            <groupId>${project.groupId}</groupId>
             <artifactId>cucumber-mongodb-rest</artifactId>
         </dependency>
 
