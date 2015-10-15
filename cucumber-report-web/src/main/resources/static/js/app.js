@@ -186,7 +186,9 @@
 		});
 	} ]);
 
-	app.run(function ($rootScope, $location, $routeParams, $sce, localStorageService) {
+	app.run(function ($rootScope, $location, $routeParams, $sce, $http, localStorageService) {
+
+		$rootScope.deletionMode = false;
 
 		$rootScope.range = function (start, end) {
 			var ret = [];
@@ -200,6 +202,10 @@
 			return ret;
 		};
 		$rootScope.$routeParams = $routeParams;
+
+		$rootScope.toggleDeletionMode = function(){
+			$rootScope.deletionMode = !$rootScope.deletionMode;
+		};
 
 		$rootScope.openChart = function(product, type, limit) {
 			if(typeof type === 'undefined'){
@@ -222,6 +228,11 @@
 		$rootScope.openRanking = function(product){
 			$location.path('/statistics/rankings/' + product);
 		};
+
+		$rootScope.bulkDelete = function(product){
+			$http.delete(queryBaseUrl + product+'/_ALL');
+            $location.path('/#');
+        };
 
 		$rootScope.storageType = 'Local storage';
 		if (!localStorageService.isSupported()) {

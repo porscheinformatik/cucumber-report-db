@@ -8,6 +8,7 @@
 		<tr>
 			<th width="60%" class="firstTD">{{category.length == 0 ? 'Product / Version' : category+' Tests'}}</th>
 			<th>Statistics</th>
+			<th ng-show="deletionMode">Bulk Deletion</th>
 		</tr>
 	</thead>
 	<tbody>
@@ -15,7 +16,10 @@
 			<td class="firstTD"><button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product.replace(category, '')}}</button></td>
 			<td>
 				<button ng-click="openChart(product)" class="btn btn-primary btn-sm">Charts</button>
-				<button ng-click="openRanking(product)" class="btn btn-primary btn-sm">Rankings</button>		
+				<button ng-click="openRanking(product)" class="btn btn-primary btn-sm">Rankings</button>
+			</td>
+			<td  ng-show="deletionMode">
+				<button ng-click="bulkDelete(product)" class="btn btn-danger btn-sm" ng-show="deletionMode">Delete</button>
 			</td>
 		</tr>
 	</tbody>
