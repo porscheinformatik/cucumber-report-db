@@ -33,7 +33,7 @@ public class QueryController
     private MongoOperations mongodb;
 
     @RequestMapping(value = "/{collection}/{id}", method = RequestMethod.DELETE)
-//    @Secured({Roles.ROLE_ADMIN})
+    @Secured({Roles.ROLE_ADMIN})
     public void deleteDocument(@PathVariable("collection") String collection, @PathVariable("id") String id)
     {
         if("_ALL".equals(id)){
