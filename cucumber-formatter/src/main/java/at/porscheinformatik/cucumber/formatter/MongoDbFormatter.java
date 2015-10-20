@@ -136,7 +136,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     public class DbOutputStream extends OutputStream
     {
-        private static final String DATE_REGEX = "\"date\":\"(.*)\"";
+        private static final String DATE_REGEX = "\"date\":\"([^\"]*)\"";
         private static final String DATE_REPLACEMENT = "\"date\":\\{\"\\$date\":\"$1\"\\}";
 
         private StringBuilder output = new StringBuilder();
