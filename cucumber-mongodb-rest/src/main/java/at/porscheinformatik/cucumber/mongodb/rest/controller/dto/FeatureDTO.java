@@ -115,14 +115,14 @@ public class FeatureDTO
         }
         return null;
     }
-    
+
     public ScenarioDTO getScenarioByTag(String tag)
     {
         for (ScenarioDTO scenario : scenarios)
         {
             if (scenario.getTags() != null)
             {
-                for(TagDTO currentTag : scenario.getTags())
+                for (TagDTO currentTag : scenario.getTags())
                 {
                     if (currentTag.getName().equals(tag))
                     {

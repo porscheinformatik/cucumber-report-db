@@ -6,10 +6,12 @@ import java.util.Map;
 public class MimeTypeToExtensionsUtil
 {
     protected static final Map<String, String> MIME_TYPES_EXTENSIONS = new HashMap<String, String>()
-    {{
+    {
+        {
             put("image/jpeg", "jpg");
             put("text/plain", "log");
-    }};
+        }
+    };
 
     public static String getExtension(final String mimeType)
     {

@@ -5,14 +5,14 @@ import java.util.Iterator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import at.porscheinformatik.cucumber.mongodb.rest.DatabaseConfig;
-
 import com.google.gson.Gson;
 import com.mongodb.BasicDBObject;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.MongoClient;
+
+import at.porscheinformatik.cucumber.mongodb.rest.DatabaseConfig;
 
 /**
  * @author Stefan Mayer (yms)

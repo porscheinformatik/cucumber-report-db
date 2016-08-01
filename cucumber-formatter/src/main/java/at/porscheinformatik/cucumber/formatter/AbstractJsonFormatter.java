@@ -7,6 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.joda.time.DateTimeZone;
+import org.joda.time.LocalDateTime;
+
 import gherkin.deps.com.google.gson.GsonBuilder;
 import gherkin.formatter.Formatter;
 import gherkin.formatter.NiceAppendable;
@@ -21,9 +24,6 @@ import gherkin.formatter.model.Scenario;
 import gherkin.formatter.model.ScenarioOutline;
 import gherkin.formatter.model.Step;
 import gherkin.formatter.model.TagStatement;
-
-import org.joda.time.DateTimeZone;
-import org.joda.time.LocalDateTime;
 
 public abstract class AbstractJsonFormatter implements Formatter, Reporter
 {
@@ -143,7 +143,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
 
     @Override
     public void syntaxError(String paramString1, String paramString2, List<String> paramList, String paramString3,
-            Integer paramInteger)
+        Integer paramInteger)
     {
         throw new UnsupportedOperationException();
     }
@@ -200,7 +200,7 @@ public abstract class AbstractJsonFormatter implements Formatter, Reporter
     public void embedding(String mimeType, byte[] data)
     {
         String extension = MimeTypeToExtensionsUtil.getExtension(mimeType);
-        String fileName = doEmbedding(extension,mimeType,data);
+        String fileName = doEmbedding(extension, mimeType, data);
 
         Map<String, String> embedding = new HashMap<String, String>();
         embedding.put("mime_type", mimeType);

@@ -2,8 +2,10 @@ target
 .classpath
 .project
 .settings
+node_modules
 .factorypath
 /bin
 *.iml
 *.idea
+*.log
 cucumber-report-web/src/main/resources/application.properties

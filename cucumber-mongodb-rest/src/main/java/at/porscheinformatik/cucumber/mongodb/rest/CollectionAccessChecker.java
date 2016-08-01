@@ -8,11 +8,16 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
+
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
 
 import at.porscheinformatik.cucumber.mongodb.rest.controller.Roles;
 
+/**
+ * Utility class to check whether a user has access to a collection(product) by either having role ROLE_ADMIN
+ * or by having one of the roles specified in the collection "products" for the wanted collection
+ */
 public abstract class CollectionAccessChecker
 {
     public static boolean hasAccess(MongoOperations mongodb, String collectionName)

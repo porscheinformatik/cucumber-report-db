@@ -1,0 +1,32 @@
+{
+  "name": "cucumber-report-web",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "gulp",
+    "watch": "gulp watch"
+  },
+  "author": "",
+  "license": "ISC",
+  "private": true,
+  "dependencies": {
+    "angular": "1.5.8",
+    "angular-google-chart": "0.1.0",
+    "angular-ui-bootstrap": "2.0.0",
+    "angular-ui-router": "0.3.1",
+    "bootswatch": "3.3.7"
+  },
+  "devDependencies": {
+    "gulp": "~3.9.1",
+    "gulp-angular-filesort": "~1.1.1",
+    "gulp-concat": "~2.6.0",
+    "gulp-sourcemaps": "~1.6.0",
+    "gulp-tslint": "~6.0.2",
+    "gulp-typescript": "~2.13.6",
+    "gulp-uglify": "~1.5.4",
+    "gulp-util": "~3.0.7",
+    "tslint": "~3.14.0",
+    "typescript": "~1.8.10"
+  }
+}

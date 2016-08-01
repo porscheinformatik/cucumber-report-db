@@ -1,0 +1,91 @@
+<ol class="breadcrumb">
+	<li><a ui-sref="products({})">Home</a></li>
+	<li><a ui-sref="products({})">Products</a></li>
+	<li><a ui-sref="reports({productId: sCtrl.productId, versionId: 'ALL', categoryId: 'ALL'})">Reports</a></li>
+	<li><a ui-sref="features({productId: sCtrl.productId, reportId: sCtrl.reportId})">Features</a></li>
+	<li class="active">Feature</li>
+</ol>
+<h2>Feature: {{ sCtrl.feature.name }}</h2>
+<div ng-show="sCtrl.feature.tags.length">
+	<span ng-repeat="tag in sCtrl.feature.tags" class="label label-default">{{ tag.name }}</span> <br />
+	<br />
+</div>
+<pre class="uri">{{ sCtrl.feature.uri }}</pre>
+<br />
+
+<h3>Scenarios</h3>
+<section ng-repeat="scenario in sCtrl.feature.scenarios | filter:sCtrl.searchBar.searchText" class="panel panel-default">
+	<div class="panel-body" ng-init="scenarioIdx = $index">
+		<h4>Scenario: {{ scenario.name }}</h4>
+		<div ng-show="scenario.tags.length">
+			<span ng-repeat="tag in scenario.tags" class="label label-default">{{ tag.name }}</span> <br />
+			<br />
+		</div>
+		<h5 ng-show="scenario.description">Description</h5>
+		<p ng-show="scenario.description">{{ scenario.description }}</p>
+		<p ng-show="scenario.background&&scenario.background.name">
+			<strong>{{ scenario.background.keyword }}</strong> {{ scenario.background.name }}
+		</p>
+		<div class="table-responsive">
+			<table class="table table-striped table-hover table-bordered">
+				<thead>
+					<tr>
+						<th class="firstTD">Step</th>
+						<th>Status</th>
+						<th>Duration</th>
+						<th>Attachments</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr ng-repeat="step in scenario.steps" ng-class="{passed:'success', failed:'danger', unknown:'warning'}[step.result.status]">
+						<td class="firstTD"><strong>{{ step.keyword }}</strong> {{ step.name }}
+							<button class="btn btn-xs" ng-if="step.rows" ng-click="step.showRows = !step.showRows">
+								{{step.showRows ? 'Hide' : 'Show'}}</button>
+							<table ng-init="step.showRows = false" class="table table-bordered" ng-if="step.rows" ng-hide="!step.showRows">
+								<thead>
+									<tr>
+										<th ng-repeat="headerCols in getHeaderRow(step).cells track by $index">
+											{{ headerCols }}</th>
+									</tr>
+								</thead>
+								<tbody>
+									<tr ng-repeat="dataRows in getDataRows(step)">
+										<td ng-repeat="dataCols in dataRows.cells track by $index">
+											{{ dataCols }}</td>
+									</tr>
+								</tbody>
+							</table>
+						</td>
+						<td><span ng-show="!step.result.error_message">{{ step.result.status }}</span>
+							<button ng-show="step.result.error_message" ng-click="sCtrl.errorLogLightbox(step)" tooltip-placement="left" tooltip="Error Log"
+								type="button" class="btn btn-danger btn-sm">{{ step.result.status }}</button></td>
+						<td>{{ step.result.duration ? sCtrl.formatTime(step.result.duration) : '' }}</td>
+						<td><span ng-repeat="n in step.embeddings"> <span
+								ng-if="isEmbeddedImage(n.mime_type)">
+									<button tooltip-placement="left" tooltip="Embedded Screenshot"
+										ng-click="embeddingLightbox(n)" type="button"
+										class="btn btn-primary btn-sm">Screenshot</button>
+							</span> <span ng-if="isEmbeddedVideo(n.mime_type)">
+									<button tooltip-placement="left" tooltip="Embedded Video"
+										ng-click="embeddingLightbox(n)" type="button"
+										class="btn btn-primary btn-sm">Video</button>
+							</span> <span ng-if="!isEmbeddedImage(n.mime_type) && !isEmbeddedVideo(n.mime_type)">
+									<a tooltip-placement="left" tooltip="Embedded File"
+									ng-href="{{downloadUrl(n)}}"
+									download="{{sCtrl.feature.name + '-' + scenario.name + getFileEnding(n)}}"
+									class="btn btn-primary btn-sm">{{getFileEndingWithCapitalFirstLetter(n)}}</a>
+							</span>
+							</span>
+						</td>
+					</tr>
+					<tr ng-class="{passed:'success', failed:'danger', unknown:'warning'}[scenario.status]">
+						<td class="firstTD"><strong>Sum</strong></td>
+						<td>{{ scenario.status }}</td>
+						<td>{{ scenario.result.duration ? sCtrl.formatTime(scenario.result.duration) : '' }}</td>
+						<td></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
+</section>

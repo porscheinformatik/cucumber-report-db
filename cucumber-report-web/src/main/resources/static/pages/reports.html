@@ -1,83 +1,82 @@
-<div class="btn-group pull-right" dropdown>
-	<button type="button" class="btn btn-default btn-sm">Category ({{$routeParams.category}})</button>
-	<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-		<span class="caret"></span>
-	</button>
-	<ul class="dropdown-menu" role="menu">
-		<li ng-repeat="category in categories" ng-class="{active:$routeParams.category==category}"><a href="" ng-click="reportsOverview($routeParams.colName, $routeParams.version, category)">{{category}}</a></li>
-		<li class="divider"></li>
-		<li ng-class="{'active':$routeParams.category=='ALL'}"><a href="" ng-click="reportsOverview($routeParams.colName, $routeParams.version, 'ALL')">All</a></li>
-	</ul>
-</div>
-<div class="btn-group pull-right" dropdown>
-	<button type="button" class="btn btn-default btn-sm">Version ({{$routeParams.version}})</button>
-	<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
-		<span class="caret"></span>
-	</button>
-	<ul class="dropdown-menu" role="menu">
-		<li ng-repeat="version in versions" ng-class="{active:$routeParams.version==version}"><a href="" ng-click="reportsOverview($routeParams.colName, version, $routeParams.category)">{{version}}</a></li>
-		<li class="divider"></li>
-		<li ng-class="{'active':$routeParams.version=='ALL'}"><a href="" ng-click="reportsOverview($routeParams.colName, 'ALL', $routeParams.category)">All</a></li>
-	</ul>
+<div class="pull-right">
+	<span class="dropdown btn-group" uib-dropdown="">
+		<a role="button" class="btn btn-default dropdown-toggle btn-sm" uib-dropdown-toggle=""> Category ({{rCtrl.categoryId}}) <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+			<li ng-repeat="category in rCtrl.categories">
+				<a ui-sref="reports({productId: rCtrl.productId, versionId: rCtrl.versionId, categoryId: category, page: 0})">{{category}}</a>
+			</li>
+			<li class="divider"></li>
+			<li role="menuitem">
+				<a ui-sref="reports({productId: rCtrl.productId, versionId: rCtrl.versionId, categoryId: 'ALL', page: 0})">View	all</a>
+			</li>
+		</ul>
+	</span> 
+	<span class="dropdown btn-group" uib-dropdown="">
+		<a role="button" class="btn btn-default dropdown-toggle btn-sm" uib-dropdown-toggle=""> Version ({{rCtrl.versionId}}) <b class="caret"></b></a>
+		<ul class="dropdown-menu">
+			<li ng-repeat="version in rCtrl.versions">
+				<a ui-sref="reports({productId: rCtrl.productId, versionId: version, categoryId: rCtrl.categoryId, page: 0})">{{version}}</a>
+			</li>
+			<li class="divider"></li>
+			<li role="menuitem">
+				<a ui-sref="reports({productId: rCtrl.productId, versionId: 'ALL', categoryId: rCtrl.categoryId, page: 0})">View all</a>
+			</li>
+		</ul>
+	</span>
 </div>
 
 <ol class="breadcrumb">
-  <li><a href="#">Home</a></li>
-  <li><a href="#/products/">Products</a></li>
-  <li class="active">Reports</li>
+	<li><a ui-sref="products({productId: null})">Home</a></li>
+	<li><a ui-sref="products({productId: null})">Products</a></li>
+	<li class="active">Reports</li>
 </ol>
 
-<table class="table table-striped table-hover table-bordered">
-	<thead> 
-		<tr class="sortToggle">
-			<th class="firstTD">Features</th>
-			<th>Version</th>
-			<th>Category</th>
-			<th>Statistics</th>
-			<th><span ng-click="orderPredicate = 'report[\'date\']'; orderReverse=!orderReverse;">Date</span></th>
-            <th ng-show="isAdmin">Admin</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="report in filteredReports | filter: only | filter:searchText">
-			<td  class="firstTD tdCollapseBox" shortener-directive>
-				<div class="tdCollapse" ng-click="featuresOverview(report._id.$oid)" ng-class="{'tdUncollapse':boolUncollapse}">
-					{{report.featureNames}}
-				</div>
-			</td>
-			<td  class="tdCollapseBox" shortener-directive>
-				<div class="tdCollapse" ng-class="{'tdUncollapse':boolUncollapse}">
-					{{report.version}}
-				</div>
-			</td>
-			<td  class="tdCollapseBox" shortener-directive>
-				<div class="tdCollapse" ng-class="{'tdUncollapse':boolUncollapse}">
-					{{report.category}}
-				</div>
-			</td>
-			<td style="width: 25%">
-				<div class="progress" style="margin-bottom: 0px;">
-					{{statistics=getStatistics(report.report.features);""}}
-					<div class="progress-bar progress-bar-success" style="width: {{statistics.passedPercent}}%">{{statistics.passed}}</div>
-					<div class="progress-bar progress-bar-warning" style="width: {{statistics.unknownPercent}}%">{{statistics.unknown}}</div>
-					<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
-				</div>
-			</td>
-			<td class="noWrap">{{ report.report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
-            <td ng-show="isAdmin">
-                <button ng-really-message="Are you sure?" ng-really-click="deleteDocument(report._id.$oid)"
-                        class="btn-sm btn-danger"><span
-                    class="glyphicon glyphicon-remove-sign"></span></button>
-            </td>
-		</tr>
-	</tbody>
-</table>
+<div class="table-responsive">
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr class="sortToggle">
+				<th class="firstTD">Features</th>
+				<th>Version</th>
+				<th>Category</th>
+				<th>Statistics</th>
+				<th>Date</th>
+				<th ng-show="rCtrl.isAdmin()">Admin</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="report in rCtrl.reports | filter:rCtrl.searchBar.searchText">
+				<td class="firstTD" ui-sref="features({productId: rCtrl.productId, reportId: report._id.$oid})" style="cursor: pointer; max-width: 200px; width: 33%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">{{report.featureNames}}</td>
+				<td ui-sref="features({productId: rCtrl.productId, reportId: report._id.$oid})" style="cursor: pointer">{{report.version}}</td>
+				<td ui-sref="features({productId: rCtrl.productId, reportId: report._id.$oid})" style="cursor: pointer">{{report.category}}</td>
+				<td ui-sref="features({productId: rCtrl.productId, reportId: report._id.$oid})" style="width: 25%; cursor: pointer">
+					<div class="progress" style="margin-bottom: 0px;">
+						{{statistics=rCtrl.statistics;""}}
+						<div class="progress-bar progress-bar-success" ng-style="{width: report.statistics.passedPercent+'%'}">{{report.statistics.passed}}</div>
+						<div class="progress-bar progress-bar-warning" ng-style="{width: report.statistics.unknownPercent+'%'}">{{report.statistics.unknown}}</div>
+						<div class="progress-bar progress-bar-danger" ng-style="{width: report.statistics.failedPercent+'%'}">{{report.statistics.failed}}</div>
+					</div>
+				</td>
+				<td ui-sref="features({productId: rCtrl.productId, reportId: report._id.$oid})" style="cursor: pointer">{{ report.report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
+				<td ng-show="rCtrl.isAdmin()">
+					<button ng-really-message="Are you sure?" confirmation="rCtrl.deleteDocument(report._id.$oid)" class="btn-sm btn-danger">
+						<span class="glyphicon glyphicon-remove"></span>
+					</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
 <div class="text-center">
 	<ul class="pagination">
-		<li><a href="#/reports/{{$routeParams.colName}}/version/{{$routeParams.version}}/category/{{$routeParams.category}}?page=0">&laquo;</a></li>
-		<li ng-repeat="n in range(pages)">
-			<a href="#/reports/{{$routeParams.colName}}/version/{{$routeParams.version}}/category/{{$routeParams.category}}?page={{n}}">{{n + 1}}</a>
+		<li>
+			<a ui-sref="reports({productId: rCtrl.productId, versionId: rCtrl.versionId, categoryId: rCtrl.categoryId, page: 0})">&laquo;</a>
 		</li>
-		<li><a href="#/reports/{{$routeParams.colName}}/version/{{$routeParams.version}}/category/{{$routeParams.category}}?page={{pages - 1}}">&raquo;</a></li>
+		<li ng-repeat="n in rCtrl.pages">
+			<a ui-sref="reports({productId: rCtrl.productId, versionId: rCtrl.versionId, categoryId: rCtrl.categoryId, page: n})">{{n + 1}}</a>
+		</li>
+		<li>
+			<a ui-sref="reports({productId: rCtrl.productId, versionId: rCtrl.versionId, categoryId: rCtrl.categoryId, page: rCtrl.pages.length - 1})">&raquo;</a>
+		</li>
 	</ul>
 </div>

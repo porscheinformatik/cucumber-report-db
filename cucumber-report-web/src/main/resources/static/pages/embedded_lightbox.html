@@ -3,14 +3,12 @@
 </div>
 <div class="modal-body">
 	<div class="container">
-		<a ng-if="isImage" ng-href="{{ getEmbedding(embedded) }}">
-			<img style="cursor: '\e015', -moz-zoom-in; width: 100%;" ng-src="{{ getEmbedding(embedded) }}">
+		<a ng-if="isImage" ng-href="{{ getEmbedding(embedded) }}"> <img style="cursor: '\e015', -moz-zoom-in; width: 100%;" ng-src="{{ getEmbedding(embedded) }}">
 		</a>
 	</div>
 	<div ng-if="isVideo" id="inlinevideocontent">
 		<video style="width: 600px; height: 400px; margin: 0 auto; display: block;" controls>
-			<source ng-src="{{ getEmbedding(embedded) }}" type="video/mp4" />
-			Your browser does not support the video tag.
+			<source ng-src="{{ getEmbedding(embedded) }}" type="video/mp4" /> Your browser does not support the video tag.
 		</video>
 	</div>
 </div>

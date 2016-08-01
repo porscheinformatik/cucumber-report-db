@@ -34,7 +34,7 @@ public class RightController
     {
         BasicDBObject query = new BasicDBObject();
         query.put("name", product);
-        
+
         @SuppressWarnings("unchecked")
         List<String> products = mongodb.getCollection("products").distinct("rights", query);
         return products;
@@ -43,19 +43,22 @@ public class RightController
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/{product}", method = RequestMethod.POST)
     @ResponseBody
-    public ResponseEntity<Object> postRight(@PathVariable(value = "product") String product, @RequestBody String newGroup) throws IOException
+    public ResponseEntity<Object> postRight(@PathVariable(value = "product") String product,
+        @RequestBody String newGroup) throws IOException
     {
         Query query = new Query();
         Criteria criteria = Criteria.where("name").is(product);
         query.addCriteria(criteria);
-        
+
         Update update = new Update();
         update.addToSet("rights", newGroup);
-        
-        
-        if(mongodb.updateFirst(query, update, "products").isUpdateOfExisting()) {
+
+        if (mongodb.updateFirst(query, update, "products").isUpdateOfExisting())
+        {
             return new ResponseEntity<Object>(HttpStatus.OK);
-        } else {
+        }
+        else
+        {
             return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED);
         }
     }
@@ -63,19 +66,22 @@ public class RightController
     @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/{product}/{group}", method = RequestMethod.DELETE)
     @ResponseBody
-    public ResponseEntity<Object> deleteRight(@PathVariable(value = "product") String product, @PathVariable(value = "group") String group) throws IOException
+    public ResponseEntity<Object> deleteRight(@PathVariable(value = "product") String product,
+        @PathVariable(value = "group") String group) throws IOException
     {
         Query query = new Query();
         Criteria criteria = Criteria.where("name").is(product);
         query.addCriteria(criteria);
-        
+
         Update update = new Update();
         update.pull("rights", group);
-        
-        
-        if(mongodb.updateFirst(query, update, "products").isUpdateOfExisting()) {
+
+        if (mongodb.updateFirst(query, update, "products").isUpdateOfExisting())
+        {
             return new ResponseEntity<Object>(HttpStatus.OK);
-        } else {
+        }
+        else
+        {
             return new ResponseEntity<Object>(HttpStatus.NOT_MODIFIED);
         }
     }

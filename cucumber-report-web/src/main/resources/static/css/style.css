@@ -4,9 +4,6 @@
 .affix {
 	width: 200px;
 }
-body{
-	padding-top: 70px;
-}
 .table td , .table th {
 	text-align: center !important;
 }

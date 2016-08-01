@@ -20,18 +20,22 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.base.Function;
 import com.google.common.collect.Lists;
+
 import at.porscheinformatik.cucumber.mongodb.rest.CollectionAccessChecker;
 
 /**
- * @author Stefan Mayer (yms)
+ * Handles requests for the list of all products and for general information about a product
  */
 @Controller
-@RequestMapping("/rest/collection")
+@RequestMapping("rest/collection")
 public class CollectionController
 {
     @Autowired
     private MongoOperations mongodb;
 
+    /**
+     * @return List<String> a list of names of all products the user has access to
+     */
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
     public List<String> getCollections() throws IOException
@@ -63,6 +67,10 @@ public class CollectionController
         return collectionNames;
     }
 
+    /**
+     * Alias for requests to "/"
+     * @return List<String> a list of names of all products the user has access to
+     */
     @RequestMapping(value = "/products", method = RequestMethod.GET)
     @ResponseBody
     public List<String> getProducts() throws IOException
@@ -70,10 +78,15 @@ public class CollectionController
         return getCollections();
     }
 
+    /**
+     * Queries for the different categories the reports in the specified collection are of
+     * @param collection This specifies the desired collection
+     * @return ResponseEntity<String> a response with a list of categories in the collection or "forbidden" status when the user doesn't have a required role
+     */
     @RequestMapping(value = "/{collection}/categories", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getCategories(
-        @PathVariable("collection") String collection) throws IOException
+        @PathVariable("collection") String collection)
     {
         if (!CollectionAccessChecker.hasAccess(mongodb, collection))
         {
@@ -83,10 +96,15 @@ public class CollectionController
         return ResponseEntity.ok(mongodb.getCollection(collection).distinct("category").toString());
     }
 
+    /**
+     * Queries for the different versions the reports in the specified collection are made on
+     * @param collection This specifies the desired collection
+     * @return ResponseEntity<String> a response with a list of versions in the collection or "forbidden" status when the user doesn't have a required role
+     */
     @RequestMapping(value = "/{collection}/versions", method = RequestMethod.GET)
     @ResponseBody
     public ResponseEntity<String> getVersions(
-        @PathVariable("collection") String collection) throws IOException
+        @PathVariable("collection") String collection)
     {
         if (!CollectionAccessChecker.hasAccess(mongodb, collection))
         {
@@ -94,5 +112,23 @@ public class CollectionController
         }
 
         return ResponseEntity.ok(mongodb.getCollection(collection).distinct("version").toString());
+    }
+    
+    /**
+     * Queries for the number of reports in the specified collection
+     * @param collection This specifies the desired collection
+     * @return ResponseEntity<?> a response with the number of reports or "forbidden" status when the user doesn't have a required role
+     */
+    @RequestMapping(value = "/{collection}/count", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<?> getReportCount(
+        @PathVariable("collection") String collection)
+    {
+        if (!CollectionAccessChecker.hasAccess(mongodb, collection))
+        {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return ResponseEntity.ok(mongodb.getCollection(collection).count());
     }
 }

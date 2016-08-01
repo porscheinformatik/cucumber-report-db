@@ -21,7 +21,7 @@ public class RoleController
     public @ResponseBody List<String> getRole()
     {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(SecurityContextHolder.getContext()
-                .getAuthentication().getAuthorities());
+            .getAuthentication().getAuthorities());
         List<String> roles = Lists.transform(authorities, new Function<GrantedAuthority, String>()
         {
             @Override

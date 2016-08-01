@@ -27,41 +27,41 @@ public class HtmlFormatter extends AbstractJsonFormatter
     protected static final String JSON_REPORT_FILENAME = "report.json";
     protected static final String FORMATTER_DIR = "/";
     protected static final String[] TEXT_ASSETS =
-            {
-                    "index.html",
+        {
+            "index.html",
 
-                    "pages/feature.html",
-                    "pages/features.html",
+            "pages/feature.html",
+            "pages/features.html",
 
-                    "css/bootstrap-spacelab.css",
-                    "css/colorbox.css",
-                    "css/style.css",
+            "css/bootstrap-spacelab.css",
+            "css/colorbox.css",
+            "css/style.css",
 
-                    "js/angular.min.js",
-                    "js/angular-route.min.js",
-                    "js/angular.localStorageModule.js",
-                    "js/app.js",
-                    "js/charts.js",
-                    "js/bootstrap.min.js",
-                    "js/config.js",
-                    "js/dateAndTime.js",
-                    "js/jquery.colorbox-min.js",
-                    "js/jquery.min.js",
-                    "js/json3.min.js",
-                    "js/lightbox.js",
-                    "js/ui-bootstrap-tpls-0.5.0.min.js",
+            "js/angular.min.js",
+            "js/angular-route.min.js",
+            "js/angular.localStorageModule.js",
+            "js/app.js",
+            "js/charts.js",
+            "js/bootstrap.min.js",
+            "js/config.js",
+            "js/dateAndTime.js",
+            "js/jquery.colorbox-min.js",
+            "js/jquery.min.js",
+            "js/json3.min.js",
+            "js/lightbox.js",
+            "js/ui-bootstrap-tpls-0.5.0.min.js",
 
-                    "img/loading.gif",
-                    "img/load.gif",
-                    "img/controls.png",
-                    "img/border1.png",
-                    "img/border2.png",
+            "img/loading.gif",
+            "img/load.gif",
+            "img/controls.png",
+            "img/border1.png",
+            "img/border2.png",
 
-                    "fonts/glyphicons-halflings-regular.eot",
-                    "fonts/glyphicons-halflings-regular.svg",
-                    "fonts/glyphicons-halflings-regular.ttf",
-                    "fonts/glyphicons-halflings-regular.woff"
-            };
+            "fonts/glyphicons-halflings-regular.eot",
+            "fonts/glyphicons-halflings-regular.svg",
+            "fonts/glyphicons-halflings-regular.ttf",
+            "fonts/glyphicons-halflings-regular.woff"
+        };
 
     protected final File htmlReportDir;
     protected final File htmlReportJsDir;
@@ -73,7 +73,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
     protected int embeddedIndex = 1;
 
     protected Date date;
-    private NiceAppendable jsonOutput ;
+    private NiceAppendable jsonOutput;
 
     public HtmlFormatter(File htmlReportDir) throws UnsupportedEncodingException
     {
@@ -85,7 +85,7 @@ public class HtmlFormatter extends AbstractJsonFormatter
         this.htmlReportFontsDir = new File(htmlReportDir + "/fonts");
         this.htmlReportPagesDir = new File(htmlReportDir + "/pages");
         jsonOutput = new NiceAppendable(new OutputStreamWriter(reportFileOutputStream(htmlReportDir,
-                JSON_REPORT_FILENAME), "UTF-8"));
+            JSON_REPORT_FILENAME), "UTF-8"));
     }
 
     @Override

@@ -1,0 +1,12 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "target": "es5",
+    "noImplicitAny": true,
+    "rootDir": "src/main/typescript/",
+    "sourceMap": true
+  },
+  "exclude": [
+    "node_modules"
+  ]
+}

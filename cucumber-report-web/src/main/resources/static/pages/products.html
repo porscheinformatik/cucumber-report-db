@@ -1,41 +1,30 @@
 <ol class="breadcrumb">
-  <li><a href="#">Home</a></li>
-  <li class="active">Products</li>
+	<li><a ui-sref="products({productId: null})">Home</a></li>
+	<li class="active">Products</li>
 </ol>
 
-<table class="table table-striped table-hover table-bordered">
-	<thead> 
-		<tr>
-			<th width="60%" class="firstTD">{{category.length == 0 ? 'Product / Version' : category+' Tests'}}</th>
-			<th>Last Test Result</th>
-			<th>Last Test Date</th>
-			<th>Statistics</th>
-			<th ng-show="deletionMode">Bulk Deletion</th>
-		</tr>
-	</thead>
-	<tbody>
-		<tr ng-repeat="product in filteredProducts | filter:productCondition | filter:searchText | orderBy:'':true">
-			<td class="firstTD"><button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product.replace(category, '')}}</button></td>
-			<td style="width: 25%">
-				<div class="progress" style="margin-bottom: 0px;">
-					{{statistics=getLastStatisticsForProduct(product);""}}
-					<div class="progress-bar progress-bar-success" style="width: {{statistics.passedPercent}}%">{{statistics.passed}}</div>
-					<div class="progress-bar progress-bar-warning" style="width: {{statistics.unknownPercent}}%">{{statistics.unknown}}</div>
-					<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
-				</div>
-			</td>
-			<td >
-				<div class="noWrap">
-					{{getLastTestDateForProduct(product) | date:'dd-MM-yyyy HH:mm:ss' }}
-				</div>
-			</td>
-			<td class="noWrap">
-				<button ng-click="openChart(product)" class="btn btn-primary btn-sm">Charts</button>
-				<button ng-click="openRanking(product)" class="btn btn-primary btn-sm">Rankings</button>
-			</td>
-			<td  ng-show="deletionMode">
-				<button ng-click="bulkDelete(product)" class="btn btn-danger btn-sm" ng-show="deletionMode">Delete</button>
-			</td>
-		</tr>
-	</tbody>
-</table>
+<div class="table-responsive">
+	<table class="table table-striped table-hover table-bordered">
+		<thead>
+			<tr>
+				<th width="60%" class="firstTD">Product</th>
+				<th>Statistics</th>
+				<th ng-show="pCtrl.deletionModeService.enabled">Bulk Deletion</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr ng-repeat="product in pCtrl.products | filter:pCtrl.searchBar.searchText | orderBy:'':true">
+				<td class="firstTD">
+					<button ui-sref="reports({productId: product, versionId: 'ALL', categoryId: 'ALL'})" class="btn btn-primary btn-sm">{{product}}</button>
+				</td>
+				<td>
+					<button class="btn btn-primary btn-sm" ui-sref="charts({productId: product, type: 'ColumnChart', limit: 10})">Charts</button>
+					<button class="btn btn-primary btn-sm" ui-sref="rankings({productId: product})">Rankings</button>
+				</td>
+				<td ng-show="pCtrl.deletionModeService.enabled">
+					<button ng-really-message="Are you sure?" confirmation="pCtrl.bulkDelete(product)" class="btn btn-danger btn-sm" ng-show="pCtrl.deletionModeService.enabled">Delete</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>

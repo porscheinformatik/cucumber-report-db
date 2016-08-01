@@ -13,7 +13,7 @@ public class UserController
     public Object currentUser()
     {
         SecurityContext securityContext = SecurityContextHolder.getContext();
-        
+
         return securityContext.getAuthentication();
     }
 }

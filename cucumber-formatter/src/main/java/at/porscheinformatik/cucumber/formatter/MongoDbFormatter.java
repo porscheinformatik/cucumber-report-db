@@ -7,9 +7,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 
-import cucumber.runtime.CucumberException;
-import gherkin.formatter.NiceAppendable;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,9 +15,12 @@ import com.sun.jersey.api.client.WebResource;
 import com.sun.jersey.api.client.config.DefaultClientConfig;
 import com.sun.jersey.api.client.filter.HTTPBasicAuthFilter;
 
+import cucumber.runtime.CucumberException;
+import gherkin.formatter.NiceAppendable;
+
 /**
- * Use SystemProperty {@link at.porscheinformatik.cucumber.formatter.MongoDbFormatter#BASEURL_SYS_PROP} to specify a
- * url where the cucumber-report-web is provided
+ * Use SystemProperty {@link at.porscheinformatik.cucumber.formatter.MongoDbFormatter#BASEURL_SYS_PROP} to specify a url
+ * where the cucumber-report-web is provided
  */
 public class MongoDbFormatter extends AbstractJsonFormatter
 {
@@ -88,7 +88,8 @@ public class MongoDbFormatter extends AbstractJsonFormatter
     {
         try
         {
-            restResource.path("rest").path("cucumberplugin").path(getCollection()).path(getVersion()).path(getCategory()).path("report").entity(data).post();
+            restResource.path("rest").path("cucumberplugin").path(getCollection()).path(getVersion())
+                .path(getCategory()).path("report").entity(data).post();
             LOGGER.info("JSON sent to cucumber-report-db");
         }
         catch (Exception e)
@@ -102,8 +103,8 @@ public class MongoDbFormatter extends AbstractJsonFormatter
         try
         {
             restResource.path("rest").path("cucumberplugin").path(getCollection()).path(getVersion()).path("media")
-                    .queryParam("filename", fileName)
-                    .type(mimeType).entity(inputStream).post();
+                .queryParam("filename", fileName)
+                .type(mimeType).entity(inputStream).post();
             LOGGER.info("Image {} sent to cucumber-report-db", fileName);
         }
         catch (Exception e)
@@ -114,24 +115,26 @@ public class MongoDbFormatter extends AbstractJsonFormatter
 
     protected String getCollection()
     {
-        if (System.getProperty(PRODUCT_NAME_PROP)!= null)
+        if (System.getProperty(PRODUCT_NAME_PROP) != null)
         {
             return System.getProperty(PRODUCT_NAME_PROP);
         }
         return System.getProperty(COLLECTION_NAME_PROP);
     }
-    
+
     protected String getVersion()
     {
-        if(System.getProperty(PRODUCT_VERSION_PROP)!=null) {
+        if (System.getProperty(PRODUCT_VERSION_PROP) != null)
+        {
             return System.getProperty(PRODUCT_VERSION_PROP);
         }
         return DEFAULT_PRODUCT_VERSION;
     }
-    
+
     protected String getCategory()
     {
-        if(System.getProperty(REPORT_CATEGORY_PROP)!=null) {
+        if (System.getProperty(REPORT_CATEGORY_PROP) != null)
+        {
             return System.getProperty(REPORT_CATEGORY_PROP);
         }
         return DEFAULT_REPORT_CATEGORY;

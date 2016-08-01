@@ -27,14 +27,14 @@ public class ReportDTO
     {
         return getCalendar().getTime();
     }
-    
+
     public Calendar getCalendar()
     {
         Calendar cal = javax.xml.bind.DatatypeConverter.parseDateTime(date.get$date());
         cal.setTimeZone(TimeZone.getTimeZone("GMT+02:00"));
         return cal;
     }
-    
+
     public DateDTO getDateDTO()
     {
         return date;

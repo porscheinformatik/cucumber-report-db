@@ -1,6 +1,6 @@
 package at.porscheinformatik.cucumber.mongodb.rest.controller;
 
-import static org.springframework.data.mongodb.core.query.Query.query;
+import static org.springframework.data.mongodb.core.query.Query.*;
 
 import java.io.IOException;
 import java.net.UnknownHostException;
