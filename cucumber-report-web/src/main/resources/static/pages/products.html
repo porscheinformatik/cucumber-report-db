@@ -7,6 +7,8 @@
 	<thead> 
 		<tr>
 			<th width="60%" class="firstTD">{{category.length == 0 ? 'Product / Version' : category+' Tests'}}</th>
+			<th>Last Test Result</th>
+			<th>Last Test Date</th>
 			<th>Statistics</th>
 			<th ng-show="deletionMode">Bulk Deletion</th>
 		</tr>
@@ -14,7 +16,20 @@
 	<tbody>
 		<tr ng-repeat="product in filteredProducts | filter:productCondition |  filter:productFilter(category) | filter:searchText | filter:category | orderBy:'':true">
 			<td class="firstTD"><button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product.replace(category, '')}}</button></td>
-			<td>
+			<td style="width: 25%">
+				<div class="progress" style="margin-bottom: 0px;">
+					{{statistics=getLastStatisticsForProduct(product);""}}
+					<div class="progress-bar progress-bar-success" style="width: {{statistics.passedPercent}}%">{{statistics.passed}}</div>
+					<div class="progress-bar progress-bar-warning" style="width: {{statistics.unknownPercent}}%">{{statistics.unknown}}</div>
+					<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
+				</div>
+			</td>
+			<td >
+				<div class="noWrap">
+					{{getLastTestDateForProduct(product) | date:'dd-MM-yyyy HH:mm:ss' }}
+				</div>
+			</td>
+			<td class="noWrap">
 				<button ng-click="openChart(product)" class="btn btn-primary btn-sm">Charts</button>
 				<button ng-click="openRanking(product)" class="btn btn-primary btn-sm">Rankings</button>
 			</td>

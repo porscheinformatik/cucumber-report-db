@@ -346,7 +346,7 @@
 	/**
 	 * ProductList Controller (see products.html)
 	 */
-	app.controller('ProductListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, restApiQueryRequest, loadJsonFromFilesystem) {
+	app.controller('ProductListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, restApiQueryRequest, loadJsonFromFilesystem, restApiCollectionRequest) {
 		$scope.searchArrayName = 'filteredProducts';
 		$scope.orderPredicate = "";
 		$scope.orderReverse = true;
@@ -399,6 +399,64 @@
 
 				$scope[$scope.searchArrayName] = $scope.products;
 				addSearchAndSortHandlers($scope, $filter, $scope.products);
+
+                $scope.reportsForProduct = {};
+
+				angular.forEach($scope.products, function (product)
+                    {
+
+                restApiQueryRequest(queryBaseUrl + product + '/?sort=true&limit=' + 1 + '&skip=' + 0)
+                        .success(function (data)
+                        {
+
+                            $scope.reportsForProduct[product] = data;
+
+                            var date = 0;
+                            $scope.getLastTestDateForProduct = function(product){
+                            var reportsForProduct = $scope.reportsForProduct[product];
+                            angular.forEach(reportsForProduct, function (featureList)
+                                {
+                                    date = featureList.date.$date;
+                                });
+                                    return date;
+                            };
+
+                            $scope.getLastStatisticsForProduct = function (product)
+                            {
+                                var statistics = {
+                                    passed: 0,
+                                    failed: 0,
+                                    unknown: 0
+                                };
+
+                                angular.forEach($scope.reportsForProduct[product], function (featureList)
+                                    {
+                                         angular.forEach(featureList.features, function (feature)
+                                            {
+                                                statistics.passed += feature.result.passedScenarioCount;
+                                                statistics.failed += feature.result.failedScenarioCount;
+                                                statistics.unknown += feature.result.unknownScenarioCount;
+                                        });
+                                });
+
+                                var sum = (statistics.passed + statistics.failed + statistics.unknown);
+
+                                statistics.passedPercent = (statistics.passed / sum) * 100;
+                                statistics.failedPercent = (statistics.failed / sum) * 100;
+                                statistics.unknownPercent = (statistics.unknown / sum) * 100;
+
+                                return statistics;
+                            };
+
+                            $rootScope.loading = false;
+
+                        })
+                        .error(function ()
+                        {
+                            $rootScope.loading = false;
+                            $location.path('/products/');
+                        });
+                    });
 			})
 			.error(function() {
 				$rootScope.showJSONFileError = true;
