@@ -42,13 +42,13 @@ function getResults(reportData){
 	results.push(['Date', 'Passed', 'Unknown', 'Failed']);
 	$.each( reportData, function( index, report ) {
 		var row=[];
-		var date = new Date(report.date.$date);
+		var date = new Date(report.report.date.$date);
 		
 		var failedScenariosSum = 0;
 		var unknownScenariosSum = 0;
 		var passedScenariosSum = 0;
 		
-		$.each( report.features, function( index, feature) {
+		$.each( report.report.features, function( index, feature) {
 			failedScenariosSum += getFailedScenarioCount(feature);
 			unknownScenariosSum += getUnknownScenarioCount(feature);
 			passedScenariosSum += getPassedScenarioCount(feature);

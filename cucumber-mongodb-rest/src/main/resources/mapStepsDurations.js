@@ -1,4 +1,4 @@
-function() {this.features.forEach(function(feature) {
+function() {this.report.features.forEach(function(feature) {
     if(feature.scenarios !== undefined) {
         feature.scenarios.forEach(function (scenario) {
             scenario.steps.forEach(function (step) {

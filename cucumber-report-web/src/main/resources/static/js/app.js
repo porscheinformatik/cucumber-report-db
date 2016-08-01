@@ -20,9 +20,7 @@
     }]);
 
 	var prepareReportData = function(reports) {
-
 		angular.forEach(reports, function(data){
-
 			function getFailedScenarioCount(feature) {
 				var failedScenarios = 0;
 				feature.scenarios.forEach(function(scenario) {
@@ -43,18 +41,18 @@
 				});
 				return unknownScenarios;
 			}
-
+			
 			data.featureNames = '';
 
-			angular.forEach(data.features, function(feature, index){
-                if(feature.scenarios === undefined || feature.scenarios.length === 0)
-                {
-                    feature.result = {};
-                    feature.result.failedScenarioCount = 0;
-                    feature.result.unknownScenarioCount = 0;
-                    feature.result.passedScenarioCount = 0;
-                    feature.result.duration = 0;
-                }
+			angular.forEach(data.report.features, function(feature, index){
+        if(feature.scenarios === undefined || feature.scenarios.length === 0)
+        {
+            feature.result = {};
+            feature.result.failedScenarioCount = 0;
+            feature.result.unknownScenarioCount = 0;
+            feature.result.passedScenarioCount = 0;
+            feature.result.duration = 0;
+        }
 				else {
                     var res = feature.result;
                     res.failedScenarioCount = getFailedScenarioCount(feature);
@@ -93,11 +91,11 @@
 				feature.result.unknownStepCount = feature.result.unknownStepCount || 0;
 				feature.result.skippedStepCount = feature.result.skippedStepCount || 0;
 
-				data.featureNames += feature.name + (index === data.features.length-1 ? '' : ', ');
+				data.featureNames += feature.name + (index === data.report.features.length-1 ? '' : ', ');
 			});
 
 
-			data.duration = function(feature){
+			data.report.duration = function(feature){
 				var value=0;
 
 				if (!isNaN(feature)) {
@@ -140,7 +138,10 @@
 
 		restApiQueryRequest : ['$http', function($http) {
 			return function(url) {
-				return $http.get(url).success(function(data) {prepareReportData(data);});
+				return $http.get(url).success(function(data) {
+				  prepareReportData(data);
+				  return data;
+				});
 			};
 		}]
 	};
@@ -166,21 +167,26 @@
 			controller : 'ProductListCtrl',
 			resolve : loader
 		})
-		.when('/reports/:colName', {
+		.when('/reports/:colName/version/:version/category/:category', {
 			templateUrl : 'pages/reports.html',
 			controller : 'ReportListCtrl',
 			resolve : loader
 		})
-		.when('/reports/:colName/features/:date', {
+		.when('/reports/:colName/features/:repId', {
 			templateUrl : 'pages/features.html',
 			controller : 'FeatureListCtrl',
 			resolve : loader
 		})
-		.when('/reports/:colName/features/:date/feature/:featureId', {
+		.when('/reports/:colName/features/:repId/feature/:featureId', {
 			templateUrl : 'pages/feature.html',
 			controller : 'FeatureCtrl',
 			resolve : loader
 		})
+    .when('/assignments/', {
+      templateUrl : 'pages/assignments.html',
+      controller : 'AssignmentsCtrl',
+      resolve : loader
+    })
 		.otherwise({
 			redirectTo : '/products/'
 		});
@@ -206,6 +212,17 @@
 		$rootScope.toggleDeletionMode = function(){
 			$rootScope.deletionMode = !$rootScope.deletionMode;
 		};
+		
+    $rootScope.reportsOverview = function(product, version, category){
+      if(typeof version === 'undefined'){
+        version = "ALL";
+      }
+      if(typeof category === 'undefined'){
+        category = "ALL";
+      }
+      var path = $location.path('/reports/' + product + '/version/' + version + '/category/' + category);
+      $location.search('page', 0);
+    };
 
 		$rootScope.openChart = function(product, type, limit) {
 			if(typeof type === 'undefined'){
@@ -273,7 +290,8 @@
 
 	function prepareReport(data, $rootScope, $scope, $routeParams, $filter, $location)
 	{
-		$rootScope.report = data;
+		$rootScope.report = data.report;
+		//TODO change next line to id?
 		$rootScope.reportDate = $rootScope.report.date.$date;
 		$scope.searchArrayName = 'filteredFeatures';
 		$scope[$scope.searchArrayName] = $scope.report.features;
@@ -290,7 +308,7 @@
 		$scope.duration = $scope.report.duration;
 
 		$scope.featureDetails = function(feature) {
-			$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.date + '/feature/' + feature.id);
+			$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.repId + '/feature/' + feature.id);
 		};
 
 		$scope.sum = function(features, field) {
@@ -333,6 +351,7 @@
 
 		addSearchAndSortHandlers($scope, $filter, $scope.feature.scenarios);
 
+		//TODO change next line to id?
 		$rootScope.reportDate = $scope.report.date.$date;
 		$rootScope.loading = false;
 	}
@@ -353,20 +372,6 @@
 		$rootScope.searchText = "";
 		$rootScope.backBtnEnabled = false;
 
-		$scope.productFilter = function (category) {
-			return function (product) {
-				if (category == '') {
-					for (var i in $scope.categories) {
-						var cat = $scope.categories[i];
-						if (cat != '' && product.indexOf(cat) >= 0) {
-							return false;
-						}
-					}
-				}
-				return true;
-			}
-		};
-
 		// if a local report.json file was found: load the data from the filesystem
 		loadJsonFromFilesystem().success(function() {
 			$rootScope.databaseMode = false;
@@ -384,15 +389,8 @@
                 }
                 return false;
             };
-			$scope.reportsOverview = function(product) {
-				$location.path('/reports/' + product);
-			};
 
-			restApiQueryRequest(categoriesUrl).success(function (res) {
-				$scope.categories = res;
-			});
-
-			restApiQueryRequest(collectionBaseUrl).success(function (data) {
+			restApiCollectionRequest(collectionBaseUrl).success(function (data) {
 				$rootScope.showDBError = false;
 				$rootScope.showJSONFileError = false;
 				$scope.products = data.slice().reverse();
@@ -474,96 +472,121 @@
 		$scope.orderPredicate = "";
 		$scope.orderReverse = true;
 
-		$scope.$routeParams = $routeParams;
 
 		$rootScope.goBack = function() {
 			$location.path('/products/');
 		};
 		$rootScope.backBtnEnabled = true;
 
-		$scope.featuresOverview = function(date) {
-			$location.path('/reports/' + $routeParams.colName + '/features/' + date);
-		};
-        $scope.deleteDocument = function (id) {
-            $http.delete(queryBaseUrl + $routeParams.colName + '/' + id);
-            load();
-        };
+    $scope.deleteDocument = function (id) {
+        $http.delete(queryBaseUrl + $routeParams.colName + '/' + id);
+        load();
+    };
 
-        $http.get(rolesBaseUrl).success(function (data) {
-            $scope.isAdmin = $.inArray("ROLE_ADMIN", data) === 0;
-        });
+    $http.get(rolesBaseUrl+"current/").success(function (data) {
+        $scope.isAdmin = $.inArray("ROLE_ADMIN", data) >= 0;
+    });
+    
+    function load()
+    {
+        var filters = "";
+        if($routeParams.version !== "ALL"){
+            filters += '&version=' + $routeParams.version;
+        }
+        if($routeParams.category !== "ALL"){
+            filters += '&category=' + $routeParams.category;
+        }
+        
+        restApiCollectionRequest(queryBaseUrl + $routeParams.colName + "/?sort=false" + filters)
+            .success(function (data)
+            {
+                $rootScope.databaseMode = true;
 
-		$rootScope.loading = true;
-        function load()
-        {
-            restApiCollectionRequest(collectionBaseUrl + $routeParams.colName + "/")
-                .success(function (data)
+                $scope.pageLimit = 10;
+                $scope.page = $routeParams.page === undefined ? 0 : $routeParams.page;
+                $scope.pages = Math.ceil(data.length / $scope.pageLimit);
+
+                restApiCollectionRequest(collectionBaseUrl + $routeParams.colName + '/versions')
+                    .success(function(data)
+                    {
+                        $scope.versions = data;
+                    })
+                    .error(function ()
+                    {
+                        $rootScope.loading = false;
+                        $location.path('/products/');
+                    });
+                
+                restApiCollectionRequest(collectionBaseUrl + $routeParams.colName + '/categories')
+                .success(function(data)
                 {
-                    $rootScope.databaseMode = true;
-
-                    $scope.pageLimit = 10;
-                    $scope.pages = Math.ceil(data.count / $scope.pageLimit);
-                    $scope.page = $routeParams.page === undefined ? 0 : $routeParams.page;
-
-                    restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?sort=true&limit=' + $scope.pageLimit + '&skip=' + ($scope.pageLimit * $scope.page))
-                        .success(function (data)
-                        {
-                            $scope.reports = data;
-
-                            $scope[$scope.searchArrayName] = $scope.reports;
-                            addSearchAndSortHandlers($scope, $filter, $scope.reports);
-
-                            $scope.getStatistics = function (features)
-                            {
-                                var statistics = {
-                                    passed: 0,
-                                    failed: 0,
-                                    unknown: 0
-                                };
-                                angular.forEach(features, function (feature)
-                                {
-                                    statistics.passed += feature.result.passedScenarioCount;
-                                    statistics.failed += feature.result.failedScenarioCount;
-                                    statistics.unknown += feature.result.unknownScenarioCount;
-                                });
-
-                                var sum = (statistics.passed + statistics.failed + statistics.unknown);
-
-                                statistics.passedPercent = (statistics.passed / sum) * 100;
-                                statistics.failedPercent = (statistics.failed / sum) * 100;
-                                statistics.unknownPercent = (statistics.unknown / sum) * 100;
-
-                                return statistics;
-                            };
-
-
-                            $rootScope.loading = false;
-
-
-                        })
-                        .error(function ()
-                        {
-                            $rootScope.loading = false;
-                            $location.path('/products/');
-                        });
-
+                    $scope.categories = data;
                 })
                 .error(function ()
                 {
                     $rootScope.loading = false;
                     $location.path('/products/');
                 });
-        }
-        load();
+                
+                restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?sort=true&limit=' + $scope.pageLimit + '&skip=' + ($scope.pageLimit * $scope.page) + filters)
+                    .success(function (data)
+                    {
+                        $scope.reports = data;
+
+                        $scope[$scope.searchArrayName] = $scope.reports;
+                        addSearchAndSortHandlers($scope, $filter, $scope.reports);
+
+                        $scope.getStatistics = function (features)
+                        {
+                            var statistics = {
+                                passed: 0,
+                                failed: 0,
+                                unknown: 0
+                            };
+                            angular.forEach(features, function (feature)
+                            {
+                                statistics.passed += feature.result.passedScenarioCount;
+                                statistics.failed += feature.result.failedScenarioCount;
+                                statistics.unknown += feature.result.unknownScenarioCount;
+                            });
+
+                            var sum = (statistics.passed + statistics.failed + statistics.unknown);
+
+                            statistics.passedPercent = (statistics.passed / sum) * 100;
+                            statistics.failedPercent = (statistics.failed / sum) * 100;
+                            statistics.unknownPercent = (statistics.unknown / sum) * 100;
+
+                            return statistics;
+                        };
+
+
+                        $rootScope.loading = false;
+
+
+                    })
+                    .error(function ()
+                    {
+                        $rootScope.loading = false;
+                        $location.path('/products/');
+                    });
+
+            })
+            .error(function ()
+            {
+                $rootScope.loading = false;
+                $location.path('/products/');
+            });
+    }
+    load();
 	});
 
 	/**
 	 * FeatureList Controller (see features.html)
 	 */
 	app.controller('FeatureListCtrl', function($rootScope, $routeParams, $scope, $location, $filter, restApiQueryRequest, loadJsonFromFilesystem) {
-
 		$scope.colName = $routeParams.colName;
 		// if a local report.json file was found: load the data from the filesystem
+		//TODO remove or update success
 		loadJsonFromFilesystem().success(function(data) {
 			$rootScope.databaseMode = false;
 			$rootScope.backBtnEnabled = false;
@@ -579,7 +602,7 @@
 
 
 			$rootScope.loading = true;
-			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
+			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/' + $routeParams.repId)
 			.success(function (data) {
 				if(!data.length){
 					$rootScope.loading = false;
@@ -599,18 +622,18 @@
 	 * Feature Controller (see feature.html)
 	 */
 	app.controller('FeatureCtrl', function($rootScope, $scope, $location, $filter, $routeParams, $modal, restApiQueryRequest, loadJsonFromFilesystem) {
-
 		$scope.colName = $routeParams.colName;
-		$scope.reportDate = $routeParams.date;
+		$scope.reportId = $routeParams.repId;
 
 		$rootScope.goBack = function() {
-			$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.date);
+			$location.path('/reports/' + $routeParams.colName + '/features/' + $routeParams.repId);
 		};
 		$rootScope.backBtnEnabled = true;
 
 		$scope.$routeParams = $routeParams;
 
 		// if a local report.json file was found: load the data from the filesystem
+		// TODO remove or update success
 		loadJsonFromFilesystem().success(function(data) {
 			$rootScope.databaseMode=false;
 			prepareFeature(data, $rootScope, $scope, $routeParams, $filter, $location);
@@ -624,14 +647,14 @@
 		.error(function() {
 			$rootScope.databaseMode=true;
 			$rootScope.loading = true;
-			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/?field=date&value=' + $routeParams.date)
+			restApiQueryRequest(queryBaseUrl + $routeParams.colName + '/' + $routeParams.repId)
 			.success(function (data) {
 				if(!data.length){
 					$rootScope.loading = false;
 					$location.path('/products/');
 					return;
 				}
-				prepareFeature(data[0], $rootScope, $scope, $routeParams, $filter, $location);
+				prepareFeature(data[0].report, $rootScope, $scope, $routeParams, $filter, $location);
 
 				// return rest api screenshot/video path
 				$scope.getEmbedding = function(embedding) {
@@ -648,7 +671,6 @@
 		$scope.errorLogLightbox = function(step) {
             var featureUri = $scope.feature.uri;
             var comments = "";
-
             if (step.comments)
             {
                 $.each(step.comments, function (index, comment)
@@ -718,9 +740,6 @@
             scope : scope
           });
         };
-
-
-
 	});
 
 	/**
@@ -746,6 +765,7 @@
             url += '?last=' + $routeParams.limit;
         }
         $http.get(url).success(function(reportData) {
+          reportData = reportData;
 			var options = {
 				title: $routeParams.product,
 				vAxis: {title: 'Scenarios',  titleTextStyle: {color: 'black'}},
@@ -753,7 +773,6 @@
 				isStacked:true,
 				colors:['#5cb85c','#f0ad4e','#d9534f']
 			};
-
 			var googleChart = new google.visualization[$routeParams.type](document.getElementById('chart'));
 			googleChart.draw(google.visualization.arrayToDataTable(getResults(reportData)), options);
 
@@ -835,40 +854,40 @@
 		.success(function(steps){
 			$scope.failedSteps=steps;
 
-			var sum=sumOverAll($scope.failedSteps.results,"value");
+			var sum=sumOverAll($scope.failedSteps,"value");
 			$scope.sumOverAllFailed=sum;
 
-			sortByValue($scope.failedSteps.results, "value");
+			sortByValue($scope.failedSteps, "value");
 			$rootScope.loading = false;});
 
 		$http.get(rankingsRootPath + $routeParams.product + executedPath)
 		.success(function(steps){
 			$scope.executedSteps=steps;
 
-			var sum=sumOverAll($scope.executedSteps.results,"value");
+			var sum=sumOverAll($scope.executedSteps,"value");
 			$scope.sumOverAllExecuted=sum;
 
-			sortByValue($scope.executedSteps.results, "value");
+			sortByValue($scope.executedSteps, "value");
 			$rootScope.loading = false;});
 
 		$http.get(rankingsRootPath + $routeParams.product + singleDurationPath)
 		.success(function(steps){
 			$scope.singleSteps=steps;
 
-			var sum=sumOverAll($scope.singleSteps.results,"value");
+			var sum=sumOverAll($scope.singleSteps,"value");
 			$scope.sumOverAllSingle=sum;
 
-			sortByValue($scope.singleSteps.results, "value");
+			sortByValue($scope.singleSteps, "value");
 			$rootScope.loading = false;});
 
 		$http.get(rankingsRootPath + $routeParams.product + cumulatedDurationPath)
 		.success(function(steps){
 			$scope.cumulatedSteps=steps;
 
-			var sum=sumOverAll($scope.cumulatedSteps.results,"value");
+			var sum=sumOverAll($scope.cumulatedSteps,"value");
 			$scope.sumOverAllCumulated=sum;
 
-			sortByValue($scope.cumulatedSteps.results, "value");
+			sortByValue($scope.cumulatedSteps, "value");
 			$rootScope.loading = false;});
 
 		$rootScope.goBack = function() {
@@ -876,6 +895,96 @@
 		};
 		$rootScope.backBtnEnabled = true;
 	});
+    
+
+
+  /**
+   * Assignments Controller (see assignments.html)
+   */
+  app.controller('AssignmentsCtrl', function($rootScope, $routeParams, $scope, $location, $filter, $modal, restApiQueryRequest, restApiCollectionRequest, loadJsonFromFilesystem) {
+    $scope.searchArrayName = 'products';
+    $scope.orderPredicate = "";
+    $scope.orderReverse = true;
+    $rootScope.searchText = "";
+    $rootScope.backBtnEnabled = false;
+
+    $rootScope.databaseMode = true;
+    
+    $scope.showGroups = function(product) {
+      
+    };
+
+    
+    
+    restApiQueryRequest(collectionBaseUrl).success(function (data) {
+      $rootScope.showDBError = false;
+      $rootScope.showJSONFileError = false;
+      $scope.products = data.slice().reverse();
+
+      $scope[$scope.searchArrayName] = $scope.products;
+      addSearchAndSortHandlers($scope, $filter, $scope.products);
+    })
+    .error(function() {
+      $rootScope.showJSONFileError = true;
+      $rootScope.showDBError = true;
+    });
+    
+    $scope.hideModal = function(){
+      $scope.showModal = false;
+    }
+
+    $scope.open = function (product) {
+
+      var modalInstance = $modal.open({
+        templateUrl: 'GroupModalContent.html',
+        controller: 'GroupModalInstanceCtrl',
+        resolve: {
+          groups: function(){
+            return restApiCollectionRequest(rightsBaseUrl+product).then(function(res) {
+              return res.data;
+            });
+          },
+          product: function(){
+            return product;
+          }
+        }
+      });
+
+      modalInstance.result.then(function () {
+      }, function () {
+        $log.info('Modal dismissed at: ' + new Date());
+      });
+    };
+  });
+
+  app.controller('GroupModalInstanceCtrl', function ($scope, $modalInstance, $http, product, groups) {
+    $scope.newGroup = {name : ""};
+
+    $scope.groups = groups;
+    $scope.product = product;
+    
+    $scope.addGroup = function(){
+      if($scope.newGroup.name !== "" && groups.findIndex(function(element,index,array){return $scope.newGroup.name === element;}) <= -1){
+        $http.post(rightsBaseUrl+$scope.product, $scope.newGroup.name).success(function(){
+          groups.push($scope.newGroup.name);
+        });
+        
+        //TODO error case
+      }
+    }
+    
+    $scope.removeGroup = function (index) {
+      $http.delete(rightsBaseUrl+$scope.product+'/'+$scope.groups[index]).success(function(){
+        groups.splice(index,1);
+      });
+      
+      //TODO error case
+    }
+
+    $scope.ok = function () {
+      $modalInstance.close();
+    };
+  });
 
 	google.load('visualization', '1', {packages: ['corechart']});
 	$('#ReportFileName').text(reportFileName);

@@ -1,26 +1,25 @@
 package at.porscheinformatik.cucumber.mongodb.rest.controller;
 
 import java.io.IOException;
-import java.util.Calendar;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
+import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.DBCollection;
 import com.mongodb.DBCursor;
-import com.mongodb.util.JSON;
+import at.porscheinformatik.cucumber.mongodb.rest.CollectionAccessChecker;
 
 /**
  * @author Stefan Mayer (yms)
@@ -32,96 +31,91 @@ public class QueryController
     @Autowired
     private MongoOperations mongodb;
 
+    //TODO maybe add response for failure
+    @Secured(Roles.ROLE_ADMIN)
     @RequestMapping(value = "/{collection}/{id}", method = RequestMethod.DELETE)
-    @Secured({Roles.ROLE_ADMIN})
-    public void deleteDocument(@PathVariable("collection") String collection, @PathVariable("id") String id)
+    public ResponseEntity<?> deleteDocument(@PathVariable("collection") String collection,
+        @PathVariable("id") String id)
     {
-        if("_ALL".equals(id)){
+        if ("_ALL".equals(id))
+        {
             dropWholeCollection(collection);
-            return;
+            return new ResponseEntity<Object>(HttpStatus.OK);
         }
 
         Query query = new Query(Criteria.where("_id").is(id));
         mongodb.remove(query, collection);
         if (mongodb.getCollection(collection).count() == 0)
         {
-            mongodb.dropCollection(collection);
+            dropWholeCollection(collection);
         }
+        return new ResponseEntity<Object>(HttpStatus.OK);
     }
 
-    private void dropWholeCollection(@PathVariable("collection") String collection) {
+    private void dropWholeCollection(String collection)
+    {
         System.out.println("Removing " + mongodb.getCollection(collection).count() + " objects from " + collection);
-        mongodb.remove(new Query(), collection);
+        mongodb.remove(new Query(Criteria.where("name").is(collection)), "products");
         mongodb.dropCollection(collection);
-        System.out.println("Collection "+collection+" removed");
+        System.out.println("Collection " + collection + " removed");
+    }
+
+    @RequestMapping(value = "/{collection}/{id}", method = RequestMethod.GET)
+    public ResponseEntity<String> find(
+        @PathVariable("collection") String collection,
+        @PathVariable("id") String id)
+    {
+        if (!CollectionAccessChecker.hasAccess(mongodb, collection))
+        {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        BasicDBObject query = new BasicDBObject();
+        query.put("_id", new ObjectId(id));
+        return ResponseEntity.ok(mongodb.getCollection(collection).find(query).toArray().toString());
     }
 
     @RequestMapping(value = "/{collection}/", method = RequestMethod.GET)
     @ResponseBody
-    public void find(
-            HttpServletRequest request,
-            @PathVariable(value = "collection") String collection,
-            HttpServletResponse response) throws IOException
+    public ResponseEntity<String> find(
+        @PathVariable("collection") String collection,
+        @RequestParam(value = "version", required = false) String version,
+        @RequestParam(value = "category", required = false) String category,
+        @RequestParam(value = "limit", required = false) String limit,
+        @RequestParam(value = "skip", required = false) String skip,
+        @RequestParam(value = "sort", required = false) String sort,
+        @RequestParam(value = "last", required = false) String last) throws IOException
     {
-        final String limitValue = request.getParameter("limit");
-        final String skipValue = request.getParameter("skip");
-        final String last = request.getParameter("last");
-        final String field = request.getParameter("field");
-        final String value = request.getParameter("value");
-        final String sort = request.getParameter("sort");
+        if (!CollectionAccessChecker.hasAccess(mongodb, collection))
+        {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
 
-        DBCursor dbData = getDbCursor(collection, field, value);
-        skipElements(collection, skipValue, last, field, value, dbData);
-        limitResult(limitValue, dbData);
+        DBCursor dbData = getDbCursor(collection, version, category);
+        skipElements(collection, skip, last, dbData);
+        limitResult(limit, dbData);
         sortResult(sort, dbData);
 
-        response.setContentType("application/json");
-        response.getWriter().write(formatJson(dbData));
+        return ResponseEntity.ok((dbData.toArray().toString()));
     }
 
-    private DBCursor getDbCursor(final String collection, final String field, final String value)
+    private DBCursor getDbCursor(final String collection, final String version, final String category)
     {
         DBCollection dbCollection = mongodb.getCollection(collection);
-        DBCursor dbData;
-
-        if (field == null || value == null)
-        {
-            dbData = dbCollection.find();
-        }
-        else
-        {
-            dbData = findByValue(dbCollection, field, value);
-        }
-        return dbData;
-    }
-
-    private DBCursor findByValue(DBCollection dbCollection, String field, String value)
-    {
-        Object val;
-        try
-        {
-            val = Long.parseLong(value);
-        }
-        catch (NumberFormatException e)
-        {
-            try
-            {
-                Calendar cal = javax.xml.bind.DatatypeConverter.parseDateTime(value);
-                val = cal.getTime();
-            }
-            catch (IllegalArgumentException e1)
-            {
-                val = value;
-            }
-        }
 
         BasicDBObject dbObject = new BasicDBObject();
-        dbObject.put(field, val);
+        if (version != null)
+        {
+            dbObject.put("version", version);
+        }
+        if (category != null)
+        {
+            dbObject.put("category", category);
+        }
         return dbCollection.find(dbObject);
     }
 
-    private void skipElements(final String collection, final String skipValue, final String last, final String field,
-            final String value, final DBCursor dbData)
+    private void skipElements(final String collection, final String skipValue, final String last, final DBCursor dbData)
     {
         if (skipValue != null)
         {
@@ -129,7 +123,7 @@ public class QueryController
         }
         else if (last != null)
         {
-            int length = getDbCursor(collection, field, value).length();
+            int length = (int) mongodb.getCollection(collection).count();
             int nrOfSkips = skipToLast(length, Integer.valueOf(last));
             dbData.skip(nrOfSkips);
         }
@@ -158,29 +152,5 @@ public class QueryController
         {
             dbData.sort(new BasicDBObject("_id", -1));
         }
-    }
-
-    private static String formatJson(DBCursor cursor)
-    {
-        StringBuilder buf = new StringBuilder();
-
-        buf.append("[");
-        while (cursor.hasNext())
-        {
-            JSON.serialize(cursor.next(), buf);
-            buf.append(",");
-        }
-
-        if (buf.length() > 1)
-        {
-            buf.setCharAt(buf.length() - 1, ']');
-        }
-        else
-        {
-            buf.append("]");
-        }
-        cursor.close();
-
-        return buf.toString();
     }
 }

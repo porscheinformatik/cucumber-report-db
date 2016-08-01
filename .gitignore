@@ -2,6 +2,8 @@ target
 .classpath
 .project
 .settings
+.factorypath
 /bin
 *.iml
 *.idea
+cucumber-report-web/src/main/resources/application.properties

@@ -4,11 +4,11 @@ import java.net.UnknownHostException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.authentication.UserCredentials;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientURI;
 
@@ -31,7 +31,8 @@ public class DatabaseConfig extends AbstractMongoConfiguration
     }
 
     @Override
-    public Mongo mongo() throws UnknownHostException
+    @Bean
+    public MongoClient mongo() throws UnknownHostException
     {
         String dbUri = getUri();
         LOGGER.info("Connecting to mongo {}", dbUri);

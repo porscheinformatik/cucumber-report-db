@@ -37,20 +37,20 @@ public class ReportController
     private MongoDB mongoDB;
 
     @RequestMapping(value = "{collection}/{executionId}", method = RequestMethod.GET)
-    public ResponseEntity checkResultOfExecution(@PathVariable("collection") String collection,
-            @PathVariable("executionId") String executionId, @RequestParam("obsoleteLimitInDays") Integer
-            obsoleteLimitInDays, HttpServletRequest httpServletRequest)
+    public ResponseEntity<String> checkResultOfExecution(@PathVariable("collection") String collection,
+        @PathVariable("executionId") String executionId,
+        @RequestParam("obsoleteLimitInDays") Integer obsoleteLimitInDays, HttpServletRequest httpServletRequest)
     {
         LOGGER.info("Fetch bdd report from last run");
 
         final String execIdTag =
-                String.format(DEFAULT_SILK_EXECUTION_ID_NAME, executionId);
+            String.format(DEFAULT_SILK_EXECUTION_ID_NAME, executionId);
 
         try
         {
             // FIXME (xbk 23/09/2014): replace with mongotemplate
             ReportDTO report = mongoDB.fetchLast(ReportDTO.class, collection, "features.scenarios.tags.name",
-                    execIdTag);
+                execIdTag);
 
             for (FeatureDTO feature : report.getFeatures())
             {
@@ -71,7 +71,7 @@ public class ReportController
                 else if (isScenarioFailed(scenario))
                 {
                     return failedScenarioFound(report, scenario, execIdTag, collection,
-                            getUrlBase(httpServletRequest));
+                        getUrlBase(httpServletRequest));
                 }
                 else
                 {
@@ -82,7 +82,7 @@ public class ReportController
             // if we get here, no matching scenario was found in the database
             // and we cannot complete the process
             final String warning =
-                    String.format("[Warning] No scenario with id: \"%s\" found in the database!", execIdTag);
+                String.format("[Warning] No scenario with id: \"%s\" found in the database!", execIdTag);
             LOGGER.warn(warning);
             return new ResponseEntity<String>(warning, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -100,12 +100,12 @@ public class ReportController
         return cal.getTime().compareTo(new Date()) < 0;
     }
 
-    private ResponseEntity obsoleteScenarioFound(final Integer obsoleteLimitInDays, final Calendar cal)
+    private ResponseEntity<String> obsoleteScenarioFound(final Integer obsoleteLimitInDays, final Calendar cal)
     {
         cal.add(Calendar.DATE, -obsoleteLimitInDays);
 
         final String warning =
-                String.format("[Warning] The data of the last BDD run are obsolete (reportDate: \"%s\")", cal.getTime());
+            String.format("[Warning] The data of the last BDD run are obsolete (reportDate: \"%s\")", cal.getTime());
         LOGGER.warn(warning);
         return new ResponseEntity<String>(warning, HttpStatus.INTERNAL_SERVER_ERROR);
     }
@@ -118,7 +118,9 @@ public class ReportController
      */
     private ResponseEntity<String> passedScenarioFound(ReportDTO report, ScenarioDTO scenario, String idtentifier)
     {
-        String passedMessage = "Test passed: (" + report.getDateDTO().get$date() + ") identifier: \"" + idtentifier + "\" - name: \""
+        System.out.println("HIIH");
+        String passedMessage =
+            "Test passed: (" + report.getDateDTO().get$date() + ") identifier: \"" + idtentifier + "\" - name: \""
                 + scenario.getName()
                 + "\" ("
                 + scenario.getDescription() + ")";
@@ -127,14 +129,14 @@ public class ReportController
     }
 
     private ResponseEntity<String> failedScenarioFound(ReportDTO report, ScenarioDTO scenario, String idtentifier,
-            final String collection, final String requestURI)
+        final String collection, final String requestURI)
     {
         StringBuilder error = new StringBuilder();
 
         error.append("Test failed: (" + report.getDateDTO().get$date() + ") identifier: \"" + idtentifier
-                + "\" - name: \""
-                + scenario.getName()
-                + " (" + scenario.getDescription() + ")" + NL + NL);
+            + "\" - name: \""
+            + scenario.getName()
+            + " (" + scenario.getDescription() + ")" + NL + NL);
 
         error.append("  Scenario: " + scenario.getName() + NL);
         error.append("  {" + NL);
@@ -148,7 +150,9 @@ public class ReportController
                 error.append("          Error-Message: " + step.getResult().getError_message() + NL);
             }
         }
-        final String bddReportUrl = requestURI + "#/reports/" + collection + "/features/" + report.getDateDTO().get$date() + "/feature/" + (scenario.getId().split(";"))[0] + "?searchText=" + scenario.getName();
+        final String bddReportUrl =
+            requestURI + "#/reports/" + collection + "/features/" + report.getDateDTO().get$date() + "/feature/"
+                + (scenario.getId().split(";"))[0] + "?searchText=" + scenario.getName();
         error.append("      Url: " + bddReportUrl + NL);
         error.append("  }" + NL);
 
@@ -158,7 +162,8 @@ public class ReportController
 
     private boolean isScenarioFailed(ScenarioDTO scenario)
     {
-        return (scenario.getResult().getFailedStepCount() != null || scenario.getResult().getSkippedStepCount() != null);
+        return (scenario.getResult().getFailedStepCount() != null
+            || scenario.getResult().getSkippedStepCount() != null);
     }
 
     private String getUrlBase(HttpServletRequest request)
@@ -168,7 +173,8 @@ public class ReportController
         {
             requestUrl = new URL(request.getRequestURL().toString());
             String portString = requestUrl.getPort() == -1 ? "" : ":" + requestUrl.getPort();
-            return requestUrl.getProtocol() + "://" + requestUrl.getHost() + portString + request.getContextPath() + "/";
+            return requestUrl.getProtocol() + "://" + requestUrl.getHost() + portString + request.getContextPath()
+                + "/";
         }
         catch (MalformedURLException e)
         {

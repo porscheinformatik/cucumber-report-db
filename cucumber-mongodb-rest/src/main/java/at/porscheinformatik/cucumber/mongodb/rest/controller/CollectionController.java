@@ -1,11 +1,17 @@
 package at.porscheinformatik.cucumber.mongodb.rest.controller;
 
 import java.io.IOException;
-import java.util.Set;
-import java.util.regex.Pattern;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -13,11 +19,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.google.common.base.Function;
-import com.google.common.base.Predicate;
-import com.google.common.collect.Collections2;
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Sets;
-import com.mongodb.CommandResult;
+import com.google.common.collect.Lists;
+import at.porscheinformatik.cucumber.mongodb.rest.CollectionAccessChecker;
 
 /**
  * @author Stefan Mayer (yms)
@@ -31,70 +34,65 @@ public class CollectionController
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     @ResponseBody
-    public Set<String> getCollections() throws IOException
+    public List<String> getCollections() throws IOException
     {
-        Set<String> collectionNames = mongodb.getCollectionNames();
-        return Sets.filter(collectionNames, new Predicate<String>()
+        List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(SecurityContextHolder.getContext()
+            .getAuthentication().getAuthorities());
+        List<String> roles = Lists.transform(authorities, new Function<GrantedAuthority, String>()
         {
             @Override
-            public boolean apply(final String s)
+            public String apply(final GrantedAuthority grantedAuthority)
             {
-                return isValidCollectionName(s) && isNoChunk(s) && isNoFile(s);
+                return grantedAuthority.getAuthority();
             }
         });
-    }
 
-    private boolean isValidCollectionName(final String s)
-    {
-        return Pattern.compile(".*_.*").matcher(s).matches();
-    }
-
-    private boolean isNoChunk(final String s)
-    {
-        return !s.endsWith(".chunks");
-    }
-
-    private boolean isNoFile(final String s)
-    {
-        return !s.endsWith(".files");
-    }
-
-    @RequestMapping(value = "/{collection}", method = RequestMethod.GET)
-    @ResponseBody
-    public CommandResult getCollectionData(@PathVariable(value = "collection") String collection) throws IOException
-    {
-        return mongodb.getCollection(collection).getStats();
+        Query query = new Query();
+        if (!roles.contains(Roles.ROLE_ADMIN))
+        {
+            Criteria crit = Criteria.where("rights").in(roles);
+            query.addCriteria(crit);
+        }
+        query.fields().include("name");
+        ArrayList<String> collectionNames = new ArrayList<String>();
+        List<NameObject> productsResult = mongodb.find(query, NameObject.class, "products");
+        for (NameObject product : productsResult)
+        {
+            collectionNames.add(product.getName());
+        }
+        return collectionNames;
     }
 
     @RequestMapping(value = "/products", method = RequestMethod.GET)
     @ResponseBody
-    public Set<String> getProducts() throws IOException
+    public List<String> getProducts() throws IOException
     {
-        Set<String> collections = getCollections();
-        return ImmutableSet.copyOf(Collections2.transform(collections, new Function<String, String>()
-        {
-            @Override
-            public String apply(final String s)
-            {
-                return s.split("_")[0];
-            }
-        }));
+        return getCollections();
     }
 
-    @RequestMapping(value = "/categories", method = RequestMethod.GET)
+    @RequestMapping(value = "/{collection}/categories", method = RequestMethod.GET)
     @ResponseBody
-    public Set<String> getCategories() throws IOException
+    public ResponseEntity<String> getCategories(
+        @PathVariable("collection") String collection) throws IOException
     {
-        Set<String> collections = getCollections();
-        return ImmutableSet.copyOf(Collections2.transform(collections, new Function<String, String>()
+        if (!CollectionAccessChecker.hasAccess(mongodb, collection))
         {
-            @Override
-            public String apply(final String s)
-            {
-                // e.g. "APPNAME_3.x-SNAPSHOT Integration" for an  Integration test category
-                String[] split = s.split(" ");
-                return split.length == 1 ? "" : split[1];
-            }
-        }));
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return ResponseEntity.ok(mongodb.getCollection(collection).distinct("category").toString());
+    }
+
+    @RequestMapping(value = "/{collection}/versions", method = RequestMethod.GET)
+    @ResponseBody
+    public ResponseEntity<String> getVersions(
+        @PathVariable("collection") String collection) throws IOException
+    {
+        if (!CollectionAccessChecker.hasAccess(mongodb, collection))
+        {
+            return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+        }
+
+        return ResponseEntity.ok(mongodb.getCollection(collection).distinct("version").toString());
     }
 }

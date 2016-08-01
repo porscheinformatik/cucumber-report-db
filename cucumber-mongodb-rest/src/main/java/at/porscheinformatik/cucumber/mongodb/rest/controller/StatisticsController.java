@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import at.porscheinformatik.cucumber.mongodb.rest.CollectionAccessChecker;
+
 /**
  * @author Johannes Probst
  */
@@ -24,13 +26,13 @@ public class StatisticsController
 {
     @Autowired
     private MongoOperations mongodb;
-    
-    private static final String MAP_STEPS_DURATIONS ="classpath:mapStepsDurations.js";
-    private static final String MAP_MOST_FAILED_STEPS ="classpath:mapMostFailedSteps.js";
-    private static final String MAP_MOST_EXECUTED_STEPS ="classpath:mapMostExecutedSteps.js";
 
-    private static final String REDUCE_HIGHEST_SINGLE_STEP_DURATIONS ="classpath:reduceHighestSingleStepDurations.js";
-    private static final String REDUCE_CUMULATED_STEP_DURATIONS ="classpath:reduceCumulatedStepDurations.js";
+    private static final String MAP_STEPS_DURATIONS = "classpath:mapStepsDurations.js";
+    private static final String MAP_MOST_FAILED_STEPS = "classpath:mapMostFailedSteps.js";
+    private static final String MAP_MOST_EXECUTED_STEPS = "classpath:mapMostExecutedSteps.js";
+
+    private static final String REDUCE_HIGHEST_SINGLE_STEP_DURATIONS = "classpath:reduceHighestSingleStepDurations.js";
+    private static final String REDUCE_CUMULATED_STEP_DURATIONS = "classpath:reduceCumulatedStepDurations.js";
 
     @RequestMapping(value = "/{collection}/CumulatedStepDurationRanking", method = RequestMethod.GET)
     @ResponseBody
@@ -39,9 +41,8 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, MAP_STEPS_DURATIONS, REDUCE_CUMULATED_STEP_DURATIONS, response);
+        mapReduce(collection, MAP_STEPS_DURATIONS, REDUCE_CUMULATED_STEP_DURATIONS, response);
     }
-
 
     @RequestMapping(value = "/{collection}/highestSingleStepDurationRanking", method = RequestMethod.GET)
     @ResponseBody
@@ -50,9 +51,9 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, MAP_STEPS_DURATIONS, REDUCE_HIGHEST_SINGLE_STEP_DURATIONS, response);
+        mapReduce(collection, MAP_STEPS_DURATIONS, REDUCE_HIGHEST_SINGLE_STEP_DURATIONS, response);
     }
-    
+
     @RequestMapping(value = "/{collection}/mostFailedStepsRanking", method = RequestMethod.GET)
     @ResponseBody
     public void findMostFailed(
@@ -60,9 +61,9 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, MAP_MOST_FAILED_STEPS, REDUCE_CUMULATED_STEP_DURATIONS, response);
+        mapReduce(collection, MAP_MOST_FAILED_STEPS, REDUCE_CUMULATED_STEP_DURATIONS, response);
     }
-    
+
     @RequestMapping(value = "/{collection}/mostExecutedStepsRanking", method = RequestMethod.GET)
     @ResponseBody
     public void findMostExecuted(
@@ -70,13 +71,37 @@ public class StatisticsController
         @PathVariable(value = "collection") String collection,
         HttpServletResponse response) throws IOException
     {
-    	mapReduce(collection, MAP_MOST_EXECUTED_STEPS, REDUCE_CUMULATED_STEP_DURATIONS, response);
+        mapReduce(collection, MAP_MOST_EXECUTED_STEPS, REDUCE_CUMULATED_STEP_DURATIONS, response);
     }
-    
+
     private void mapReduce(String collection, String mapFunction, String reduceFunction, HttpServletResponse response)
-    		throws IOException {
-    	MapReduceResults<ValueObject> allCollectionSteps=mongodb.mapReduce(collection, mapFunction, reduceFunction, ValueObject.class);
-		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-		response.getWriter().write(allCollectionSteps.getRawResults().toString());
+        throws IOException
+    {
+        if (!CollectionAccessChecker.hasAccess(mongodb, collection))
+        {
+            response.sendError(403);
+            return;
+        }
+
+        MapReduceResults<ValueObject> allCollectionSteps =
+            mongodb.mapReduce(collection, mapFunction, reduceFunction, ValueObject.class);
+
+        StringBuilder result = new StringBuilder("[");
+        for (ValueObject valueObject : allCollectionSteps)
+        {
+            result.append("{\"id\":\"" + valueObject.getId().replace("\"", "\\\"") + "\", \"value\":"
+                + valueObject.getValue() + "}" + ",");
+        }
+        if (result.length() > 1)
+        {
+            result.replace(result.length() - 1, result.length(), "]");
+        }
+        else
+        {
+            result.append("]");
+        }
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write(result.toString());
     }
 }

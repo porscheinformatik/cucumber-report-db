@@ -1,0 +1,43 @@
+<ol class="breadcrumb">
+  <li><a href="#">Home</a></li>
+  <li class="active">Assignments</li>
+</ol>
+
+<table class="table table-striped table-hover table-bordered">
+	<thead> 
+		<tr>
+			<th class="firstTD">Product / Version</th>
+			<th>Assigned Groups</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr ng-repeat="product in products | orderBy:'':true">
+			<td class="firstTD">
+				<button ng-click="reportsOverview(product)" class="btn btn-primary btn-sm">{{product.replace(category, '')}}</button>
+			</td>
+			<td>
+				<script type="text/ng-template" id="GroupModalContent.html">
+        			<div class="modal-header">
+            			<h3 class="modal-title">Assign Groups</h3>
+    					<input type="text" name="newGroup.name" ng-model="newGroup.name">
+						<button ng-click="addGroup()" class="btn btn-primary btn-sm">Add</button>
+        			</div>
+        			<div class="modal-body">
+						<table class="table table-striped table-hover table-bordered">
+            			<ul class="list-unstyled">
+                			<tr ng-repeat="group in groups"><td>
+                    			<span class="pull-left">{{ group }}</span>
+								<button ng-click="removeGroup($index)" class="btn btn-primary btn-sm pull-right">Remove</Button>
+                			</td></tr>
+            			</ul>
+						</table>
+			        </div>
+			        <div class="modal-footer">
+			            <button class="btn btn-primary" ng-click="ok()">OK</button>
+        			</div>
+    			</script>
+				<button ng-click="open(product)" class="btn btn-primary btn-sm">Groups</button>
+			</td>
+		</tr>
+	</tbody>
+</table>

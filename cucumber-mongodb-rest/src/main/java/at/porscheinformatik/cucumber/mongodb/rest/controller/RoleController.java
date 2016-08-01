@@ -17,7 +17,7 @@ import com.google.common.collect.Lists;
 @RequestMapping("/rest/roles")
 public class RoleController
 {
-    @RequestMapping(value = "/", method = RequestMethod.GET)
+    @RequestMapping(value = "/current", method = RequestMethod.GET)
     public @ResponseBody List<String> getRole()
     {
         List<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>(SecurityContextHolder.getContext()

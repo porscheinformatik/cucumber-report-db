@@ -1,3 +1,26 @@
+<div class="btn-group pull-right" dropdown>
+	<button type="button" class="btn btn-default btn-sm">Category ({{$routeParams.category}})</button>
+	<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li ng-repeat="category in categories" ng-class="{active:$routeParams.category==category}"><a href="" ng-click="reportsOverview($routeParams.colName, $routeParams.version, category)">{{category}}</a></li>
+		<li class="divider"></li>
+		<li ng-class="{'active':$routeParams.category=='ALL'}"><a href="" ng-click="reportsOverview($routeParams.colName, $routeParams.version, 'ALL')">All</a></li>
+	</ul>
+</div>
+<div class="btn-group pull-right" dropdown>
+	<button type="button" class="btn btn-default btn-sm">Version ({{$routeParams.version}})</button>
+	<button type="button" class="btn btn-default dropdown-toggle btn-sm" data-toggle="dropdown">
+		<span class="caret"></span>
+	</button>
+	<ul class="dropdown-menu" role="menu">
+		<li ng-repeat="version in versions" ng-class="{active:$routeParams.version==version}"><a href="" ng-click="reportsOverview($routeParams.colName, version, $routeParams.category)">{{version}}</a></li>
+		<li class="divider"></li>
+		<li ng-class="{'active':$routeParams.version=='ALL'}"><a href="" ng-click="reportsOverview($routeParams.colName, 'ALL', $routeParams.category)">All</a></li>
+	</ul>
+</div>
+
 <ol class="breadcrumb">
   <li><a href="#">Home</a></li>
   <li><a href="#/products/">Products</a></li>
@@ -8,6 +31,8 @@
 	<thead> 
 		<tr class="sortToggle">
 			<th class="firstTD">Features</th>
+			<th>Version</th>
+			<th>Category</th>
 			<th>Statistics</th>
 			<th><span ng-click="orderPredicate = 'report[\'date\']'; orderReverse=!orderReverse;">Date</span></th>
             <th ng-show="isAdmin">Admin</th>
@@ -16,19 +41,29 @@
 	<tbody>
 		<tr ng-repeat="report in filteredReports | filter: only | filter:searchText">
 			<td  class="firstTD tdCollapseBox" shortener-directive>
-				<div class="tdCollapse" ng-click="featuresOverview(report.date.$date)" ng-class="{'tdUncollapse':boolUncollapse}">
+				<div class="tdCollapse" ng-click="featuresOverview(report._id.$oid)" ng-class="{'tdUncollapse':boolUncollapse}">
 					{{report.featureNames}}
+				</div>
+			</td>
+			<td  class="tdCollapseBox" shortener-directive>
+				<div class="tdCollapse" ng-class="{'tdUncollapse':boolUncollapse}">
+					{{report.version}}
+				</div>
+			</td>
+			<td  class="tdCollapseBox" shortener-directive>
+				<div class="tdCollapse" ng-class="{'tdUncollapse':boolUncollapse}">
+					{{report.category}}
 				</div>
 			</td>
 			<td style="width: 25%">
 				<div class="progress" style="margin-bottom: 0px;">
-					{{statistics=getStatistics(report.features);""}}
+					{{statistics=getStatistics(report.report.features);""}}
 					<div class="progress-bar progress-bar-success" style="width: {{statistics.passedPercent}}%">{{statistics.passed}}</div>
 					<div class="progress-bar progress-bar-warning" style="width: {{statistics.unknownPercent}}%">{{statistics.unknown}}</div>
 					<div class="progress-bar progress-bar-danger" style="width: {{statistics.failedPercent}}%">{{statistics.failed}}</div>
 				</div>
 			</td>
-			<td class="noWrap">{{ report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
+			<td class="noWrap">{{ report.report.date.$date | date:'dd-MM-yyyy HH:mm:ss' }}</td>
             <td ng-show="isAdmin">
                 <button ng-really-message="Are you sure?" ng-really-click="deleteDocument(report._id.$oid)"
                         class="btn-sm btn-danger"><span
@@ -39,10 +74,10 @@
 </table>
 <div class="text-center">
 	<ul class="pagination">
-		<li><a href="#/reports/{{$routeParams.colName}}?page=0">&laquo;</a></li>
+		<li><a href="#/reports/{{$routeParams.colName}}/version/{{$routeParams.version}}/category/{{$routeParams.category}}?page=0">&laquo;</a></li>
 		<li ng-repeat="n in range(pages)">
-			<a href="#/reports/{{$routeParams.colName}}?page={{n}}">{{n + 1}}</a>
+			<a href="#/reports/{{$routeParams.colName}}/version/{{$routeParams.version}}/category/{{$routeParams.category}}?page={{n}}">{{n + 1}}</a>
 		</li>
-		<li><a href="#/reports/{{$routeParams.colName}}?page={{pages - 1}}">&raquo;</a></li>
+		<li><a href="#/reports/{{$routeParams.colName}}/version/{{$routeParams.version}}/category/{{$routeParams.category}}?page={{pages - 1}}">&raquo;</a></li>
 	</ul>
 </div>

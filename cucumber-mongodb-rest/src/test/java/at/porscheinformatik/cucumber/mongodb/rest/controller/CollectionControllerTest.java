@@ -5,6 +5,7 @@ import static org.testng.Assert.assertEquals;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import org.mockito.Mockito;
@@ -34,7 +35,7 @@ public class CollectionControllerTest
     public void getCollections_returns_products_and_versions(Set<String> input, Set<String> expectedOutput) throws IOException
     {
         Mockito.when(mongoOperations.getCollectionNames()).thenReturn(input);
-        Set<String> actualCollections = collectionController.getCollections();
+        List<String> actualCollections = collectionController.getCollections();
         assertEquals(actualCollections, expectedOutput);
     }
 
@@ -53,7 +54,7 @@ public class CollectionControllerTest
     public void getProducts(Set<String> input, Set<String> expectedOutput) throws IOException
     {
         Mockito.when(mongoOperations.getCollectionNames()).thenReturn(input);
-        Set<String> products = collectionController.getProducts();
+        List<String> products = collectionController.getProducts();
         assertEquals(products, expectedOutput);
     }
 
