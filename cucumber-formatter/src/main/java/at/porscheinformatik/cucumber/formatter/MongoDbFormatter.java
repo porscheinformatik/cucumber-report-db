@@ -90,11 +90,11 @@ public class MongoDbFormatter extends AbstractJsonFormatter
         {
             restResource.path("rest").path("cucumberplugin").path(getCollection()).path(getVersion())
                 .path(getCategory()).path("report").entity(data).post();
-            LOGGER.info("JSON sent to cucumber-report-db");
+            LOGGER.debug("JSON sent to cucumber-report-db");
         }
         catch (Exception e)
         {
-            LOGGER.info("Error occured sending JSON to cucumber-report-db", e);
+            LOGGER.debug("Error occured sending JSON to cucumber-report-db", e);
         }
     }
 
@@ -105,7 +105,7 @@ public class MongoDbFormatter extends AbstractJsonFormatter
             restResource.path("rest").path("cucumberplugin").path(getCollection()).path(getVersion()).path("media")
                 .queryParam("filename", fileName)
                 .type(mimeType).entity(inputStream).post();
-            LOGGER.info("Image {} sent to cucumber-report-db", fileName);
+            LOGGER.debug("Image {} sent to cucumber-report-db", fileName);
         }
         catch (Exception e)
         {
